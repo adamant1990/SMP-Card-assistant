@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SMP Card Assistant</title><link rel="stylesheet" href="popup.css"></head>
+<body><main>
+<h1>SMP Card Assistant</h1>
+<p class="hint">Тестовый прототип для ProMed. Не сохраняет карту и не отправляет данные автоматически.</p>
+<label for="reason">Причина обращения</label>
+<select id="reason">
+<option>Несчастный случай</option><option selected>Острое внезапное заболевание</option><option>Роды (вне МО)</option><option>Обострение хронического заболевания</option><option>Патология беременности</option><option>Медицинская эвакуация экстренная</option><option>Дежурство при угрозе ЧС</option><option>Дежурство на мероприятии</option><option>Другое</option><option>Плановая перевозка</option><option>Платная мед.услуга</option>
+</select>
+<label for="complaints">Жалобы</label><textarea id="complaints" rows="3" placeholder="Оставь пустым, если менять не нужно"></textarea>
+<label for="anamnez">Анамнез</label><textarea id="anamnez" rows="3" placeholder="Оставь пустым, если менять не нужно"></textarea>
+<div class="checkrow"><input id="fillReason" type="checkbox" checked><label for="fillReason">Заполнить причину обращения</label></div>
+<div class="checkrow"><input id="fillComplaints" type="checkbox"><label for="fillComplaints">Заполнить жалобы (если введены)</label></div>
+<div class="checkrow"><input id="fillAnamnez" type="checkbox"><label for="fillAnamnez">Заполнить анамнез (если введён)</label></div>
+<button id="fill">Заполнить выбранные поля</button><button id="inspect" class="secondary">Проверить поля ProMed</button>
+<pre id="status" role="status">Открой карту вызова ProMed и нажми «Проверить поля ProMed».</pre>
+<p class="warning">Тестируй на учебной карте. Проверь каждое поле вручную. Кнопку сохранения карты нажимай сам.</p>
+</main><script src="popup.js"></script></body></html>
