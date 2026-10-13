@@ -1,0 +1,44 @@
+{
+  "formatVersion": 1,
+  "id": "blank-medical-card",
+  "name": "Пустая карта вызова",
+  "type": "medical-card",
+  "category": "Общие",
+  "description": "Пустой шаблон. Заполняется индивидуальными данными пациента.",
+  "sections": {
+    "socialStatus": "",
+    "callReason": "",
+    "callType": "",
+    "callLocation": "",
+    "brigade": "",
+    "incidentReason": "",
+    "intoxicationSigns": "",
+    "complaints": "",
+    "anamnesis": "",
+    "epidAnamnesis": "",
+    "examination": "",
+    "vitals": {
+      "workingBloodPressure": "",
+      "bloodPressure": "",
+      "pulse": "",
+      "heartRate": "",
+      "respiratoryRate": "",
+      "temperature": "",
+      "spo2": ""
+    },
+    "ecg": "",
+    "diagnosis": {
+      "code": "",
+      "name": ""
+    },
+    "complications": "",
+    "treatment": "",
+    "medications": "",
+    "effectiveness": "",
+    "consentOrRefusal": "",
+    "callOutcome": "",
+    "mileage": "",
+    "notes": "",
+    "crew": ""
+  }
+}
