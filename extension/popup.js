@@ -19,6 +19,29 @@ function pageBridge(action, payload) {
   const complaints = document.querySelector('textarea[name="complaints"]');
   const anamnez = document.querySelector('textarea[name="anamnez"]');
 
+  if (action === 'scanFields') {
+    const fields = window.Ext?.ComponentQuery?.query('field') || [];
+    return {
+      extJsAvailable: !!window.Ext,
+      count: fields.length,
+      fields: fields.map((cmp, index) => {
+        const input = cmp.inputEl?.dom || cmp.inputEl;
+        return {
+          index,
+          xtype: cmp.xtype || cmp.getXType?.() || null,
+          fieldLabel: cmp.fieldLabel || cmp.label || null,
+          name: cmp.name || cmp.getName?.() || null,
+          itemId: cmp.itemId || null,
+          componentId: cmp.id || null,
+          inputName: input?.name || null,
+          inputId: input?.id || null,
+          checked: typeof cmp.getValue === 'function' && /checkbox|radio/i.test(String(cmp.xtype || cmp.getXType?.() || ''))
+            ? !!cmp.getValue() : undefined
+        };
+      }).filter(cmp => cmp.fieldLabel || cmp.name || cmp.inputName || /checkbox|radio/i.test(String(cmp.xtype || '')))
+    };
+  }
+
   if (action === 'inspect') {
     return {
       page: location.href,
@@ -66,6 +89,14 @@ function pageBridge(action, payload) {
   }
   return {error:'Неизвестное действие'};
 }
+
+$('scanFields').addEventListener('click', async () => {
+  status.textContent = 'Изучаю структуру полей ProMed…';
+  try {
+    const result = await runPageAction('scanFields');
+    status.textContent = JSON.stringify(result, null, 2);
+  } catch (e) { status.textContent = 'Ошибка: ' + (e?.message || e); }
+});
 
 $('inspect').addEventListener('click', async () => {
   status.textContent = 'Проверяю поля…';
