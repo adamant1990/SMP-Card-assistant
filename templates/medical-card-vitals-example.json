@@ -1,0 +1,24 @@
+{
+  "formatVersion": 1,
+  "id": "vitals-cvz-example",
+  "name": "Жизненные показатели — пример из Automa",
+  "type": "medical-card",
+  "category": "Жизненные показатели",
+  "description": "Демонстрационный набор из сценария Automa для настройки переноса в ProMed. Не использовать как фактические показатели пациента без проверки и исправления.",
+  "sections": {
+    "vitals": {
+      "bloodPressureBefore1": "130/80",
+      "bloodPressureBefore2": "150/90",
+      "pulseBefore": "80",
+      "heartRateBefore": "80",
+      "respiratoryRateBefore": "18",
+      "temperatureBefore": "36,6",
+      "spo2Before": "98",
+      "bloodPressureAfter": "140/80",
+      "pulseAfter": "78",
+      "heartRateAfter": "78",
+      "respiratoryRateAfter": "18",
+      "temperatureAfter": "36,6"
+    }
+  }
+}
