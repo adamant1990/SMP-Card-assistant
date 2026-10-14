@@ -91,31 +91,36 @@ function pageBridge(action, payload) {
     if (payload.fillAnamnez) setText(anamnez, payload.anamnez, 'Анамнез');
     if (payload.fillEpidemic) setText(epidemic, payload.epidemic, 'Эпидемиологический анамнез');
 
-    const setRadio = (name, choice, label) => {
+    const setRadio = (name, choice, label, yesNo = false) => {
       if (!choice || choice === 'unchanged') return;
       const radios = window.Ext?.ComponentQuery?.query('radiofield[name="' + name + '"]') || [];
-      const wantsYes = choice === 'yes';
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+      const wanted = normalize(choice);
       const target = radios.find(cmp => {
-        const text = String(cmp.boxLabel || cmp.fieldLabel || cmp.inputEl?.dom?.getAttribute?.('aria-label') || '').toLowerCase();
-        if (wantsYes) return /да|есть|положит/.test(text);
-        return /нет|отсутств|отрицат/.test(text);
+        const text = normalize(cmp.boxLabel || cmp.inputEl?.dom?.getAttribute?.('aria-label') || cmp.fieldLabel);
+        if (yesNo) return choice === 'yes' ? /да|есть|положит/.test(text) : /нет|отсутств|отрицат/.test(text);
+        return text === wanted;
       });
       if (!target) {
-        report.push(label + ': переключатель не удалось однозначно определить; оставлено без изменений.');
+        report.push(label + ': вариант «' + choice + '» не найден; поле оставлено без изменений.');
         return;
       }
       try {
         target.setValue(true);
         target.fireEvent?.('change', target, true);
-        report.push(label + ': выбрано «' + (wantsYes ? 'Да' : 'Нет') + '»; проверь визуально.');
+        report.push(label + ': выбрано «' + choice + '»; проверь визуально.');
       } catch (e) {
         report.push(label + ': ошибка переключения — ' + String(e?.message || e));
       }
     };
-    setRadio('isallerg', payload.allergy, 'Аллергия');
-    setRadio('isforeigndeparture', payload.foreignTrip, 'Выезд за пределы территории');
-    setRadio('isvillagedeparture', payload.villageTrip, 'Выезд в село');
-    setRadio('isinfectioncontact', payload.infectionContact, 'Контакт с инфекционными больными');
+    setRadio('isallerg', payload.allergy, 'Аллергия', true);
+    setRadio('isforeigndeparture', payload.foreignTrip, 'Выезд за пределы территории', true);
+    setRadio('isvillagedeparture', payload.villageTrip, 'Выезд в село', true);
+    setRadio('isinfectioncontact', payload.infectionContact, 'Контакт с инфекционными больными', true);
+    setRadio('islow-qualityproducts', payload.lowQualityProducts, 'Употребление некачественных продуктов');
+    setRadio('condition_id', payload.generalCondition, 'Общее состояние');
+    setRadio('behavior_id', payload.behavior, 'Поведение');
+    setRadio('bodyposition_id', payload.bodyPosition, 'Положение тела');
 
     return {report, after:{reason:causeInput?.value ?? null, complaints:complaints?.value ?? null, anamnez:anamnez?.value ?? null, epidemic:epidemic?.value ?? null}};
   }
