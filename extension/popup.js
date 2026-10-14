@@ -18,6 +18,7 @@ function pageBridge(action, payload) {
   const diagnosisInput = document.querySelector('input[name="diag_id"]');
   const complaints = document.querySelector('textarea[name="complaints"]');
   const anamnez = document.querySelector('textarea[name="anamnez"]');
+  const epidemic = document.querySelector('textarea[name="epidemic"]');
 
   if (action === 'scanFields') {
     const fields = window.Ext?.ComponentQuery?.query('field') || [];
@@ -30,6 +31,8 @@ function pageBridge(action, payload) {
           index,
           xtype: cmp.xtype || cmp.getXType?.() || null,
           fieldLabel: cmp.fieldLabel || cmp.label || null,
+          boxLabel: cmp.boxLabel || null,
+          inputValue: cmp.inputValue ?? null,
           name: cmp.name || cmp.getName?.() || null,
           itemId: cmp.itemId || null,
           componentId: cmp.id || null,
@@ -50,7 +53,8 @@ function pageBridge(action, payload) {
         selectedRecord:causeCmp?.getSelection?.()?.data ?? null} : {found:false},
       diagnosis: diagnosisInput ? {found:true, value:diagnosisInput.value} : {found:false},
       complaints: complaints ? {found:true, value:complaints.value} : {found:false},
-      anamnez: anamnez ? {found:true, value:anamnez.value} : {found:false}
+      anamnez: anamnez ? {found:true, value:anamnez.value} : {found:false},
+      epidemic: epidemic ? {found:true, value:epidemic.value} : {found:false}
     };
   }
 
@@ -85,7 +89,35 @@ function pageBridge(action, payload) {
     };
     if (payload.fillComplaints) setText(complaints, payload.complaints, 'Жалобы');
     if (payload.fillAnamnez) setText(anamnez, payload.anamnez, 'Анамнез');
-    return {report, after:{reason:causeInput?.value ?? null, complaints:complaints?.value ?? null, anamnez:anamnez?.value ?? null}};
+    if (payload.fillEpidemic) setText(epidemic, payload.epidemic, 'Эпидемиологический анамнез');
+
+    const setRadio = (name, choice, label) => {
+      if (!choice || choice === 'unchanged') return;
+      const radios = window.Ext?.ComponentQuery?.query('radiofield[name="' + name + '"]') || [];
+      const wantsYes = choice === 'yes';
+      const target = radios.find(cmp => {
+        const text = String(cmp.boxLabel || cmp.fieldLabel || cmp.inputEl?.dom?.getAttribute?.('aria-label') || '').toLowerCase();
+        if (wantsYes) return /да|есть|положит/.test(text);
+        return /нет|отсутств|отрицат/.test(text);
+      });
+      if (!target) {
+        report.push(label + ': переключатель не удалось однозначно определить; оставлено без изменений.');
+        return;
+      }
+      try {
+        target.setValue(true);
+        target.fireEvent?.('change', target, true);
+        report.push(label + ': выбрано «' + (wantsYes ? 'Да' : 'Нет') + '»; проверь визуально.');
+      } catch (e) {
+        report.push(label + ': ошибка переключения — ' + String(e?.message || e));
+      }
+    };
+    setRadio('isallerg', payload.allergy, 'Аллергия');
+    setRadio('isforeigndeparture', payload.foreignTrip, 'Выезд за пределы территории');
+    setRadio('isvillagedeparture', payload.villageTrip, 'Выезд в село');
+    setRadio('isinfectioncontact', payload.infectionContact, 'Контакт с инфекционными больными');
+
+    return {report, after:{reason:causeInput?.value ?? null, complaints:complaints?.value ?? null, anamnez:anamnez?.value ?? null, epidemic:epidemic?.value ?? null}};
   }
   return {error:'Неизвестное действие'};
 }
@@ -106,7 +138,10 @@ $('inspect').addEventListener('click', async () => {
 $('fill').addEventListener('click', async () => {
   const payload = {reason:$('reason').value, fillReason:$('fillReason').checked,
     complaints:$('complaints').value, fillComplaints:$('fillComplaints').checked,
-    anamnez:$('anamnez').value, fillAnamnez:$('fillAnamnez').checked};
+    anamnez:$('anamnez').value, fillAnamnez:$('fillAnamnez').checked,
+    epidemic:$('epidemic').value, fillEpidemic:$('fillEpidemic').checked,
+    allergy:$('allergy').value, foreignTrip:$('foreignTrip').value,
+    villageTrip:$('villageTrip').value, infectionContact:$('infectionContact').value};
   status.textContent = 'Заполняю выбранные поля…';
   try {
     const result = await runPageAction('fill', payload);
