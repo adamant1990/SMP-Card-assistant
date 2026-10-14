@@ -13,6 +13,12 @@
 <div class="checkrow"><input id="fillReason" type="checkbox" checked><label for="fillReason">Заполнить причину обращения</label></div>
 <div class="checkrow"><input id="fillComplaints" type="checkbox"><label for="fillComplaints">Заполнить жалобы (если введены)</label></div>
 <div class="checkrow"><input id="fillAnamnez" type="checkbox"><label for="fillAnamnez">Заполнить анамнез (если введён)</label></div>
+<label for="epidemic">Эпидемиологический анамнез</label><textarea id="epidemic" rows="2" placeholder="Оставь пустым, если менять не нужно"></textarea>
+<div class="checkrow"><input id="fillEpidemic" type="checkbox"><label for="fillEpidemic">Заполнить эпидемиологический анамнез</label></div>
+<label for="allergy">Аллергия</label><select id="allergy"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
+<label for="foreignTrip">Выезд за пределы территории</label><select id="foreignTrip"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
+<label for="villageTrip">Выезд в село</label><select id="villageTrip"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
+<label for="infectionContact">Контакт с инфекционными больными</label><select id="infectionContact"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
 <button id="fill">Заполнить выбранные поля</button><button id="inspect" class="secondary">Проверить основные поля</button><button id="scanFields" class="secondary">Исследовать поля и флажки</button>
 <pre id="status" role="status">Открой карту вызова ProMed и нажми «Проверить поля ProMed».</pre>
 <p class="warning">Тестируй на учебной карте. Проверь каждое поле вручную. Кнопку сохранения карты нажимай сам.</p>
