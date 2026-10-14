@@ -141,7 +141,9 @@ $('fill').addEventListener('click', async () => {
     anamnez:$('anamnez').value, fillAnamnez:$('fillAnamnez').checked,
     epidemic:$('epidemic').value, fillEpidemic:$('fillEpidemic').checked,
     allergy:$('allergy').value, foreignTrip:$('foreignTrip').value,
-    villageTrip:$('villageTrip').value, infectionContact:$('infectionContact').value};
+    villageTrip:$('villageTrip').value, infectionContact:$('infectionContact').value,
+    lowQualityProducts:$('lowQualityProducts').value, generalCondition:$('generalCondition').value,
+    behavior:$('behavior').value, bodyPosition:$('bodyPosition').value};
   status.textContent = 'Заполняю выбранные поля…';
   try {
     const result = await runPageAction('fill', payload);
