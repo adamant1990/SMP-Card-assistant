@@ -3,7 +3,13 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>SMP Card Assistant</title><link rel="stylesheet" href="popup.css"></head>
 <body><main>
 <h1>SMP Card Assistant</h1>
-<p class="hint">Тестовый прототип для ProMed. Не сохраняет карту и не отправляет данные автоматически.</p>
+<p class="hint">Локальный помощник для исследования полей ProMed. Не сохраняет карту и не отправляет данные автоматически.</p>
+<section class="inspector">
+  <h2>Исследование элементов</h2>
+  <p>Нажми «Выбрать элемент», затем щёлкни по нужному полю или флажку на странице. После выбора снова открой расширение и нажми «Получить отчёт».</p>
+  <button id="pickElement">Выбрать элемент на странице</button>
+  <button id="getElementReport" class="secondary">Получить отчёт о выбранном элементе</button>
+</section>
 <label for="reason">Причина обращения</label>
 <select id="reason">
 <option>Несчастный случай</option><option selected>Острое внезапное заболевание</option><option>Роды (вне МО)</option><option>Обострение хронического заболевания</option><option>Патология беременности</option><option>Медицинская эвакуация экстренная</option><option>Дежурство при угрозе ЧС</option><option>Дежурство на мероприятии</option><option>Другое</option><option>Плановая перевозка</option><option>Платная мед.услуга</option>
@@ -13,7 +19,7 @@
 <div class="checkrow"><input id="fillReason" type="checkbox" checked><label for="fillReason">Заполнить причину обращения</label></div>
 <div class="checkrow"><input id="fillComplaints" type="checkbox"><label for="fillComplaints">Заполнить жалобы (если введены)</label></div>
 <div class="checkrow"><input id="fillAnamnez" type="checkbox"><label for="fillAnamnez">Заполнить анамнез (если введён)</label></div>
-<button id="fill">Заполнить выбранные поля</button><button id="inspect" class="secondary">Проверить основные поля</button><button id="scanFields" class="secondary">Исследовать поля и флажки</button>
-<pre id="status" role="status">Открой карту вызова ProMed и нажми «Проверить поля ProMed».</pre>
-<p class="warning">Тестируй на учебной карте. Проверь каждое поле вручную. Кнопку сохранения карты нажимай сам.</p>
+<button id="fill">Заполнить выбранные поля</button><button id="inspect" class="secondary">Проверить основные поля</button><button id="scanFields" class="secondary">Исследовать все поля и флажки</button>
+<pre id="status" role="status">Открой карту вызова ProMed и выбери действие.</pre>
+<p class="warning">Отчёт не содержит введённых значений полей и текста карты. Не отправляй реальные данные пациента. Тестируй на учебной карте. Кнопку сохранения карты нажимай сам.</p>
 </main><script src="popup.js"></script></body></html>
