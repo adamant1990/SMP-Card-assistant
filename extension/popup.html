@@ -27,6 +27,22 @@
 <select id="behavior"><option value="unchanged" selected>Не менять</option><option>Спокойное</option><option>Возбуждённое</option><option>Агрессивное</option><option>Депрессивное</option><option>Эмоционально лабилен</option></select>
 <label for="bodyPosition">Положение тела</label>
 <select id="bodyPosition"><option value="unchanged" selected>Не менять</option><option>Активное</option><option>Пассивное</option><option>Вынужденное</option></select>
+<hr><h2>Осмотр: дыхательная система</h2>
+<label for="rash">Сыпь</label><select id="rash"><option value="unchanged" selected>Не менять</option><option>Есть</option><option>Нет</option></select>
+<label for="rashExtra">Описание сыпи</label><input id="rashExtra" type="text" placeholder="Не менять, если пусто">
+<label for="throat">Зев</label><textarea id="throat" rows="2" placeholder="Не менять, если пусто"></textarea>
+<label for="breath">Дыхание</label><select id="breath"><option value="unchanged" selected>Не менять</option><option>Везикулярное</option><option>Жесткое</option><option>Ослабленное</option><option>Бронхиальное</option><option>Отсутствует</option></select>
+<label for="rattle">Хрипы</label><select id="rattle"><option value="unchanged" selected>Не менять</option><option>Сухие</option><option>Влажные</option><option>Нет</option></select>
+<label for="rattleExtra">Описание хрипов</label><input id="rattleExtra" type="text" placeholder="Не менять, если пусто">
+<label for="dyspnea">Одышка</label><select id="dyspnea"><option value="unchanged" selected>Не менять</option><option>Инспираторная</option><option>Экспираторная</option><option>Смешанная</option></select>
+<label for="percussion">Перкуторно</label><textarea id="percussion" rows="2" placeholder="Не менять, если пусто"></textarea>
+<h2>Сердце и пульс</h2>
+<label for="heartNoise">Шумы сердца</label><select id="heartNoise" multiple size="4"><option>Систолические</option><option>Диастолические</option><option>Трение перикарда</option></select><small>Выбери нужные пункты; пустой список не меняет поле.</small>
+<label for="pulse">Пульс</label><select id="pulse" multiple size="6"><option>Нормальный</option><option>Ритмичный</option><option>Аритмичный</option><option>Напряженный</option><option>Слабого наполнения</option><option>Нитевидный</option><option>Отсутствует</option></select><small>Можно выбрать несколько пунктов.</small>
+<h2>Живот</h2>
+<label for="abdomenBreath">Участвует в акте дыхания</label><select id="abdomenBreath"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
+<label for="peritoneal">Симптомы раздражения брюшины</label><select id="peritoneal"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
+<p class="hint">Тоны сердца, язык, характеристика живота, локализация боли и печень пока доступны для осмотра, но их компоненты нужно дополнительно исследовать: в присланных замерах у кнопок нет стабильных имён полей.</p>
 <button id="fill">Заполнить выбранные поля</button><button id="inspect" class="secondary">Проверить основные поля</button><button id="scanFields" class="secondary">Исследовать поля и флажки</button>
 <pre id="status" role="status">Открой карту вызова ProMed и нажми «Проверить поля ProMed».</pre>
 <p class="warning">Тестируй на учебной карте. Проверь каждое поле вручную. Кнопку сохранения карты нажимай сам.</p>
