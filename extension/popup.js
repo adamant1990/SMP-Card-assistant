@@ -94,7 +94,7 @@ function pageBridge(action, payload) {
     const setRadio = (name, choice, label, yesNo = false) => {
       if (!choice || choice === 'unchanged') return;
       const radios = window.Ext?.ComponentQuery?.query('radiofield[name="' + name + '"]') || [];
-      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
       const wanted = normalize(choice);
       const target = radios.find(cmp => {
         const text = normalize(cmp.boxLabel || cmp.inputEl?.dom?.getAttribute?.('aria-label') || cmp.fieldLabel);
@@ -144,7 +144,7 @@ function pageBridge(action, payload) {
     setNamedText('percussion', payload.percussion, 'Перкуторно');
     const setNamedChecks = (name, choices, label) => {
       if (!Array.isArray(choices) || !choices.length) return;
-      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
       const comps = window.Ext?.ComponentQuery?.query('checkboxfield[name="' + name + '"]') || [];
       const wanted = new Set(choices.map(normalize));
       if (!comps.length) { report.push(label + ': группа ' + name + ' не найдена.'); return; }
