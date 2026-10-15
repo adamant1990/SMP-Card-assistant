@@ -121,6 +121,44 @@ function pageBridge(action, payload) {
     setRadio('condition_id', payload.generalCondition, 'Общее состояние');
     setRadio('behavior_id', payload.behavior, 'Поведение');
     setRadio('bodyposition_id', payload.bodyPosition, 'Положение тела');
+    setRadio('isrash', payload.rash, 'Сыпь', true);
+    setRadio('breath_id', payload.breath, 'Дыхание');
+    setRadio('rattle_id', payload.rattle, 'Хрипы', true);
+    setRadio('dyspneacmp_id', payload.dyspnea, 'Одышка');
+    setRadio('stomach_isactbreath', payload.abdomenBreath, 'Участие живота в акте дыхания', true);
+    setRadio('stomach_isperitIrritation', payload.peritoneal, 'Симптомы раздражения брюшины', true);
+    const setNamedText = (name, value, label) => {
+      if (!value?.trim()) return;
+      const cmp = (window.Ext?.ComponentQuery?.query('field[name="' + name + '"]') || [])[0];
+      if (!cmp) { report.push(label + ': поле ' + name + ' не найдено.'); return; }
+      try {
+        if (typeof cmp.setValue === 'function') cmp.setValue(value);
+        else if (cmp.inputEl?.dom) cmp.inputEl.dom.value = value;
+        cmp.fireEvent?.('change', cmp, value);
+        report.push(label + ': текст подставлен; проверь визуально.');
+      } catch (e) { report.push(label + ': ошибка — ' + String(e?.message || e)); }
+    };
+    setNamedText('rash_extra', payload.rashExtra, 'Описание сыпи');
+    setNamedText('isthroat', payload.throat, 'Зев');
+    setNamedText('rattle', payload.rattleExtra, 'Описание хрипов');
+    setNamedText('percussion', payload.percussion, 'Перкуторно');
+    const setNamedChecks = (name, choices, label) => {
+      if (!Array.isArray(choices) || !choices.length) return;
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+      const comps = window.Ext?.ComponentQuery?.query('checkboxfield[name="' + name + '"]') || [];
+      const wanted = new Set(choices.map(normalize));
+      if (!comps.length) { report.push(label + ': группа ' + name + ' не найдена.'); return; }
+      let matched = 0;
+      comps.forEach(cmp => {
+        const text = normalize(cmp.boxLabel || cmp.inputEl?.dom?.getAttribute?.('aria-label'));
+        if (wanted.has(text)) {
+          try { cmp.setValue(true); cmp.fireEvent?.('change', cmp, true); matched++; } catch (_) {}
+        }
+      });
+      report.push(matched ? label + ': отмечено ' + matched + ' пункт(а); проверь визуально.' : label + ': выбранные варианты не найдены; поле не менялось.');
+    };
+    setNamedChecks('heartnoise_id', payload.heartNoise, 'Шумы сердца');
+    setNamedChecks('pulse_id', payload.pulse, 'Пульс');
 
     return {report, after:{reason:causeInput?.value ?? null, complaints:complaints?.value ?? null, anamnez:anamnez?.value ?? null, epidemic:epidemic?.value ?? null}};
   }
@@ -148,7 +186,13 @@ $('fill').addEventListener('click', async () => {
     allergy:$('allergy').value, foreignTrip:$('foreignTrip').value,
     villageTrip:$('villageTrip').value, infectionContact:$('infectionContact').value,
     lowQualityProducts:$('lowQualityProducts').value, generalCondition:$('generalCondition').value,
-    behavior:$('behavior').value, bodyPosition:$('bodyPosition').value};
+    behavior:$('behavior').value, bodyPosition:$('bodyPosition').value,
+    rash:$('rash').value, rashExtra:$('rashExtra').value, throat:$('throat').value,
+    breath:$('breath').value, rattle:$('rattle').value, rattleExtra:$('rattleExtra').value,
+    dyspnea:$('dyspnea').value, percussion:$('percussion').value,
+    heartNoise:[...$('heartNoise').selectedOptions].map(o=>o.value),
+    pulse:[...$('pulse').selectedOptions].map(o=>o.value),
+    abdomenBreath:$('abdomenBreath').value, peritoneal:$('peritoneal').value};
   status.textContent = 'Заполняю выбранные поля…';
   try {
     const result = await runPageAction('fill', payload);
