@@ -45,6 +45,42 @@ function pageBridge(action, payload) {
     };
   }
 
+
+  if (action === 'scanExamFields') {
+    const all = window.Ext?.ComponentQuery?.query('*') || [];
+    const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+    const details = cmp => ({
+      xtype: cmp.xtype || cmp.getXType?.() || null,
+      id: cmp.id || null,
+      itemId: cmp.itemId || null,
+      name: cmp.name || cmp.getName?.() || null,
+      fieldLabel: cmp.fieldLabel || cmp.label || null,
+      boxLabel: cmp.boxLabel || null,
+      text: cmp.text || cmp.title || cmp.inputValue || null,
+      value: typeof cmp.getValue === 'function' ? cmp.getValue() : null,
+      inputName: (cmp.inputEl?.dom || cmp.inputEl)?.name || null
+    });
+    const relevant = /кож|тон сердца|тоны сердца|язык|живот|печен|боль|локализац|отек|отек|перкуторно/i;
+    const result = [];
+    all.forEach(cmp => {
+      const own = details(cmp);
+      let parents = [];
+      let p = cmp.ownerCt;
+      let depth = 0;
+      while (p && depth < 5) {
+        parents.push(details(p));
+        p = p.ownerCt;
+        depth++;
+      }
+      const joined = [own.fieldLabel, own.boxLabel, own.text, ...parents.flatMap(x => [x.fieldLabel,x.title,x.text,x.itemId,x.name])].filter(Boolean).join(' ');
+      const isChoice = /button|segmented|radio|checkbox/i.test(String(own.xtype || ''));
+      if (relevant.test(normalize(joined)) || (isChoice && parents.some(x => relevant.test(normalize([x.fieldLabel,x.title,x.text,x.itemId,x.name].filter(Boolean).join(' ')))))) {
+        result.push({component:own, parents, siblings:(cmp.ownerCt?.items?.items || []).map(details).slice(0,30)});
+      }
+    });
+    return {extJsAvailable:!!window.Ext, totalComponents:all.length, matches:result.slice(0,250)};
+  }
+
   if (action === 'inspect') {
     return {
       page: location.href,
@@ -223,4 +259,9 @@ $('fill').addEventListener('click', async () => {
     const result = await runPageAction('fill', payload);
     status.textContent = (result?.report || ['Нет результата']).join('\n') + '\n\nТекущие значения:\n' + JSON.stringify(result?.after || {}, null, 2);
   } catch (e) { status.textContent = 'Ошибка: ' + (e?.message || e); }
+});
+$('scanExamFields').addEventListener('click', async () => {
+  status.textContent = 'Ищу компоненты осмотра и их подписи…';
+  try { status.textContent = JSON.stringify(await runPageAction('scanExamFields'), null, 2); }
+  catch (e) { status.textContent = 'Ошибка: ' + (e?.message || e); }
 });
