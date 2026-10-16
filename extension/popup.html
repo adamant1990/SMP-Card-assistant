@@ -73,6 +73,14 @@
   <div><label for="pulseRate">Пульс</label><input id="pulseRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
   <div><label for="heartRate">ЧСС</label><input id="heartRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
 </div>
+<div class="pressure-row">
+  <div><label for="breathingRate">ЧДД</label><input id="breathingRate" type="number" min="0" max="100" step="1" placeholder="вдохов/мин"></div>
+  <div><label for="temperature">Температура, °C</label><input id="temperature" type="number" min="25" max="45" step="0.1" placeholder="например, 36.6"></div>
+</div>
+<div class="pressure-row">
+  <div><label for="pulseOximetry">Пульсоксиметрия, %</label><input id="pulseOximetry" type="number" min="0" max="100" step="1" placeholder="SpO₂"></div>
+  <div><label for="glucometry">Глюкометрия</label><input id="glucometry" type="number" min="0" max="60" step="0.1" placeholder="ммоль/л"></div>
+</div>
 <small>Каждый показатель заполняется независимо. Оставь поле пустым, если не нужно менять значение в ProMed.</small>
 <hr><h2>Осмотр: дыхательная система</h2>
 <label for="rash">Сыпь</label><select id="rash"><option value="unchanged" selected>Не менять</option><option>Есть</option><option>Нет</option></select>
