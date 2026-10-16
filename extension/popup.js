@@ -191,7 +191,7 @@ function pageBridge(action, payload) {
     setRadio('dyspneacmp_id', payload.dyspnea, 'Одышка');
     setRadio('stomach_isactbreath', payload.abdomenBreath, 'Участие живота в акте дыхания', true);
     setRadio('stomach_isperitIrritation', payload.peritoneal, 'Симптомы раздражения брюшины', true);
-    const setHeartToneChoice = (choice, label, orderedIndexes) => {
+    const setHeartToneChoice = (choice, label) => {
       if (!choice || choice === 'unchanged') return;
       const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
       const groups = window.Ext?.ComponentQuery?.query('segmentedbutton') || [];
@@ -200,11 +200,7 @@ function pageBridge(action, payload) {
         const el = item.el?.dom || item.el;
         return normalize(item.text || item.getText?.() || el?.innerText || el?.textContent || item.tooltip || item.ariaLabel || '');
       };
-      let target = allButtons.find(({item}) => readText(item) === normalize(choice));
-      if (!target) {
-        const index = orderedIndexes[choice];
-        if (Number.isInteger(index)) target = allButtons[index];
-      }
+      const target = allButtons.find(({item}) => readText(item) === normalize(choice));
       if (!target?.item) {
         report.push(label + ': не удалось найти кнопку «' + choice + '»; поле не менялось.');
         return;
@@ -221,8 +217,8 @@ function pageBridge(action, payload) {
         report.push(label + ': ошибка выбора — ' + String(e?.message || e));
       }
     };
-    setHeartToneChoice(payload.heartRhythm, 'Ритмичность тонов сердца', {'Ритмичные':0,'Аритмичные':1});
-    setHeartToneChoice(payload.heartSound, 'Звучность тонов сердца', {'Ясные':2,'Глухие':3,'Приглушённые':4,'Отсутствуют':5});
+    setHeartToneChoice(payload.heartRhythm, 'Ритмичность тонов сердца');
+    setHeartToneChoice(payload.heartSound, 'Звучность тонов сердца');
     const setNamedText = (name, value, label) => {
       if (!value?.trim()) return;
       const cmp = (window.Ext?.ComponentQuery?.query('field[name="' + name + '"]') || [])[0];
