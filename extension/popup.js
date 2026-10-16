@@ -263,6 +263,16 @@ function pageBridge(action, payload) {
         report.push(label + ': текст подставлен; проверь визуально.');
       } catch (e) { report.push(label + ': ошибка — ' + String(e?.message || e)); }
     };
+    setNamedText('before_urination', payload.urination, 'Мочеиспускание');
+    setNamedText('before_stool', payload.stool, 'Стул');
+    setNamedText('before_othersymptom', payload.otherSymptoms, 'Другие симптомы');
+    setNamedText('before_localstatus', payload.localStatus, 'Локальный статус');
+    setNamedText('before_workarterial_pressure', payload.workingSystolic, 'Рабочее АД, систолическое');
+    setNamedText('before_workarterial_pressure1', payload.workingDiastolic, 'Рабочее АД, диастолическое');
+    setNamedText('before_arterial_pressure', payload.systolic, 'АД, систолическое');
+    setNamedText('before_arterial_pressure1', payload.diastolic, 'АД, диастолическое');
+    setNamedText('before_pulse', payload.pulseRate, 'Пульс');
+    setNamedText('before_heart_rate', payload.heartRate, 'ЧСС');
     setNamedText('visibledamage_extra', payload.visibleDamageExtra, 'Описание видимых повреждений');
     setNamedText('skincondition', payload.skinCondition, 'Описание кожных покровов');
     setNamedText('edema_extra', payload.edemaExtra, 'Описание отёков');
@@ -321,6 +331,11 @@ $('fill').addEventListener('click', async () => {
     consciousness:$('consciousness').value, meningeal:$('meningeal').value, pupils:$('pupils').value,
     nystagmus:$('nystagmus').value, anisocoria:$('anisocoria').value, lightReaction:$('lightReaction').value,
     fontanelle:$('fontanelle').value, cornealReflexes:$('cornealReflexes').value, beloglazov:$('beloglazov').value,
+    urination:$('urination').value, stool:$('stool').value,
+    otherSymptoms:$('otherSymptoms').value, localStatus:$('localStatus').value,
+    workingSystolic:$('workingSystolic').value, workingDiastolic:$('workingDiastolic').value,
+    systolic:$('systolic').value, diastolic:$('diastolic').value,
+    pulseRate:$('pulseRate').value, heartRate:$('heartRate').value,
     visibleDamage:$('visibleDamage').value, visibleDamageExtra:$('visibleDamageExtra').value,
     skinCondition:$('skinCondition').value, skinFlags:[['skinPale','Бледные'],['skinHyperemic','Гиперемированные'],['skinJaundiced','Желтушные'],['skinNormal','Нормальные'],['skinDry','Сухие'],['skinMoist','Влажные']].filter(([id])=>$(id).checked).map(([,label])=>label),
     acrocyanosis:$('acrocyanosis').value, marbling:$('marbling').value,
