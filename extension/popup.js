@@ -164,6 +164,31 @@ function pageBridge(action, payload) {
         report.push(label + ': ошибка переключения — ' + String(e?.message || e));
       }
     };
+    const setProcedureTriggers = choices => {
+      if (!Array.isArray(choices) || !choices.length) return;
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+      const rows = [...document.querySelectorAll('.x-grid-row')].filter(row => row.getClientRects().length);
+      choices.forEach(label => {
+        const wanted = normalize(label);
+        const matches = rows.filter(row => normalize(row.innerText || row.textContent).includes(wanted));
+        if (matches.length !== 1) {
+          report.push('Манипуляция «' + label + '»: найдено строк таблицы — ' + matches.length + '; ничего не нажато.');
+          return;
+        }
+        const trigger = matches[0].querySelector('.positiveTrigger');
+        if (!trigger) {
+          report.push('Манипуляция «' + label + '»: триггер не найден; ничего не нажато.');
+          return;
+        }
+        try {
+          trigger.click();
+          report.push('Манипуляция «' + label + '»: нажата кнопка таблицы. Проверь результат вручную; повторный запуск может повторить действие.');
+        } catch (e) {
+          report.push('Манипуляция «' + label + '»: ошибка нажатия — ' + String(e?.message || e));
+        }
+      });
+    };
+    setProcedureTriggers(payload.procedures);
     setRadio('deliverypersontype_id', payload.deliveryPersonType, 'Доставка больного в автомобиль');
     setRadio('isKupir', payload.isKupir, 'Купированы боли / приступы', true);
     setRadio('aftercarerecomendations_id', payload.aftercareRecommendation, 'Рекомендация пациенту');
@@ -390,6 +415,7 @@ $('fill').addEventListener('click', async () => {
     heartNoise:[...$('heartNoise').selectedOptions].map(o=>o.value),
     pulse:[...$('pulse').selectedOptions].map(o=>o.value),
     abdomenBreath:$('abdomenBreath').value, peritoneal:$('peritoneal').value,
+    procedures:[['procIV','Внутривенное'],['procIM','Внутримышечное'],['procNasalPacking','Задняя тампонада носа'],['procGlucose','Измерение глюкозы'],['procVeinCatheter','Катетеризация вены'],['procSplint','Наложение шины'],['procParamedicExam','Осмотр фельдшера'],['procPulseOx','Пульсоксиметрия'],['procECG','Регистрация ЭКГ'],['procECGInterpretation','Расшифровка ЭКГ']].filter(([id])=>$(id).checked).map(([,label])=>label),
     deliveryPersonType:$('deliveryPersonType').value, callNote:$('callNote').value,
     arrivalMileage:$('arrivalMileage').value, totalMileage:$('totalMileage').value,
     isKupir:$('isKupir').value, medicalIntervention:$('medicalIntervention').value,
