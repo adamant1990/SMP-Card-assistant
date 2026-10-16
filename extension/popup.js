@@ -277,6 +277,16 @@ function pageBridge(action, payload) {
     setNamedText('before_temperature', payload.temperature, 'Температура');
     setNamedText('before_pulseoximetry', payload.pulseOximetry, 'Пульсоксиметрия');
     setNamedText('before_glucometry', payload.glucometry, 'Глюкометрия');
+    setNamedText('helponcallplace', payload.helpOnCallPlace, 'Оказанная помощь на месте вызова');
+    setNamedText('helpinemergencycar', payload.helpInEmergencyCar, 'Оказанная помощь в автомобиле СМП');
+    setNamedText('after_arterial_pressure', payload.afterSystolic, 'АД после манипуляций, систолическое');
+    setNamedText('after_arterial_pressure1', payload.afterDiastolic, 'АД после манипуляций, диастолическое');
+    setNamedText('after_pulse', payload.afterPulse, 'Пульс после манипуляций');
+    setNamedText('after_heart_rate', payload.afterHeartRate, 'ЧСС после манипуляций');
+    setNamedText('after_breathing_rate', payload.afterBreathingRate, 'ЧДД после манипуляций');
+    setNamedText('after_temperature', payload.afterTemperature, 'Температура после манипуляций');
+    setNamedText('after_pulseoximetry', payload.afterPulseOximetry, 'Пульсоксиметрия после манипуляций');
+    setNamedText('after_glucometry', payload.afterGlucometry, 'Глюкометрия после манипуляций');
     setNamedText('visibledamage_extra', payload.visibleDamageExtra, 'Описание видимых повреждений');
     setNamedText('skincondition', payload.skinCondition, 'Описание кожных покровов');
     setNamedText('edema_extra', payload.edemaExtra, 'Описание отёков');
@@ -342,6 +352,11 @@ $('fill').addEventListener('click', async () => {
     pulseRate:$('pulseRate').value, heartRate:$('heartRate').value,
     breathingRate:$('breathingRate').value, temperature:$('temperature').value,
     pulseOximetry:$('pulseOximetry').value, glucometry:$('glucometry').value,
+    helpOnCallPlace:$('helpOnCallPlace').value, helpInEmergencyCar:$('helpInEmergencyCar').value,
+    afterSystolic:$('afterSystolic').value, afterDiastolic:$('afterDiastolic').value,
+    afterPulse:$('afterPulse').value, afterHeartRate:$('afterHeartRate').value,
+    afterBreathingRate:$('afterBreathingRate').value, afterTemperature:$('afterTemperature').value,
+    afterPulseOximetry:$('afterPulseOximetry').value, afterGlucometry:$('afterGlucometry').value,
     visibleDamage:$('visibleDamage').value, visibleDamageExtra:$('visibleDamageExtra').value,
     skinCondition:$('skinCondition').value, skinFlags:[['skinPale','Бледные'],['skinHyperemic','Гиперемированные'],['skinJaundiced','Желтушные'],['skinNormal','Нормальные'],['skinDry','Сухие'],['skinMoist','Влажные']].filter(([id])=>$(id).checked).map(([,label])=>label),
     acrocyanosis:$('acrocyanosis').value, marbling:$('marbling').value,
