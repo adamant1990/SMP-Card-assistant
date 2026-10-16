@@ -54,6 +54,26 @@
 <label for="marbling">Мраморность кожи</label><select id="marbling"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
 <label for="edema">Отёки</label><select id="edema"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
 <label for="edemaExtra">Описание / локализация отёков</label><input id="edemaExtra" type="text" placeholder="Не менять, если пусто">
+<hr><h2>До осмотра: симптомы и показатели</h2>
+<label for="urination">Мочеиспускание</label><input id="urination" type="text" placeholder="Не менять, если пусто">
+<label for="stool">Стул</label><input id="stool" type="text" placeholder="Не менять, если пусто">
+<label for="otherSymptoms">Другие симптомы</label><input id="otherSymptoms" type="text" placeholder="Не менять, если пусто">
+<label for="localStatus">Локальный статус</label><textarea id="localStatus" rows="2" placeholder="Не менять, если пусто"></textarea>
+<h3>Рабочее артериальное давление</h3>
+<div class="pressure-row">
+  <div><label for="workingSystolic">Систолическое</label><input id="workingSystolic" type="number" min="0" max="350" step="1" placeholder="Например, 120"></div>
+  <div><label for="workingDiastolic">Диастолическое</label><input id="workingDiastolic" type="number" min="0" max="250" step="1" placeholder="Например, 80"></div>
+</div>
+<h3>Артериальное давление при осмотре</h3>
+<div class="pressure-row">
+  <div><label for="systolic">Систолическое</label><input id="systolic" type="number" min="0" max="350" step="1" placeholder="Например, 120"></div>
+  <div><label for="diastolic">Диастолическое</label><input id="diastolic" type="number" min="0" max="250" step="1" placeholder="Например, 80"></div>
+</div>
+<div class="pressure-row">
+  <div><label for="pulseRate">Пульс</label><input id="pulseRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
+  <div><label for="heartRate">ЧСС</label><input id="heartRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
+</div>
+<small>Каждый показатель заполняется независимо. Оставь поле пустым, если не нужно менять значение в ProMed.</small>
 <hr><h2>Осмотр: дыхательная система</h2>
 <label for="rash">Сыпь</label><select id="rash"><option value="unchanged" selected>Не менять</option><option>Есть</option><option>Нет</option></select>
 <label for="rashExtra">Описание сыпи</label><input id="rashExtra" type="text" placeholder="Не менять, если пусто">
