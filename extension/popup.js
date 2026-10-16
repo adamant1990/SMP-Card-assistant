@@ -191,6 +191,38 @@ function pageBridge(action, payload) {
     setRadio('dyspneacmp_id', payload.dyspnea, 'Одышка');
     setRadio('stomach_isactbreath', payload.abdomenBreath, 'Участие живота в акте дыхания', true);
     setRadio('stomach_isperitIrritation', payload.peritoneal, 'Симптомы раздражения брюшины', true);
+    const setHeartToneChoice = (choice, label, orderedIndexes) => {
+      if (!choice || choice === 'unchanged') return;
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+      const groups = window.Ext?.ComponentQuery?.query('segmentedbutton') || [];
+      const allButtons = groups.flatMap(group => (group.items?.items || []).map(item => ({item, group})));
+      const readText = item => {
+        const el = item.el?.dom || item.el;
+        return normalize(item.text || item.getText?.() || el?.innerText || el?.textContent || item.tooltip || item.ariaLabel || '');
+      };
+      let target = allButtons.find(({item}) => readText(item) === normalize(choice));
+      if (!target) {
+        const index = orderedIndexes[choice];
+        if (Number.isInteger(index)) target = allButtons[index];
+      }
+      if (!target?.item) {
+        report.push(label + ': не удалось найти кнопку «' + choice + '»; поле не менялось.');
+        return;
+      }
+      try {
+        const item = target.item;
+        const el = item.el?.dom || item.el;
+        if (typeof item.toggle === 'function') item.toggle(true);
+        else if (typeof item.setPressed === 'function') item.setPressed(true);
+        else if (el?.click) el.click();
+        else throw new Error('нет доступного способа выбрать кнопку');
+        report.push(label + ': выбрано «' + choice + '»; проверь визуально в ProMed.');
+      } catch (e) {
+        report.push(label + ': ошибка выбора — ' + String(e?.message || e));
+      }
+    };
+    setHeartToneChoice(payload.heartRhythm, 'Ритмичность тонов сердца', {'Ритмичные':0,'Аритмичные':1});
+    setHeartToneChoice(payload.heartSound, 'Звучность тонов сердца', {'Ясные':2,'Глухие':3,'Приглушённые':4,'Отсутствуют':5});
     const setNamedText = (name, value, label) => {
       if (!value?.trim()) return;
       const cmp = (window.Ext?.ComponentQuery?.query('field[name="' + name + '"]') || [])[0];
@@ -266,6 +298,7 @@ $('fill').addEventListener('click', async () => {
     rash:$('rash').value, rashExtra:$('rashExtra').value, throat:$('throat').value,
     breath:$('breath').value, rattle:$('rattle').value, rattleExtra:$('rattleExtra').value,
     dyspnea:$('dyspnea').value, percussion:$('percussion').value,
+    heartRhythm:$('heartRhythm').value, heartSound:$('heartSound').value,
     heartNoise:[...$('heartNoise').selectedOptions].map(o=>o.value),
     pulse:[...$('pulse').selectedOptions].map(o=>o.value),
     abdomenBreath:$('abdomenBreath').value, peritoneal:$('peritoneal').value};
