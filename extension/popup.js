@@ -166,7 +166,7 @@ function pageBridge(action, payload) {
     };
     const setProcedureTriggers = choices => {
       if (!Array.isArray(choices) || !choices.length) return;
-      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
       const rows = [...document.querySelectorAll('.x-grid-row')].filter(row => row.getClientRects().length);
       choices.forEach(label => {
         const wanted = normalize(label);
