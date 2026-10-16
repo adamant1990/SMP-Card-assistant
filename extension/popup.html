@@ -65,13 +65,17 @@
 <label for="heartNoise">Шумы сердца</label><select id="heartNoise" multiple size="4"><option>Систолические</option><option>Диастолические</option><option>Трение перикарда</option></select><small>Выбери нужные пункты; пустой список не меняет поле.</small>
 <label for="pulse">Пульс</label><select id="pulse" multiple size="6"><option>Нормальный</option><option>Ритмичный</option><option>Аритмичный</option><option>Напряженный</option><option>Слабого наполнения</option><option>Нитевидный</option><option>Отсутствует</option></select><small>Можно выбрать несколько пунктов.</small>
 <h2>Живот</h2>
+<label for="abdomenTexture">Характеристика живота</label><select id="abdomenTexture"><option value="unchanged" selected>Не менять</option><option>Мягкий</option><option>Напряжённый</option></select>
+<label for="abdomenTenderness">Болезненность живота</label><select id="abdomenTenderness"><option value="unchanged" selected>Не менять</option><option>Безболезненный</option><option>Болезненный</option></select>
+<label for="abdominalPainLocation">Локализация болей в животе</label><input id="abdominalPainLocation" type="text" placeholder="Не менять, если пусто">
+<label for="liverSize">Печень</label><select id="liverSize"><option value="unchanged" selected>Не менять</option><option>Увеличена</option><option>Не увеличена</option></select>
 <label for="abdomenBreath">Участвует в акте дыхания</label><select id="abdomenBreath"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
 <label for="peritoneal">Симптомы раздражения брюшины</label><select id="peritoneal"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
 <hr><h2>Язык</h2>
 <label for="tongueMoisture">Влажность языка</label><select id="tongueMoisture"><option value="unchanged" selected>Не менять</option><option>Влажный</option><option>Сухой</option></select>
 <label for="tongueCoating">Состояние языка</label><select id="tongueCoating"><option value="unchanged" selected>Не менять</option><option>Чистый</option><option>Обложен</option></select>
 <small>Выбирай по одному варианту в каждой группе. Если кнопка не будет найдена по точной подписи, расширение оставит поле без изменений.</small>
-<p class="hint">Характеристика живота, локализация боли и печень пока требуют дополнительного исследования компонентов.</p>
+<p class="hint">Характеристика живота, болезненность и печень выбираются по подписи кнопок внутри своей группы. Если точная группа не найдена, значение не изменяется.</p>
 <button id="fill">Заполнить выбранные поля</button><button id="inspect" class="secondary">Проверить основные поля</button><button id="scanFields" class="secondary">Исследовать поля и флажки</button><button id="scanExamFields" class="secondary">Исследовать кожу, сердце, язык, живот и печень</button>
 <pre id="status" role="status">Открой карту вызова ProMed и нажми «Проверить поля ProMed».</pre>
 <p class="warning">Тестируй на учебной карте. Проверь каждое поле вручную. Кнопку сохранения карты нажимай сам.</p>
