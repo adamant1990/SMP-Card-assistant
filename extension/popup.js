@@ -164,6 +164,7 @@ function pageBridge(action, payload) {
         report.push(label + ': ошибка переключения — ' + String(e?.message || e));
       }
     };
+    setRadio('deliverypersontype_id', payload.deliveryPersonType, 'Доставка больного в автомобиль');
     setRadio('isKupir', payload.isKupir, 'Купированы боли / приступы', true);
     setRadio('aftercarerecomendations_id', payload.aftercareRecommendation, 'Рекомендация пациенту');
     setRadio('isallerg', payload.allergy, 'Аллергия', true);
@@ -223,7 +224,7 @@ function pageBridge(action, payload) {
     setHeartToneChoice(payload.heartSound, 'Звучность тонов сердца');
     setHeartToneChoice(payload.tongueMoisture, 'Влажность языка');
     setHeartToneChoice(payload.tongueCoating, 'Состояние языка');
-    const setSegmentedGroupChoice = (choice, expectedOptions, label) => {
+    const setSegmentedGroupChoice = (choice, expectedOptions, label, occurrence = null) => {
       if (!choice || choice === 'unchanged') return;
       const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
       const expected = expectedOptions.map(normalize);
@@ -236,11 +237,21 @@ function pageBridge(action, payload) {
         const texts = items.map(readText);
         return expected.every(option => texts.includes(option));
       });
-      if (candidates.length !== 1) {
-        report.push(label + ': не удалось однозначно определить группу кнопок (' + candidates.length + ' совпадений); поле не менялось.');
-        return;
+      let selectedGroup;
+      if (occurrence !== null) {
+        selectedGroup = candidates[occurrence];
+        if (!selectedGroup) {
+          report.push(label + ': группа кнопок №' + (occurrence + 1) + ' не найдена среди ' + candidates.length + ' совпадений; поле не менялось.');
+          return;
+        }
+      } else {
+        if (candidates.length !== 1) {
+          report.push(label + ': не удалось однозначно определить группу кнопок (' + candidates.length + ' совпадений); поле не менялось.');
+          return;
+        }
+        selectedGroup = candidates[0];
       }
-      const target = candidates[0].items.find(item => readText(item) === normalize(choice));
+      const target = selectedGroup.items.find(item => readText(item) === normalize(choice));
       if (!target) { report.push(label + ': вариант «' + choice + '» не найден; поле не менялось.'); return; }
       try {
         const el = target.el?.dom || target.el;
@@ -254,8 +265,8 @@ function pageBridge(action, payload) {
     setSegmentedGroupChoice(payload.abdomenTexture, ['Мягкий','Напряжённый'], 'Характеристика живота');
     setSegmentedGroupChoice(payload.abdomenTenderness, ['Безболезненный','Болезненный'], 'Болезненность живота');
     setSegmentedGroupChoice(payload.liverSize, ['Увеличена','Не увеличена'], 'Печень');
-    setSegmentedGroupChoice(payload.medicalIntervention, ['Согласие','Отказ'], 'Медицинское вмешательство');
-    setSegmentedGroupChoice(payload.transportConsent, ['Согласие','Отказ'], 'Транспортировка в стационар');
+    setSegmentedGroupChoice(payload.medicalIntervention, ['Согласие','Отказ'], 'Медицинское вмешательство', 0);
+    setSegmentedGroupChoice(payload.transportConsent, ['Согласие','Отказ'], 'Транспортировка в стационар', 1);
     setSegmentedGroupChoice(payload.careResult, ['Улучшение','Без эффекта','Ухудшение'], 'Результат оказания СМП');
     const setNamedText = (name, value, label) => {
       if (!value?.trim()) return;
@@ -300,6 +311,9 @@ function pageBridge(action, payload) {
     setNamedText('rattle', payload.rattleExtra, 'Описание хрипов');
     setNamedText('percussion', payload.percussion, 'Перкуторно');
     setNamedText('stomach_local', payload.abdominalPainLocation, 'Локализация болей в животе');
+    setNamedText('desctext', payload.callNote, 'Примечание');
+    setNamedText('cmpclosecard_userkilo', payload.arrivalMileage, 'Километраж доезда');
+    setNamedText('milage', payload.totalMileage, 'Общий километраж');
     const setNamedChecks = (name, choices, label) => {
       if (!Array.isArray(choices) || !choices.length) return;
       const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
@@ -376,6 +390,8 @@ $('fill').addEventListener('click', async () => {
     heartNoise:[...$('heartNoise').selectedOptions].map(o=>o.value),
     pulse:[...$('pulse').selectedOptions].map(o=>o.value),
     abdomenBreath:$('abdomenBreath').value, peritoneal:$('peritoneal').value,
+    deliveryPersonType:$('deliveryPersonType').value, callNote:$('callNote').value,
+    arrivalMileage:$('arrivalMileage').value, totalMileage:$('totalMileage').value,
     isKupir:$('isKupir').value, medicalIntervention:$('medicalIntervention').value,
     transportConsent:$('transportConsent').value, careResult:$('careResult').value,
     aftercareRecommendation:$('aftercareRecommendation').value};
