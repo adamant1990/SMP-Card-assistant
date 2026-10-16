@@ -164,6 +164,8 @@ function pageBridge(action, payload) {
         report.push(label + ': ошибка переключения — ' + String(e?.message || e));
       }
     };
+    setRadio('isKupir', payload.isKupir, 'Купированы боли / приступы', true);
+    setRadio('aftercarerecomendations_id', payload.aftercareRecommendation, 'Рекомендация пациенту');
     setRadio('isallerg', payload.allergy, 'Аллергия', true);
     setRadio('isforeigndeparture', payload.foreignTrip, 'Выезд за пределы территории', true);
     setRadio('isvillagedeparture', payload.villageTrip, 'Выезд в село', true);
@@ -252,6 +254,9 @@ function pageBridge(action, payload) {
     setSegmentedGroupChoice(payload.abdomenTexture, ['Мягкий','Напряжённый'], 'Характеристика живота');
     setSegmentedGroupChoice(payload.abdomenTenderness, ['Безболезненный','Болезненный'], 'Болезненность живота');
     setSegmentedGroupChoice(payload.liverSize, ['Увеличена','Не увеличена'], 'Печень');
+    setSegmentedGroupChoice(payload.medicalIntervention, ['Согласие','Отказ'], 'Медицинское вмешательство');
+    setSegmentedGroupChoice(payload.transportConsent, ['Согласие','Отказ'], 'Транспортировка в стационар');
+    setSegmentedGroupChoice(payload.careResult, ['Улучшение','Без эффекта','Ухудшение'], 'Результат оказания СМП');
     const setNamedText = (name, value, label) => {
       if (!value?.trim()) return;
       const cmp = (window.Ext?.ComponentQuery?.query('field[name="' + name + '"]') || [])[0];
@@ -370,7 +375,10 @@ $('fill').addEventListener('click', async () => {
     abdominalPainLocation:$('abdominalPainLocation').value, liverSize:$('liverSize').value,
     heartNoise:[...$('heartNoise').selectedOptions].map(o=>o.value),
     pulse:[...$('pulse').selectedOptions].map(o=>o.value),
-    abdomenBreath:$('abdomenBreath').value, peritoneal:$('peritoneal').value};
+    abdomenBreath:$('abdomenBreath').value, peritoneal:$('peritoneal').value,
+    isKupir:$('isKupir').value, medicalIntervention:$('medicalIntervention').value,
+    transportConsent:$('transportConsent').value, careResult:$('careResult').value,
+    aftercareRecommendation:$('aftercareRecommendation').value};
   status.textContent = 'Заполняю выбранные поля…';
   try {
     const result = await runPageAction('fill', payload);
