@@ -41,8 +41,15 @@
 <label for="visibleDamage">Видимые повреждения</label><select id="visibleDamage"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
 <label for="visibleDamageExtra">Описание видимых повреждений</label><input id="visibleDamageExtra" type="text" placeholder="Не менять, если пусто">
 <label for="skinCondition">Кожные покровы: описание</label><input id="skinCondition" type="text" placeholder="Не менять, если пусто">
-<label for="skinFlags">Кожные покровы: флажки</label><input id="skinFlags" type="text" placeholder="Названия через запятую, если нужны">
-<small>Флажки сопоставляются с подписями компонентов ProMed; точные подписи будут отражены в отчёте проверки.</small>
+<fieldset class="skin-flags"><legend>Кожные покровы: отметь нужные варианты</legend>
+<div class="checkrow"><input id="skinPale" type="checkbox"><label for="skinPale">Бледные</label></div>
+<div class="checkrow"><input id="skinHyperemic" type="checkbox"><label for="skinHyperemic">Гиперемированные</label></div>
+<div class="checkrow"><input id="skinJaundiced" type="checkbox"><label for="skinJaundiced">Желтушные</label></div>
+<div class="checkrow"><input id="skinNormal" type="checkbox"><label for="skinNormal">Нормальные</label></div>
+<div class="checkrow"><input id="skinDry" type="checkbox"><label for="skinDry">Сухие</label></div>
+<div class="checkrow"><input id="skinMoist" type="checkbox"><label for="skinMoist">Влажные</label></div>
+</fieldset>
+<small>Можно отметить несколько вариантов. Пустой выбор не меняет флажки в ProMed.</small>
 <label for="acrocyanosis">Акроцианоз</label><select id="acrocyanosis"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
 <label for="marbling">Мраморность кожи</label><select id="marbling"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
 <label for="edema">Отёки</label><select id="edema"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
