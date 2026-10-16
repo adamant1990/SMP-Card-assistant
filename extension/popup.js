@@ -286,7 +286,7 @@ function pageBridge(action, payload) {
       });
       report.push(matched ? label + ': отмечено ' + matched + ' пункт(а); проверь визуально.' : label + ': выбранные варианты не найдены; поле не менялось.');
     };
-    const skinFlags = (payload.skinFlags || '').split(',').map(s => s.trim()).filter(Boolean);
+    const skinFlags = Array.isArray(payload.skinFlags) ? payload.skinFlags : (payload.skinFlags || '').split(',').map(s => s.trim()).filter(Boolean);
     if (skinFlags.length) setNamedChecks('skincondition_id', skinFlags, 'Кожные покровы');
     setNamedChecks('heartnoise_id', payload.heartNoise, 'Шумы сердца');
     setNamedChecks('pulse_id', payload.pulse, 'Пульс');
@@ -322,7 +322,7 @@ $('fill').addEventListener('click', async () => {
     nystagmus:$('nystagmus').value, anisocoria:$('anisocoria').value, lightReaction:$('lightReaction').value,
     fontanelle:$('fontanelle').value, cornealReflexes:$('cornealReflexes').value, beloglazov:$('beloglazov').value,
     visibleDamage:$('visibleDamage').value, visibleDamageExtra:$('visibleDamageExtra').value,
-    skinCondition:$('skinCondition').value, skinFlags:$('skinFlags').value,
+    skinCondition:$('skinCondition').value, skinFlags:[['skinPale','Бледные'],['skinHyperemic','Гиперемированные'],['skinJaundiced','Желтушные'],['skinNormal','Нормальные'],['skinDry','Сухие'],['skinMoist','Влажные']].filter(([id])=>$(id).checked).map(([,label])=>label),
     acrocyanosis:$('acrocyanosis').value, marbling:$('marbling').value,
     edema:$('edema').value, edemaExtra:$('edemaExtra').value,
     rash:$('rash').value, rashExtra:$('rashExtra').value, throat:$('throat').value,
