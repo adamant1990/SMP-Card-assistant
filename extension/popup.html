@@ -127,7 +127,21 @@
 <label for="liverSize">Печень</label><select id="liverSize"><option value="unchanged" selected>Не менять</option><option>Увеличена</option><option>Не увеличена</option></select>
 <label for="abdomenBreath">Участвует в акте дыхания</label><select id="abdomenBreath"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
 <label for="peritoneal">Симптомы раздражения брюшины</label><select id="peritoneal"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
-<hr><h2>Завершение вызова</h2>
+<hr><h2>Доставка и завершение вызова</h2>
+<label for="deliveryPersonType">Доставка больного в автомобиль</label>
+<select id="deliveryPersonType">
+<option value="unchanged" selected>Не менять</option>
+<option>Перенесен на носилках</option>
+<option>Перенесен на других подручных средствах</option>
+<option>Передвигался самостоятельно</option>
+<option>На руках</option>
+</select>
+<label for="callNote">Примечание</label>
+<textarea id="callNote" rows="2" placeholder="Не менять, если пусто"></textarea>
+<div class="pressure-row">
+  <div><label for="arrivalMileage">Километраж доезда</label><input id="arrivalMileage" type="number" min="0" step="0.1" placeholder="км"></div>
+  <div><label for="totalMileage">Общий километраж</label><input id="totalMileage" type="number" min="0" step="0.1" placeholder="км"></div>
+</div>
 <label for="isKupir">Купированы боли / приступы</label>
 <select id="isKupir"><option value="unchanged" selected>Не менять</option><option value="yes">Да</option><option value="no">Нет</option></select>
 <label for="medicalIntervention">Медицинское вмешательство</label>
