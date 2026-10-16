@@ -141,6 +141,32 @@
 <div class="checkrow"><input id="procECGInterpretation" type="checkbox"><label for="procECGInterpretation">Расшифровка ЭКГ</label></div>
 </fieldset>
 <small>Выбирай только фактически выполненные манипуляции. Для этих пунктов ProMed использует триггеры внутри таблицы, поэтому сначала проверь на учебной карте. Не запускай повторно с теми же пунктами, пока не убедишься, как сайт обрабатывает повторное нажатие.</small>
+<hr><h2>Регистрация вызова</h2>
+<label for="callTeamPlace">Место получения вызова</label>
+<select id="callTeamPlace">
+<option value="unchanged" selected>Не менять</option>
+<option>Станция (подстанция, отделение)</option>
+<option>По телефону</option>
+<option>По рации</option>
+</select>
+<label for="residentType">Регистрация пациента</label>
+<select id="residentType">
+<option value="unchanged" selected>Не менять</option>
+<option>житель города</option>
+<option>житель сельской местности</option>
+<option>приезжий</option>
+</select>
+<label for="socialStatus">Социальное положение</label>
+<select id="socialStatus">
+<option value="unchanged" selected>Не менять</option>
+<option>Работающий</option>
+<option>Дошкольник</option>
+<option>Учащийся</option>
+<option>Безработный</option>
+<option>Временно не работающий</option>
+<option>Пенсионер</option>
+</select>
+<small>Пустое значение «Не менять» сохраняет текущий выбор в ProMed.</small>
 <hr><h2>Доставка и завершение вызова</h2>
 <label for="deliveryPersonType">Доставка больного в автомобиль</label>
 <select id="deliveryPersonType">
