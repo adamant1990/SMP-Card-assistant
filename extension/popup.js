@@ -49,6 +49,10 @@ function pageBridge(action, payload) {
   if (action === 'scanExamFields') {
     const all = window.Ext?.ComponentQuery?.query('*') || [];
     const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+    const domText = cmp => {
+      const el = cmp.el?.dom || cmp.el;
+      return String(cmp.text || cmp.getText?.() || cmp.boxLabel || cmp.title || el?.innerText || el?.textContent || '').trim() || null;
+    };
     const details = cmp => ({
       xtype: cmp.xtype || cmp.getXType?.() || null,
       id: cmp.id || null,
@@ -56,29 +60,40 @@ function pageBridge(action, payload) {
       name: cmp.name || cmp.getName?.() || null,
       fieldLabel: cmp.fieldLabel || cmp.label || null,
       boxLabel: cmp.boxLabel || null,
-      text: cmp.text || cmp.title || cmp.inputValue || null,
+      text: domText(cmp),
       value: typeof cmp.getValue === 'function' ? cmp.getValue() : null,
       inputName: (cmp.inputEl?.dom || cmp.inputEl)?.name || null
     });
-    const relevant = /кож|тон сердца|тоны сердца|язык|живот|печен|боль|локализац|отек|отек|перкуторно/i;
+    const relevant = /кож|тон сердца|тоны сердца|язык|живот|печен|боль|локализац|отек|перкуторно/i;
+    const groups = [];
+    all.filter(cmp => /segmentedbutton/i.test(String(cmp.xtype || cmp.getXType?.() || ''))).forEach(cmp => {
+      let parents = [];
+      let p = cmp.ownerCt;
+      let depth = 0;
+      while (p && depth < 6) { parents.push(details(p)); p = p.ownerCt; depth++; }
+      const choices = (cmp.items?.items || []).map(item => ({
+        ...details(item),
+        text: domText(item) || String((item.el?.dom || item.el)?.innerText || (item.el?.dom || item.el)?.textContent || '').trim() || null
+      }));
+      const context = [details(cmp).fieldLabel, details(cmp).text, ...parents.flatMap(x => [x.fieldLabel,x.text,x.itemId,x.name])].filter(Boolean).join(' ');
+      if (relevant.test(normalize(context)) || choices.some(x => relevant.test(normalize(x.text)))) {
+        groups.push({group:details(cmp), context:parents, choices});
+      }
+    });
     const result = [];
     all.forEach(cmp => {
       const own = details(cmp);
       let parents = [];
       let p = cmp.ownerCt;
       let depth = 0;
-      while (p && depth < 5) {
-        parents.push(details(p));
-        p = p.ownerCt;
-        depth++;
-      }
-      const joined = [own.fieldLabel, own.boxLabel, own.text, ...parents.flatMap(x => [x.fieldLabel,x.title,x.text,x.itemId,x.name])].filter(Boolean).join(' ');
+      while (p && depth < 5) { parents.push(details(p)); p = p.ownerCt; depth++; }
+      const joined = [own.fieldLabel, own.boxLabel, own.text, ...parents.flatMap(x => [x.fieldLabel,x.text,x.itemId,x.name])].filter(Boolean).join(' ');
       const isChoice = /button|segmented|radio|checkbox/i.test(String(own.xtype || ''));
-      if (relevant.test(normalize(joined)) || (isChoice && parents.some(x => relevant.test(normalize([x.fieldLabel,x.title,x.text,x.itemId,x.name].filter(Boolean).join(' ')))))) {
+      if (relevant.test(normalize(joined)) || (isChoice && parents.some(x => relevant.test(normalize([x.fieldLabel,x.text,x.itemId,x.name].filter(Boolean).join(' ')))))) {
         result.push({component:own, parents, siblings:(cmp.ownerCt?.items?.items || []).map(details).slice(0,30)});
       }
     });
-    return {extJsAvailable:!!window.Ext, totalComponents:all.length, matches:result.slice(0,250)};
+    return {extJsAvailable:!!window.Ext, totalComponents:all.length, segmentedGroups:groups.slice(0,100), matches:result.slice(0,250)};
   }
 
   if (action === 'inspect') {
