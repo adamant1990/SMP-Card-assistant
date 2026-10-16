@@ -219,6 +219,8 @@ function pageBridge(action, payload) {
     };
     setHeartToneChoice(payload.heartRhythm, 'Ритмичность тонов сердца');
     setHeartToneChoice(payload.heartSound, 'Звучность тонов сердца');
+    setHeartToneChoice(payload.tongueMoisture, 'Влажность языка');
+    setHeartToneChoice(payload.tongueCoating, 'Состояние языка');
     const setNamedText = (name, value, label) => {
       if (!value?.trim()) return;
       const cmp = (window.Ext?.ComponentQuery?.query('field[name="' + name + '"]') || [])[0];
@@ -295,6 +297,7 @@ $('fill').addEventListener('click', async () => {
     breath:$('breath').value, rattle:$('rattle').value, rattleExtra:$('rattleExtra').value,
     dyspnea:$('dyspnea').value, percussion:$('percussion').value,
     heartRhythm:$('heartRhythm').value, heartSound:$('heartSound').value,
+    tongueMoisture:$('tongueMoisture').value, tongueCoating:$('tongueCoating').value,
     heartNoise:[...$('heartNoise').selectedOptions].map(o=>o.value),
     pulse:[...$('pulse').selectedOptions].map(o=>o.value),
     abdomenBreath:$('abdomenBreath').value, peritoneal:$('peritoneal').value};
