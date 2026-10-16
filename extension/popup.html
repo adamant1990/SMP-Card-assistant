@@ -127,6 +127,20 @@
 <label for="liverSize">Печень</label><select id="liverSize"><option value="unchanged" selected>Не менять</option><option>Увеличена</option><option>Не увеличена</option></select>
 <label for="abdomenBreath">Участвует в акте дыхания</label><select id="abdomenBreath"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
 <label for="peritoneal">Симптомы раздражения брюшины</label><select id="peritoneal"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
+<hr><h2>Манипуляции</h2>
+<fieldset class="skin-flags"><legend>Отметь манипуляции, которые нужно добавить</legend>
+<div class="checkrow"><input id="procIV" type="checkbox"><label for="procIV">Внутривенное</label></div>
+<div class="checkrow"><input id="procIM" type="checkbox"><label for="procIM">Внутримышечное</label></div>
+<div class="checkrow"><input id="procNasalPacking" type="checkbox"><label for="procNasalPacking">Задняя тампонада носа</label></div>
+<div class="checkrow"><input id="procGlucose" type="checkbox"><label for="procGlucose">Измерение глюкозы</label></div>
+<div class="checkrow"><input id="procVeinCatheter" type="checkbox"><label for="procVeinCatheter">Катетеризация вены</label></div>
+<div class="checkrow"><input id="procSplint" type="checkbox"><label for="procSplint">Наложение шины</label></div>
+<div class="checkrow"><input id="procParamedicExam" type="checkbox"><label for="procParamedicExam">Осмотр фельдшера</label></div>
+<div class="checkrow"><input id="procPulseOx" type="checkbox"><label for="procPulseOx">Пульсоксиметрия</label></div>
+<div class="checkrow"><input id="procECG" type="checkbox"><label for="procECG">Регистрация ЭКГ</label></div>
+<div class="checkrow"><input id="procECGInterpretation" type="checkbox"><label for="procECGInterpretation">Расшифровка ЭКГ</label></div>
+</fieldset>
+<small>Выбирай только фактически выполненные манипуляции. Для этих пунктов ProMed использует триггеры внутри таблицы, поэтому сначала проверь на учебной карте. Не запускай повторно с теми же пунктами, пока не убедишься, как сайт обрабатывает повторное нажатие.</small>
 <hr><h2>Доставка и завершение вызова</h2>
 <label for="deliveryPersonType">Доставка больного в автомобиль</label>
 <select id="deliveryPersonType">
