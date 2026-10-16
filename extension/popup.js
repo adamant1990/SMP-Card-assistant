@@ -121,6 +121,19 @@ function pageBridge(action, payload) {
     setRadio('condition_id', payload.generalCondition, 'Общее состояние');
     setRadio('behavior_id', payload.behavior, 'Поведение');
     setRadio('bodyposition_id', payload.bodyPosition, 'Положение тела');
+    setRadio('conscious_id', payload.consciousness, 'Сознание');
+    setRadio('consciousmeningeal_issigns', payload.meningeal, 'Менингеальные знаки', true);
+    setRadio('pupil_id', payload.pupils, 'Зрачки');
+    setRadio('pupil_isnystagmus', payload.nystagmus, 'Нистагм', true);
+    setRadio('pupil_isanisocoria', payload.anisocoria, 'Анизокория', true);
+    setRadio('pupil_islightreaction', payload.lightReaction, 'Реакция зрачков на свет', true);
+    setRadio('islargefontanelletense', payload.fontanelle, 'Большой родничок', true);
+    setRadio('iscornealreflexes', payload.cornealReflexes, 'Корнеальные рефлексы', true);
+    setRadio('isbeloglazovsyndrome', payload.beloglazov, 'Симптом Белоглазова');
+    setRadio('isvisibledamage', payload.visibleDamage, 'Видимые повреждения', true);
+    setRadio('skin_isacrocyanosi', payload.acrocyanosis, 'Акроцианоз', true);
+    setRadio('skin_ismramor', payload.marbling, 'Мраморность кожи', true);
+    setRadio('edema_isexist', payload.edema, 'Отёки', true);
     setRadio('isrash', payload.rash, 'Сыпь', true);
     setRadio('breath_id', payload.breath, 'Дыхание');
     setRadio('rattle_id', payload.rattle, 'Хрипы', true);
@@ -138,6 +151,9 @@ function pageBridge(action, payload) {
         report.push(label + ': текст подставлен; проверь визуально.');
       } catch (e) { report.push(label + ': ошибка — ' + String(e?.message || e)); }
     };
+    setNamedText('visibledamage_extra', payload.visibleDamageExtra, 'Описание видимых повреждений');
+    setNamedText('skincondition', payload.skinCondition, 'Описание кожных покровов');
+    setNamedText('edema_extra', payload.edemaExtra, 'Описание отёков');
     setNamedText('rash_extra', payload.rashExtra, 'Описание сыпи');
     setNamedText('isthroat', payload.throat, 'Зев');
     setNamedText('rattle', payload.rattleExtra, 'Описание хрипов');
@@ -150,13 +166,15 @@ function pageBridge(action, payload) {
       if (!comps.length) { report.push(label + ': группа ' + name + ' не найдена.'); return; }
       let matched = 0;
       comps.forEach(cmp => {
-        const text = normalize(cmp.boxLabel || cmp.inputEl?.dom?.getAttribute?.('aria-label'));
+        const text = normalize(cmp.boxLabel || cmp.inputValue || cmp.inputEl?.dom?.getAttribute?.('aria-label') || cmp.fieldLabel);
         if (wanted.has(text)) {
           try { cmp.setValue(true); cmp.fireEvent?.('change', cmp, true); matched++; } catch (_) {}
         }
       });
       report.push(matched ? label + ': отмечено ' + matched + ' пункт(а); проверь визуально.' : label + ': выбранные варианты не найдены; поле не менялось.');
     };
+    const skinFlags = (payload.skinFlags || '').split(',').map(s => s.trim()).filter(Boolean);
+    if (skinFlags.length) setNamedChecks('skincondition_id', skinFlags, 'Кожные покровы');
     setNamedChecks('heartnoise_id', payload.heartNoise, 'Шумы сердца');
     setNamedChecks('pulse_id', payload.pulse, 'Пульс');
 
@@ -187,6 +205,13 @@ $('fill').addEventListener('click', async () => {
     villageTrip:$('villageTrip').value, infectionContact:$('infectionContact').value,
     lowQualityProducts:$('lowQualityProducts').value, generalCondition:$('generalCondition').value,
     behavior:$('behavior').value, bodyPosition:$('bodyPosition').value,
+    consciousness:$('consciousness').value, meningeal:$('meningeal').value, pupils:$('pupils').value,
+    nystagmus:$('nystagmus').value, anisocoria:$('anisocoria').value, lightReaction:$('lightReaction').value,
+    fontanelle:$('fontanelle').value, cornealReflexes:$('cornealReflexes').value, beloglazov:$('beloglazov').value,
+    visibleDamage:$('visibleDamage').value, visibleDamageExtra:$('visibleDamageExtra').value,
+    skinCondition:$('skinCondition').value, skinFlags:$('skinFlags').value,
+    acrocyanosis:$('acrocyanosis').value, marbling:$('marbling').value,
+    edema:$('edema').value, edemaExtra:$('edemaExtra').value,
     rash:$('rash').value, rashExtra:$('rashExtra').value, throat:$('throat').value,
     breath:$('breath').value, rattle:$('rattle').value, rattleExtra:$('rattleExtra').value,
     dyspnea:$('dyspnea').value, percussion:$('percussion').value,
