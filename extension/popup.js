@@ -189,6 +189,9 @@ function pageBridge(action, payload) {
       });
     };
     setProcedureTriggers(payload.procedures);
+    setRadio('callteamplace_id', payload.callTeamPlace, 'Место получения вызова');
+    setRadio('resident_id', payload.residentType, 'Регистрация пациента');
+    setRadio('cmpclosecardsocstatus_id', payload.socialStatus, 'Социальное положение');
     setRadio('deliverypersontype_id', payload.deliveryPersonType, 'Доставка больного в автомобиль');
     setRadio('isKupir', payload.isKupir, 'Купированы боли / приступы', true);
     setRadio('aftercarerecomendations_id', payload.aftercareRecommendation, 'Рекомендация пациенту');
@@ -416,6 +419,8 @@ $('fill').addEventListener('click', async () => {
     pulse:[...$('pulse').selectedOptions].map(o=>o.value),
     abdomenBreath:$('abdomenBreath').value, peritoneal:$('peritoneal').value,
     procedures:[['procIV','Внутривенное'],['procIM','Внутримышечное'],['procNasalPacking','Задняя тампонада носа'],['procGlucose','Измерение глюкозы'],['procVeinCatheter','Катетеризация вены'],['procSplint','Наложение шины'],['procParamedicExam','Осмотр фельдшера'],['procPulseOx','Пульсоксиметрия'],['procECG','Регистрация ЭКГ'],['procECGInterpretation','Расшифровка ЭКГ']].filter(([id])=>$(id).checked).map(([,label])=>label),
+    callTeamPlace:$('callTeamPlace').value, residentType:$('residentType').value,
+    socialStatus:$('socialStatus').value,
     deliveryPersonType:$('deliveryPersonType').value, callNote:$('callNote').value,
     arrivalMileage:$('arrivalMileage').value, totalMileage:$('totalMileage').value,
     isKupir:$('isKupir').value, medicalIntervention:$('medicalIntervention').value,
