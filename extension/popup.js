@@ -221,6 +221,37 @@ function pageBridge(action, payload) {
     setHeartToneChoice(payload.heartSound, 'Звучность тонов сердца');
     setHeartToneChoice(payload.tongueMoisture, 'Влажность языка');
     setHeartToneChoice(payload.tongueCoating, 'Состояние языка');
+    const setSegmentedGroupChoice = (choice, expectedOptions, label) => {
+      if (!choice || choice === 'unchanged') return;
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
+      const expected = expectedOptions.map(normalize);
+      const groups = window.Ext?.ComponentQuery?.query('segmentedbutton') || [];
+      const readText = item => {
+        const el = item.el?.dom || item.el;
+        return normalize(item.text || item.getText?.() || el?.innerText || el?.textContent || item.tooltip || item.ariaLabel || '');
+      };
+      const candidates = groups.map(group => ({group, items:group.items?.items || []})).filter(({items}) => {
+        const texts = items.map(readText);
+        return expected.every(option => texts.includes(option));
+      });
+      if (candidates.length !== 1) {
+        report.push(label + ': не удалось однозначно определить группу кнопок (' + candidates.length + ' совпадений); поле не менялось.');
+        return;
+      }
+      const target = candidates[0].items.find(item => readText(item) === normalize(choice));
+      if (!target) { report.push(label + ': вариант «' + choice + '» не найден; поле не менялось.'); return; }
+      try {
+        const el = target.el?.dom || target.el;
+        if (typeof target.toggle === 'function') target.toggle(true);
+        else if (typeof target.setPressed === 'function') target.setPressed(true);
+        else if (el?.click) el.click();
+        else throw new Error('нет доступного способа выбрать кнопку');
+        report.push(label + ': выбрано «' + choice + '»; проверь визуально в ProMed.');
+      } catch (e) { report.push(label + ': ошибка выбора — ' + String(e?.message || e)); }
+    };
+    setSegmentedGroupChoice(payload.abdomenTexture, ['Мягкий','Напряжённый'], 'Характеристика живота');
+    setSegmentedGroupChoice(payload.abdomenTenderness, ['Безболезненный','Болезненный'], 'Болезненность живота');
+    setSegmentedGroupChoice(payload.liverSize, ['Увеличена','Не увеличена'], 'Печень');
     const setNamedText = (name, value, label) => {
       if (!value?.trim()) return;
       const cmp = (window.Ext?.ComponentQuery?.query('field[name="' + name + '"]') || [])[0];
@@ -239,6 +270,7 @@ function pageBridge(action, payload) {
     setNamedText('isthroat', payload.throat, 'Зев');
     setNamedText('rattle', payload.rattleExtra, 'Описание хрипов');
     setNamedText('percussion', payload.percussion, 'Перкуторно');
+    setNamedText('stomach_local', payload.abdominalPainLocation, 'Локализация болей в животе');
     const setNamedChecks = (name, choices, label) => {
       if (!Array.isArray(choices) || !choices.length) return;
       const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
@@ -298,6 +330,8 @@ $('fill').addEventListener('click', async () => {
     dyspnea:$('dyspnea').value, percussion:$('percussion').value,
     heartRhythm:$('heartRhythm').value, heartSound:$('heartSound').value,
     tongueMoisture:$('tongueMoisture').value, tongueCoating:$('tongueCoating').value,
+    abdomenTexture:$('abdomenTexture').value, abdomenTenderness:$('abdomenTenderness').value,
+    abdominalPainLocation:$('abdominalPainLocation').value, liverSize:$('liverSize').value,
     heartNoise:[...$('heartNoise').selectedOptions].map(o=>o.value),
     pulse:[...$('pulse').selectedOptions].map(o=>o.value),
     abdomenBreath:$('abdomenBreath').value, peritoneal:$('peritoneal').value};
