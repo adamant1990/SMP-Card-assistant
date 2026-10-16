@@ -192,6 +192,9 @@ function pageBridge(action, payload) {
     setRadio('callteamplace_id', payload.callTeamPlace, 'Место получения вызова');
     setRadio('resident_id', payload.residentType, 'Регистрация пациента');
     setRadio('cmpclosecardsocstatus_id', payload.socialStatus, 'Социальное положение');
+    setRadio('execution', payload.execution, 'Исполнение');
+    setRadio('trauma_id', payload.traumaType, 'Травма');
+    setRadio('isalcoholIntoxication', payload.alcoholIntoxication, 'Наличие опьянения', true);
     setRadio('deliverypersontype_id', payload.deliveryPersonType, 'Доставка больного в автомобиль');
     setRadio('isKupir', payload.isKupir, 'Купированы боли / приступы', true);
     setRadio('aftercarerecomendations_id', payload.aftercareRecommendation, 'Рекомендация пациенту');
@@ -421,6 +424,8 @@ $('fill').addEventListener('click', async () => {
     procedures:[['procIV','Внутривенное'],['procIM','Внутримышечное'],['procNasalPacking','Задняя тампонада носа'],['procGlucose','Измерение глюкозы'],['procVeinCatheter','Катетеризация вены'],['procSplint','Наложение шины'],['procParamedicExam','Осмотр фельдшера'],['procPulseOx','Пульсоксиметрия'],['procECG','Регистрация ЭКГ'],['procECGInterpretation','Расшифровка ЭКГ']].filter(([id])=>$(id).checked).map(([,label])=>label),
     callTeamPlace:$('callTeamPlace').value, residentType:$('residentType').value,
     socialStatus:$('socialStatus').value,
+    execution:$('execution').value, traumaType:$('traumaType').value,
+    alcoholIntoxication:$('alcoholIntoxication').value,
     deliveryPersonType:$('deliveryPersonType').value, callNote:$('callNote').value,
     arrivalMileage:$('arrivalMileage').value, totalMileage:$('totalMileage').value,
     isKupir:$('isKupir').value, medicalIntervention:$('medicalIntervention').value,
