@@ -273,6 +273,10 @@ function pageBridge(action, payload) {
     setNamedText('before_arterial_pressure1', payload.diastolic, 'АД, диастолическое');
     setNamedText('before_pulse', payload.pulseRate, 'Пульс');
     setNamedText('before_heart_rate', payload.heartRate, 'ЧСС');
+    setNamedText('before_breathing_rate', payload.breathingRate, 'ЧДД');
+    setNamedText('before_temperature', payload.temperature, 'Температура');
+    setNamedText('before_pulseoximetry', payload.pulseOximetry, 'Пульсоксиметрия');
+    setNamedText('before_glucometry', payload.glucometry, 'Глюкометрия');
     setNamedText('visibledamage_extra', payload.visibleDamageExtra, 'Описание видимых повреждений');
     setNamedText('skincondition', payload.skinCondition, 'Описание кожных покровов');
     setNamedText('edema_extra', payload.edemaExtra, 'Описание отёков');
@@ -336,6 +340,8 @@ $('fill').addEventListener('click', async () => {
     workingSystolic:$('workingSystolic').value, workingDiastolic:$('workingDiastolic').value,
     systolic:$('systolic').value, diastolic:$('diastolic').value,
     pulseRate:$('pulseRate').value, heartRate:$('heartRate').value,
+    breathingRate:$('breathingRate').value, temperature:$('temperature').value,
+    pulseOximetry:$('pulseOximetry').value, glucometry:$('glucometry').value,
     visibleDamage:$('visibleDamage').value, visibleDamageExtra:$('visibleDamageExtra').value,
     skinCondition:$('skinCondition').value, skinFlags:[['skinPale','Бледные'],['skinHyperemic','Гиперемированные'],['skinJaundiced','Желтушные'],['skinNormal','Нормальные'],['skinDry','Сухие'],['skinMoist','Влажные']].filter(([id])=>$(id).checked).map(([,label])=>label),
     acrocyanosis:$('acrocyanosis').value, marbling:$('marbling').value,
