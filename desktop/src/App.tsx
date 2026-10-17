@@ -414,13 +414,13 @@ export default function App() {
     {categoryDialog && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setCategoryDialog(null); }}>
       <form className="modal-card" onSubmit={e => { e.preventDefault(); applyCategoryDialog(); }}>
         <h2>{categoryDialog.mode === 'rename' ? 'Переименовать категорию' : 'Удалить категорию'}</h2>
-        {#if categoryDialog.mode === 'rename'}
+        {categoryDialog.mode === 'rename' ? <>
           <p>Новое название для «{categoryDialog.category}».</p>
           <label className="field"><span>Название категории</span><input autoFocus value={categoryDialog.value} onChange={e => setCategoryDialog(current => current ? { ...current, value: e.target.value } : current)} /></label>
-        {:else}
+        </> : <>
           <p>Шаблоны из «{categoryDialog.category}» сохранятся и будут перенесены в выбранную категорию.</p>
           <label className="field"><span>Перенести шаблоны в</span><select value={categoryDialog.value} onChange={e => setCategoryDialog(current => current ? { ...current, value: e.target.value } : current)}>{[...categoryList.filter(c => c !== categoryDialog.category), ...(categoryList.some(c => c !== categoryDialog.category && c === 'Без категории') ? [] : ['Без категории'])].map(c => <option key={c} value={c}>{c}</option>)}</select></label>
-        {/if}
+        </>}
         <div className="modal-actions"><button type="button" className="secondary" onClick={() => setCategoryDialog(null)}>Отмена</button><button type="submit" className={categoryDialog.mode === 'delete' ? 'danger-ghost' : 'primary'}>{categoryDialog.mode === 'rename' ? 'Сохранить название' : 'Удалить категорию'}</button></div>
       </form>
     </div>}
