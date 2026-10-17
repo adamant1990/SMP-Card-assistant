@@ -78,3 +78,13 @@ https://github.com/adamant1990/SMP-Card-assistant
 - В popup и обработчик добавлены поля неврологического статуса: `conscious_id`, `consciousmeningeal_issigns`, `pupil_id`, `pupil_isnystagmus`, `pupil_isanisocoria`, `pupil_islightreaction`, `islargefontanelletense`, `iscornealreflexes`, `isbeloglazovsyndrome`.
 - Добавлены видимые повреждения (`isvisibledamage`, `visibledamage_extra`), описание кожных покровов (`skincondition`), флажки кожных покровов (`skincondition_id`), акроцианоз (`skin_isacrocyanosi`), мраморность (`skin_ismramor`), отёки (`edema_isexist`, `edema_extra`).
 - Важно: эти поля добавлены в код, но ещё не подтверждены сквозным тестом в реальной форме ProMed. Флажки `skincondition_id` требуют проверки соответствия точных подписей. Не сохранять карту автоматически.
+
+
+## Windows-приложение — первый каркас (2026-10-17)
+- Добавлена папка `desktop/`: Electron + React + TypeScript + Vite.
+- Реализован первый экран редактора: список шаблонов, категории, названия диагнозов, поля жалоб/анамнеза/осмотра/лечения, поиск, добавление/удаление, импорт и экспорт JSON.
+- Добавлены стартовые шаблоны по гипертоническому кризу, ОНМК и сахарному диабету 1-го и 2-го типа. Текстовые медицинские формулировки намеренно пустые, чтобы не подставлять выдуманные данные.
+- Добавлен Electron main process с contextIsolation и отключённым nodeIntegration.
+- Добавлен GitHub Actions workflow `.github/workflows/build-desktop.yml`, который собирает Windows installer `.exe` и публикует его как workflow artifact.
+- Статус: исходники созданы в GitHub; успешная сборка и запуск на Windows ещё не подтверждены. После запуска workflow скачать EXE из Artifacts и проверить на Windows.
+- Важно: текущая версия редактора хранит изменения в состоянии окна; для постоянного хранения нужно экспортировать JSON. Связь с расширением Chrome/Promed пока не подключена. Автоматическое сохранение карты не добавлять.
