@@ -2,7 +2,7 @@
   "name": "smp-card-assistant-desktop",
   "version": "0.1.0",
   "description": "Windows desktop template editor for SMP call cards",
-  "main": "dist-electron/main.js",
+  "main": "electron/main.cjs",
   "author": "SMP Card Assistant",
   "license": "UNLICENSED",
   "scripts": {
@@ -34,7 +34,7 @@
     },
     "files": [
       "dist/**/*",
-      "dist-electron/**/*",
+      "electron/**/*",
       "package.json"
     ],
     "win": {
