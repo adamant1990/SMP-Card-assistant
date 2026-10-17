@@ -190,6 +190,8 @@ export default function App() {
   const [view, setView] = useState<'categories' | 'templates' | 'editor'>('categories');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('Изменения сохраняются после нажатия «Сохранить».');
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
   const savedSelected = templates.find(t => t.id === selectedId);
   const selected = draft;
   const dirty = Boolean(draft && (!savedSelected || JSON.stringify(draft) !== JSON.stringify(savedSelected)));
@@ -270,8 +272,15 @@ export default function App() {
     setStatus('Есть несохранённые изменения.');
   };
   const addCategory = () => {
-    const value = window.prompt('Название новой категории:')?.trim();
-    if (!value) return;
+    setNewCategoryName('');
+    setShowAddCategory(true);
+  };
+  const createCategory = () => {
+    const value = newCategoryName.trim();
+    if (!value) {
+      setStatus('Введите название категории.');
+      return;
+    }
     if (categoryList.some(c => c.toLocaleLowerCase('ru-RU') === value.toLocaleLowerCase('ru-RU'))) {
       setStatus('Такая категория уже существует.');
       return;
@@ -282,6 +291,8 @@ export default function App() {
     setDraft(null);
     setSelectedId('');
     setView('categories');
+    setShowAddCategory(false);
+    setNewCategoryName('');
     setStatus('Категория «' + value + '» создана. Теперь выберите её, чтобы добавить шаблоны.');
   };
   const renameCategory = (oldName: string) => {
@@ -391,6 +402,14 @@ export default function App() {
 
   return <main className="app-shell">
     <header className="topbar"><div className="brand-mark">СМП</div><div><h1>SMP Card Assistant</h1><p>Редактор шаблонов карт вызова</p></div><div className="top-spacer"/><button className="primary" onClick={exportJson}>Экспорт JSON</button><label className="button secondary">Импорт JSON<input type="file" accept="application/json,.json" hidden onChange={e => importJson(e.target.files?.[0])}/></label></header>
+    {showAddCategory && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setShowAddCategory(false); }}>
+      <form className="modal-card" onSubmit={e => { e.preventDefault(); createCategory(); }}>
+        <h2>Новая категория</h2>
+        <p>Например: Кардиология, Неврология или Терапия.</p>
+        <label className="field"><span>Название категории</span><input autoFocus value={newCategoryName} onChange={e => setNewCategoryName(e.target.value)} placeholder="Введите название" /></label>
+        <div className="modal-actions"><button type="button" className="secondary" onClick={() => setShowAddCategory(false)}>Отмена</button><button type="submit" className="primary">Создать категорию</button></div>
+      </form>
+    </div>}
     <div className={'workspace view-' + view}>
       <aside className="sidebar">
         <div className="side-heading"><h2>Категории</h2><button title="Добавить категорию" aria-label="Добавить категорию" onClick={addCategory}>＋</button></div>
