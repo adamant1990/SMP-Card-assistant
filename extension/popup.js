@@ -442,3 +442,95 @@ $('scanExamFields').addEventListener('click', async () => {
   try { status.textContent = JSON.stringify(await runPageAction('scanExamFields'), null, 2); }
   catch (e) { status.textContent = 'Ошибка: ' + (e?.message || e); }
 });
+
+
+// Импорт шаблонов, экспортированных из Windows-программы.
+// Храним только локально в Chrome; данные карты на сервер не отправляются.
+const templateFile = $('templateFile');
+const templateSelect = $('templateSelect');
+const applyTemplateButton = $('applyTemplate');
+let importedTemplates = [];
+
+function renderTemplateOptions(selectedId = '') {
+  templateSelect.replaceChildren();
+  if (!importedTemplates.length) {
+    const option = document.createElement('option');
+    option.value = '';
+    option.textContent = 'Сначала импортируй JSON';
+    templateSelect.append(option);
+    return;
+  }
+  const first = document.createElement('option');
+  first.value = '';
+  first.textContent = 'Выбери диагноз…';
+  templateSelect.append(first);
+  importedTemplates.forEach((template, index) => {
+    const option = document.createElement('option');
+    option.value = String(index);
+    option.textContent = (template.category ? template.category + ' · ' : '') + template.diagnosis;
+    templateSelect.append(option);
+  });
+  if (selectedId) {
+    const index = importedTemplates.findIndex(t => t.id === selectedId);
+    if (index >= 0) templateSelect.value = String(index);
+  }
+}
+
+async function restoreImportedTemplates() {
+  try {
+    const stored = await chrome.storage.local.get('smpImportedTemplates');
+    importedTemplates = Array.isArray(stored.smpImportedTemplates) ? stored.smpImportedTemplates : [];
+    renderTemplateOptions();
+  } catch (error) {
+    status.textContent = 'Не удалось прочитать локальные шаблоны: ' + (error?.message || error);
+  }
+}
+
+templateFile.addEventListener('change', async () => {
+  const file = templateFile.files?.[0];
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    const incoming = Array.isArray(data) ? data : data.templates;
+    if (!Array.isArray(incoming) || !incoming.every(t =>
+      t && typeof t.category === 'string' && typeof t.diagnosis === 'string'
+      && ['complaints', 'anamnesis', 'examination', 'treatment'].every(k => t[k] === undefined || typeof t[k] === 'string')
+    )) {
+      throw new Error('Файл не похож на JSON-шаблоны SMP Card Assistant.');
+    }
+    importedTemplates = incoming.map((t, i) => ({
+      id: typeof t.id === 'string' ? t.id : 'imported-' + i,
+      category: t.category,
+      diagnosis: t.diagnosis,
+      complaints: t.complaints || '',
+      anamnesis: t.anamnesis || '',
+      examination: t.examination || '',
+      treatment: t.treatment || ''
+    }));
+    await chrome.storage.local.set({smpImportedTemplates: importedTemplates});
+    renderTemplateOptions();
+    status.textContent = 'Загружено шаблонов: ' + importedTemplates.length + '. Список сохранён локально в Chrome.';
+  } catch (error) {
+    status.textContent = 'Ошибка импорта шаблонов: ' + (error?.message || error);
+  } finally {
+    templateFile.value = '';
+  }
+});
+
+applyTemplateButton.addEventListener('click', () => {
+  const index = Number(templateSelect.value);
+  if (!templateSelect.value || !Number.isInteger(index) || !importedTemplates[index]) {
+    status.textContent = 'Сначала выбери диагноз из импортированных шаблонов.';
+    return;
+  }
+  const template = importedTemplates[index];
+  const hasCurrentText = $('complaints').value.trim() || $('anamnez').value.trim();
+  if (hasCurrentText && !window.confirm('Тексты жалоб и/или анамнеза уже заполнены. Заменить их выбранным шаблоном?')) return;
+  $('complaints').value = template.complaints;
+  $('anamnez').value = template.anamnesis;
+  $('fillComplaints').checked = Boolean(template.complaints.trim());
+  $('fillAnamnez').checked = Boolean(template.anamnesis.trim());
+  status.textContent = 'Шаблон «' + template.diagnosis + '» перенесён в поля расширения. Проверь текст, затем нажми «Заполнить выбранные поля».';
+});
+
+restoreImportedTemplates();
