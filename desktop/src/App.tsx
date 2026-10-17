@@ -278,8 +278,11 @@ export default function App() {
     }
     setCategories(current => [...current, value]);
     setSelectedCategory(value);
-    navigateTo(null, value);
-    setStatus('Категория «' + value + '» создана. Добавьте в неё шаблон.');
+    setSearch('');
+    setDraft(null);
+    setSelectedId('');
+    setView('categories');
+    setStatus('Категория «' + value + '» создана. Теперь выберите её, чтобы добавить шаблоны.');
   };
   const renameCategory = (oldName: string) => {
     const value = window.prompt('Новое название категории «' + oldName + '»:', oldName)?.trim();
