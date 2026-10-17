@@ -13,4 +13,5 @@
 .multi-field{grid-column:1/-1}
 .multi-options{display:flex;gap:12px;flex-wrap:wrap}
 .multi-options label{display:flex;align-items:center;gap:6px;font-size:11px;color:#4c596b}
+.category-tools{margin:0 0 14px;padding:10px;background:#f8fafc;border:1px solid #e5ebf1;border-radius:9px}.category-tools>strong{display:block;font-size:11px;margin:0 0 8px;color:#354257}.category-actions{display:flex;flex-wrap:wrap;gap:5px}.category-actions button{padding:6px 7px;font-size:10px;background:#e9f1ee;color:#245c4e}.category-actions .category-delete{background:#f8eeee;color:#9b4545}.category-tools small{display:block;margin-top:7px;font-size:9px;line-height:1.45;color:#8290a0}.template-actions{display:flex;gap:8px;align-items:center}.template-actions .secondary{border:1px solid #dce5e9}.template-actions button{white-space:nowrap}
 @media(max-width:900px){.section-fields{grid-template-columns:1fr}.editor{padding:24px 20px}}
