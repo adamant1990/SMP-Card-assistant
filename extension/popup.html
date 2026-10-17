@@ -10,6 +10,7 @@
 <label for="templateSelect">Выбрать шаблон</label>
 <select id="templateSelect"><option value="">Сначала импортируй JSON</option></select>
 <button id="applyTemplate" class="secondary" type="button">Перенести весь шаблон в поля расширения</button>
+<button id="fill">Заполнить выбранные поля</button>
 <small>Шаблон переносит жалобы, анамнез и настроенные поля карты: осмотр, показатели, манипуляции и исход. Проверь значения и отметки перед заполнением карты.</small>
 <label for="reason">Причина обращения</label>
 <select id="reason">
@@ -221,7 +222,7 @@
 <label for="tongueCoating">Состояние языка</label><select id="tongueCoating"><option value="unchanged" selected>Не менять</option><option>Чистый</option><option>Обложен</option></select>
 <small>Выбирай по одному варианту в каждой группе. Если кнопка не будет найдена по точной подписи, расширение оставит поле без изменений.</small>
 <p class="hint">Характеристика живота, болезненность и печень выбираются по подписи кнопок внутри своей группы. Если точная группа не найдена, значение не изменяется.</p>
-<button id="fill">Заполнить выбранные поля</button><button id="inspect" class="secondary">Проверить основные поля</button><button id="scanFields" class="secondary">Исследовать поля и флажки</button><button id="scanExamFields" class="secondary">Исследовать кожу, сердце, язык, живот и печень</button>
+<button id="inspect" class="secondary">Проверить основные поля</button><button id="scanFields" class="secondary">Исследовать поля и флажки</button><button id="scanExamFields" class="secondary">Исследовать кожу, сердце, язык, живот и печень</button>
 <pre id="status" role="status">Открой карту вызова ProMed и нажми «Проверить поля ProMed».</pre>
 <p class="warning">Тестируй на учебной карте. Проверь каждое поле вручную. Кнопку сохранения карты нажимай сам.</p>
 </main><script src="popup.js"></script></body></html>
