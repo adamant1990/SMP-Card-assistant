@@ -562,6 +562,7 @@ applyTemplateButton.addEventListener('click', () => {
   $('fillAnamnez').checked = Boolean(template.anamnesis.trim());
 
   const fieldReport = [];
+  let appliedFieldCount = 0;
   const extensionFields = template.extensionFields && typeof template.extensionFields === 'object' ? template.extensionFields : {};
   Object.entries(extensionFields).forEach(([id, value]) => {
     const element = $(id);
@@ -570,21 +571,23 @@ applyTemplateButton.addEventListener('click', () => {
       if (!Array.isArray(value)) return;
       const wanted = new Set(value.map(String));
       Array.from(element.options).forEach(option => { option.selected = wanted.has(option.value); });
+      appliedFieldCount++;
     } else if (element.type === 'checkbox') {
-      if (typeof value === 'boolean') element.checked = value;
+      if (typeof value === 'boolean') { element.checked = value; appliedFieldCount++; }
     } else if (element.tagName === 'SELECT') {
       if (typeof value !== 'string') return;
       const option = Array.from(element.options).find(item => item.value === value || item.textContent.trim() === value);
-      if (option) element.value = option.value;
+      if (option) { element.value = option.value; appliedFieldCount++; }
       else fieldReport.push(id + ': вариант «' + value + '» отсутствует в списке расширения.');
     } else if (element.tagName === 'TEXTAREA' || element.tagName === 'INPUT') {
-      if (typeof value === 'string' && value.trim()) element.value = value;
+      if (typeof value === 'string' && value.trim()) { element.value = value; appliedFieldCount++; }
     }
   });
 
   if (extensionFields.reason) $('fillReason').checked = extensionFields.reason !== 'unchanged';
-  status.textContent = 'Шаблон «' + template.diagnosis + '» перенесён. Жалобы, анамнез и отдельные поля заполнены в расширении. Проверь значения, затем нажми «Заполнить выбранные поля».' +
-    (fieldReport.length ? '\\n\\nЗамечания:\\n' + fieldReport.join('\\n') : '');
+  $('fillEpidemic').checked = Boolean($('epidemic').value.trim());
+  status.textContent = 'Шаблон «' + template.diagnosis + '» перенесён в расширение. Отдельных полей обработано: ' + appliedFieldCount + '. Проверь значения, затем нажми «Заполнить выбранные поля».' +
+    (fieldReport.length ? '\n\nЗамечания:\n' + fieldReport.join('\n') : '');
 });
 
 restoreImportedTemplates();
