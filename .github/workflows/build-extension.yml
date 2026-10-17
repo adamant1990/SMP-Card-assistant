@@ -1,0 +1,28 @@
+name: Package Chrome Extension
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'extension/**'
+      - '.github/workflows/build-extension.yml'
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check JavaScript syntax
+        run: node --check extension/popup.js
+      - name: Validate manifest JSON
+        run: node -e "JSON.parse(require('fs').readFileSync('extension/manifest.json','utf8'))"
+      - name: Package extension
+        run: cd extension && zip -r ../SMP-Card-Assistant-Chrome-Extension.zip .
+      - name: Upload extension ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: SMP-Card-Assistant-Chrome-Extension
+          path: SMP-Card-Assistant-Chrome-Extension.zip
+          if-no-files-found: error
+          retention-days: 14
