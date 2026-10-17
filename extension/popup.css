@@ -1,1 +1,23 @@
 *{box-sizing:border-box}body{margin:0;width:360px;background:#f5f7fb;color:#1f2937;font:13px/1.45 system-ui,sans-serif}main{padding:16px}h1{font-size:18px;margin:0 0 6px}.hint{color:#5b6472;margin:0 0 14px}label{display:block;font-weight:600;margin:10px 0 5px}select,textarea,input[type="text"],input[type="number"]{width:100%;border:1px solid #cbd5e1;border-radius:7px;padding:8px;background:white;color:inherit;font:inherit}textarea{resize:vertical}.pressure-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pressure-row>div{min-width:0}.pressure-row label{margin-top:8px}.pressure-row input{min-width:0}h3{font-size:14px;margin:12px 0 4px}.skin-flags{border:1px solid #cbd5e1;border-radius:7px;padding:8px 10px;margin:8px 0}.skin-flags legend{font-weight:600;padding:0 4px}.checkrow{display:flex;gap:8px;align-items:center;margin:8px 0}.checkrow input{margin:0}.checkrow label{margin:0;font-weight:400}button{width:100%;border:0;border-radius:8px;padding:10px;margin-top:10px;background:#155eef;color:white;font:600 13px system-ui,sans-serif;cursor:pointer}button.secondary{background:#e2e8f0;color:#1e293b}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#eaf0f8;border-radius:7px;padding:9px;min-height:42px;font:12px/1.4 ui-monospace,monospace}.warning{font-size:11px;color:#7c2d12;background:#fff7ed;border-radius:7px;padding:9px}
+
+/* Компактный режим: шаблон задаётся в Windows-программе.
+   Скрываем дублирующие поля только визуально, оставляя их в DOM,
+   чтобы импортированный шаблон продолжал заполнять ProMed. */
+main > * { display: none !important; }
+main > h1,
+main > p.hint,
+main > label[for="templateFile"],
+main > #templateFile,
+main > label[for="templateSelect"],
+main > #templateSelect,
+main > #applyTemplate,
+main > label[for="callNote"],
+main > #callNote,
+main > #arrivalMileage,
+main > #totalMileage,
+main > button#fill,
+main > #status,
+main > p.warning { display: block !important; }
+main > .pressure-row:has(#arrivalMileage) { display: grid !important; }
+main > #callNote { min-height: 56px; }
+main > #applyTemplate { margin-bottom: 8px; }
