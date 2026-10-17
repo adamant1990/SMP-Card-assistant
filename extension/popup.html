@@ -10,10 +10,10 @@
 <label for="templateSelect">Выбрать шаблон</label>
 <select id="templateSelect"><option value="">Сначала импортируй JSON</option></select>
 <button id="applyTemplate" class="secondary" type="button">Перенести текст в поля расширения</button>
-<small>На этом этапе шаблон переносит только «Жалобы» и «Анамнез». Осмотр и лечение не подставляются автоматически, чтобы не смешивать разные поля. После переноса отдельно отметь нужные флажки и нажми «Заполнить выбранные поля».</small>
+<small>Шаблон переносит жалобы, анамнез и настроенные поля карты: осмотр, показатели, манипуляции и исход. Проверь значения и отметки перед заполнением карты.</small>
 <label for="reason">Причина обращения</label>
 <select id="reason">
-<option>Несчастный случай</option><option selected>Острое внезапное заболевание</option><option>Роды (вне МО)</option><option>Обострение хронического заболевания</option><option>Патология беременности</option><option>Медицинская эвакуация экстренная</option><option>Дежурство при угрозе ЧС</option><option>Дежурство на мероприятии</option><option>Другое</option><option>Плановая перевозка</option><option>Платная мед.услуга</option>
+<option value="unchanged">Не менять</option><option>Несчастный случай</option><option selected>Острое внезапное заболевание</option><option>Роды (вне МО)</option><option>Обострение хронического заболевания</option><option>Патология беременности</option><option>Медицинская эвакуация экстренная</option><option>Дежурство при угрозе ЧС</option><option>Дежурство на мероприятии</option><option>Другое</option><option>Плановая перевозка</option><option>Платная мед.услуга</option>
 </select>
 <label for="complaints">Жалобы</label><textarea id="complaints" rows="3" placeholder="Оставь пустым, если менять не нужно"></textarea>
 <label for="anamnez">Анамнез</label><textarea id="anamnez" rows="3" placeholder="Оставь пустым, если менять не нужно"></textarea>
