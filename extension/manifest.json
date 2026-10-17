@@ -3,7 +3,7 @@
   "name": "SMP Card Assistant — тест",
   "version": "0.2.0",
   "description": "Локальный помощник для заполнения проверенных полей карты ProMed.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab", "scripting", "storage"],
   "host_permissions": ["https://smpufav2.giszrb.ru/*", "http://smpufav2.giszrb.ru/*"],
   "action": { "default_title": "SMP Card Assistant", "default_popup": "popup.html" }
 }
