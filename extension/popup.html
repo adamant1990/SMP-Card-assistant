@@ -4,6 +4,13 @@
 <body><main>
 <h1>SMP Card Assistant</h1>
 <p class="hint">Тестовый прототип для ProMed. Не сохраняет карту и не отправляет данные автоматически.</p>
+<hr><h2>Шаблоны из Windows-программы</h2>
+<label for="templateFile">Импортировать файл smp-templates.json</label>
+<input id="templateFile" type="file" accept="application/json,.json">
+<label for="templateSelect">Выбрать шаблон</label>
+<select id="templateSelect"><option value="">Сначала импортируй JSON</option></select>
+<button id="applyTemplate" class="secondary" type="button">Перенести текст в поля расширения</button>
+<small>На этом этапе шаблон переносит только «Жалобы» и «Анамнез». Осмотр и лечение не подставляются автоматически, чтобы не смешивать разные поля. После переноса отдельно отметь нужные флажки и нажми «Заполнить выбранные поля».</small>
 <label for="reason">Причина обращения</label>
 <select id="reason">
 <option>Несчастный случай</option><option selected>Острое внезапное заболевание</option><option>Роды (вне МО)</option><option>Обострение хронического заболевания</option><option>Патология беременности</option><option>Медицинская эвакуация экстренная</option><option>Дежурство при угрозе ЧС</option><option>Дежурство на мероприятии</option><option>Другое</option><option>Плановая перевозка</option><option>Платная мед.услуга</option>
