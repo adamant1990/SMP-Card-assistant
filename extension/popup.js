@@ -166,9 +166,7 @@ function pageBridge(action, payload) {
     };
     const setProcedureTriggers = choices => {
       if (!Array.isArray(choices) || !choices.length) return;
-      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
-      // В разных версиях формы названия манипуляций могут немного отличаться.
-      // Используем только узкие синонимы и по-прежнему нажимаем кнопку, лишь если строка одна.
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
       const aliases = {
         'внутривенное': ['внутривенное', 'внутривенно', 'в/в введение', 'в/в'],
         'осмотр фельдшера': ['осмотр фельдшера', 'осмотр фельдшером'],
@@ -176,26 +174,34 @@ function pageBridge(action, payload) {
         'расшифровка экг': ['расшифровка экг', 'расшифровка электрокардиограммы', 'интерпретация экг', 'интерпретация электрокардиограммы'],
         'пульсоксиметрия': ['пульсоксиметрия', 'измерение сатурации', 'измерение spo2', 'измерение spo₂']
       };
-      const rows = [...document.querySelectorAll('.x-grid-row')].filter(row => row.getClientRects().length);
+      const rows = [...document.querySelectorAll('tr.x-grid-row, .x-grid-row')].filter(row => row.getClientRects().length);
       choices.forEach(label => {
         const wanted = normalize(label);
-        const terms = aliases[wanted] || [wanted];
-        const matches = rows.filter(row => {
-          const text = normalize(row.innerText || row.textContent);
-          return terms.some(term => text.includes(normalize(term)));
-        });
-        if (matches.length !== 1) {
-          report.push('Манипуляция «' + label + '»: найдено строк таблицы — ' + matches.length + '; ничего не нажато.');
+        const terms = (aliases[wanted] || [wanted]).map(normalize);
+        const ranked = rows.map(row => {
+          const cells = [...row.querySelectorAll('td')].map(cell => normalize(cell.innerText || cell.textContent));
+          const rowText = normalize(row.innerText || row.textContent);
+          let score = 0;
+          for (const term of terms) {
+            if (cells.some(cell => cell === term)) score = Math.max(score, 100);
+            else if (cells.some(cell => cell.includes(term))) score = Math.max(score, 60);
+            else if (rowText.includes(term)) score = Math.max(score, 20);
+          }
+          return {row, score};
+        }).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
+        if (!ranked.length || (ranked.length > 1 && ranked[0].score === ranked[1].score)) {
+          report.push('Манипуляция «' + label + '»: строка не определена однозначно (' + ranked.length + ' совпадений); ничего не нажато.');
           return;
         }
-        const trigger = matches[0].querySelector('.positiveTrigger');
+        const row = ranked[0].row;
+        const trigger = row.querySelector('.numTriggersFieldsContainer .positiveTrigger, .positiveTrigger');
         if (!trigger) {
-          report.push('Манипуляция «' + label + '»: триггер не найден; ничего не нажато.');
+          report.push('Манипуляция «' + label + '»: в найденной строке нет .positiveTrigger; ничего не нажато.');
           return;
         }
         try {
           trigger.click();
-          report.push('Манипуляция «' + label + '»: нажата кнопка таблицы. Проверь результат вручную; повторный запуск может повторить действие.');
+          report.push('Манипуляция «' + label + '»: нажата кнопка в найденной строке. Проверь, что отметка появилась; повторный запуск может повторить действие.');
         } catch (e) {
           report.push('Манипуляция «' + label + '»: ошибка нажатия — ' + String(e?.message || e));
         }
