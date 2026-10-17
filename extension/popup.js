@@ -394,7 +394,7 @@ function pageBridge(action, payload) {
   return {error:'Неизвестное действие'};
 }
 
-$('scanFields').addEventListener('click', async () => {
+$('scanFields')?.addEventListener('click', async () => {
   status.textContent = 'Изучаю структуру полей ProMed…';
   try {
     const result = await runPageAction('scanFields');
@@ -461,7 +461,7 @@ $('fill').addEventListener('click', async () => {
     status.textContent = (result?.report || ['Нет результата']).join('\n') + '\n\nТекущие значения:\n' + JSON.stringify(result?.after || {}, null, 2);
   } catch (e) { status.textContent = 'Ошибка: ' + (e?.message || e); }
 });
-$('scanExamFields').addEventListener('click', async () => {
+$('scanExamFields')?.addEventListener('click', async () => {
   status.textContent = 'Ищу компоненты осмотра и их подписи…';
   try { status.textContent = JSON.stringify(await runPageAction('scanExamFields'), null, 2); }
   catch (e) { status.textContent = 'Ошибка: ' + (e?.message || e); }
