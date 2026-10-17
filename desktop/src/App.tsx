@@ -187,6 +187,7 @@ export default function App() {
   const [selectedId, setSelectedId] = useState('');
   const [draft, setDraft] = useState<Template | null>(null);
   const [initialized, setInitialized] = useState(false);
+  const [view, setView] = useState<'categories' | 'templates' | 'editor'>('categories');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('Изменения сохраняются после нажатия «Сохранить».');
   const savedSelected = templates.find(t => t.id === selectedId);
@@ -227,12 +228,26 @@ export default function App() {
   };
   const navigateTo = (next: Template | null, nextCategory?: string) => {
     if (dirty && draft) {
-      if (window.confirm('Есть несохранённые изменения. Сохранить их перед переходом? Нажмите «Отмена», чтобы отбросить изменения.')) saveCurrentDraft(false);
+      const shouldSave = window.confirm('Есть несохранённые изменения. Сохранить их перед переходом? Нажмите «Отмена», чтобы отбросить изменения.');
+      if (shouldSave) saveCurrentDraft(false);
     }
     setDraft(next ? { ...next, extensionFields: { ...next.extensionFields } } : null);
     setSelectedId(next?.id || '');
     if (nextCategory) setSelectedCategory(nextCategory);
+    setView(next ? 'editor' : 'templates');
     setStatus(next ? 'Открыт шаблон «' + next.diagnosis + '».' : 'Выбрана категория. Создайте или выберите шаблон.');
+  };
+  const goToTemplates = () => {
+    if (dirty && draft) {
+      const shouldSave = window.confirm('Есть несохранённые изменения. Сохранить их перед возвратом к шаблонам? Нажмите «Отмена», чтобы отбросить изменения.');
+      if (shouldSave) saveCurrentDraft(false);
+      else {
+        const saved = templates.find(t => t.id === draft.id);
+        if (saved) setDraft({ ...saved, extensionFields: { ...saved.extensionFields } });
+        else setDraft(null);
+      }
+    }
+    setView('templates');
   };
   const update = (key: EditableTextKey, value: string) => {
     setDraft(current => current ? { ...current, [key]: value } : current);
@@ -361,19 +376,19 @@ export default function App() {
 
   return <main className="app-shell">
     <header className="topbar"><div className="brand-mark">СМП</div><div><h1>SMP Card Assistant</h1><p>Редактор шаблонов карт вызова</p></div><div className="top-spacer"/><button className="primary" onClick={exportJson}>Экспорт JSON</button><label className="button secondary">Импорт JSON<input type="file" accept="application/json,.json" hidden onChange={e => importJson(e.target.files?.[0])}/></label></header>
-    <div className="workspace">
+    <div className={'workspace view-' + view}>
       <aside className="sidebar">
         <div className="side-heading"><h2>Категории</h2><button title="Добавить категорию" aria-label="Добавить категорию" onClick={addCategory}>＋</button></div>
         <input className="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Поиск категории или диагноза…"/>
         <div className="category-tree">{categoryList.filter(c => c.toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU')) || templates.some(t => t.category === c && t.diagnosis.toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU')))).map(category => <div className={'category-row ' + (selectedCategory === category ? 'active' : '')} key={category}>
-          <button className="category-select" onClick={() => { setSelectedCategory(category); const first = templates.find(t => t.category === category); navigateTo(first || null, category); }}>{category}<span>{templates.filter(t => t.category === category).length}</span></button>
+          <button className="category-select" onClick={() => { setSelectedCategory(category); setSearch(''); setView('templates'); setDraft(null); setSelectedId(''); setStatus('Выбрана категория «' + category + '».'); }}>{category}<span>{templates.filter(t => t.category === category).length}</span></button>
           <button className="icon-action" title="Переименовать категорию" aria-label={'Переименовать ' + category} onClick={() => renameCategory(category)}>✎</button>
           <button className="icon-action delete-icon" title="Удалить категорию" aria-label={'Удалить ' + category} onClick={() => deleteCategory(category)}>⌫</button>
         </div>)}</div>
         <p className="sidebar-note">Выбери категорию, чтобы увидеть её шаблоны. Незавершённые изменения можно сохранить или отменить.</p>
       </aside>
       <section className="template-pane">
-        <div className="side-heading"><h2>Шаблоны: {selectedCategory}</h2><button title="Добавить шаблон" aria-label="Добавить шаблон" onClick={newTemplate}>＋</button></div>
+        <div className="side-heading"><button className="back-button" onClick={() => setView('categories')} aria-label="Назад к категориям">← Назад</button><h2>Шаблоны</h2><button title="Добавить шаблон" aria-label="Добавить шаблон" onClick={newTemplate}>＋</button></div>
         <div className="template-list">{visibleTemplates.map(t => <div key={t.id} className={'template-row ' + (selectedId === t.id ? 'active' : '')}>
           <button className="template-pick" onClick={() => navigateTo(t, t.category)}><strong>{t.diagnosis}</strong></button>
           <button className="icon-action" title="Копировать шаблон" aria-label={'Копировать ' + t.diagnosis} onClick={() => { if (draft?.id !== t.id) navigateTo(t, t.category); else copyTemplate(); if (draft?.id !== t.id) { const copy: Template = { ...t, id: crypto.randomUUID(), diagnosis: t.diagnosis + ' (копия)', extensionFields: { ...t.extensionFields } }; setDraft(copy); setSelectedId(copy.id); setStatus('Создана независимая копия. Измени категорию при необходимости и нажми «Сохранить».'); } }}>⧉</button>
@@ -382,7 +397,7 @@ export default function App() {
         </div>)}{draftVisible && draft && <div className="template-row active draft-row"><button className="template-pick" onClick={() => setSelectedId(draft.id)}><strong>{draft.diagnosis}</strong><small>Черновик, не сохранён</small></button><span className="draft-label">Черновик</span></div>}{visibleTemplates.length === 0 && !draftVisible && <p className="empty-list">В этой категории пока нет шаблонов.</p>}</div>
       </section>
       {selected ? <section className="editor">
-        <div className="page-heading"><div><span className="eyebrow">РЕДАКТОР ШАБЛОНА</span><h2>{selected.diagnosis}</h2><p className={dirty ? 'dirty-note' : 'saved-note'}>{dirty ? 'Есть несохранённые изменения' : 'Все изменения сохранены'}</p></div><div className="template-actions"><button className="secondary" onClick={copyTemplate}>⧉ Копировать</button><button className="danger-ghost" onClick={deleteTemplate}>Удалить</button></div></div>
+        <div className="page-heading"><div><button className="back-button editor-back" onClick={goToTemplates}>← К шаблонам</button><span className="eyebrow">РЕДАКТОР ШАБЛОНА</span><h2>{selected.diagnosis}</h2><p className={dirty ? 'dirty-note' : 'saved-note'}>{dirty ? 'Есть несохранённые изменения' : 'Все изменения сохранены'}</p></div><div className="template-actions"><button className="secondary" onClick={copyTemplate}>⧉ Копировать</button><button className="danger-ghost" onClick={deleteTemplate}>Удалить</button></div></div>
         <div className="field-grid"><label className="field"><span>Категория</span><select value={selected.category} onChange={e => update('category', e.target.value)}>{categoryList.map(c => <option key={c} value={c}>{c}</option>)}{!categoryList.includes(selected.category) && <option value={selected.category}>{selected.category}</option>}</select></label><label className="field"><span>Название диагноза</span><input value={selected.diagnosis} onChange={e => update('diagnosis', e.target.value)}/></label></div>
         <div className="editor-actions"><button className="primary" onClick={() => saveCurrentDraft()}>Сохранить</button><button className="secondary" onClick={() => { if (!draft) return; const saved = templates.find(t => t.id === draft.id); if (saved) setDraft({ ...saved, extensionFields: { ...saved.extensionFields } }); else { setDraft(null); setSelectedId(''); } setStatus('Несохранённые изменения отменены.'); }}>Отмена</button><span className="editor-action-note">{dirty ? 'Не забудь сохранить изменения' : 'Нет несохранённых изменений'}</span></div>
         <div className="section-title"><h3>Текстовые заготовки</h3><p>Фактические показатели и назначения подтверждаются для каждого вызова отдельно.</p></div>
