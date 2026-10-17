@@ -167,10 +167,23 @@ function pageBridge(action, payload) {
     const setProcedureTriggers = choices => {
       if (!Array.isArray(choices) || !choices.length) return;
       const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
+      // В разных версиях формы названия манипуляций могут немного отличаться.
+      // Используем только узкие синонимы и по-прежнему нажимаем кнопку, лишь если строка одна.
+      const aliases = {
+        'внутривенное': ['внутривенное', 'внутривенно', 'в/в введение', 'в/в'],
+        'осмотр фельдшера': ['осмотр фельдшера', 'осмотр фельдшером'],
+        'регистрация экг': ['регистрация экг', 'регистрация электрокардиограммы', 'снятие экг', 'снятие электрокардиограммы'],
+        'расшифровка экг': ['расшифровка экг', 'расшифровка электрокардиограммы', 'интерпретация экг', 'интерпретация электрокардиограммы'],
+        'пульсоксиметрия': ['пульсоксиметрия', 'измерение сатурации', 'измерение spo2', 'измерение spo₂']
+      };
       const rows = [...document.querySelectorAll('.x-grid-row')].filter(row => row.getClientRects().length);
       choices.forEach(label => {
         const wanted = normalize(label);
-        const matches = rows.filter(row => normalize(row.innerText || row.textContent).includes(wanted));
+        const terms = aliases[wanted] || [wanted];
+        const matches = rows.filter(row => {
+          const text = normalize(row.innerText || row.textContent);
+          return terms.some(term => text.includes(normalize(term)));
+        });
         if (matches.length !== 1) {
           report.push('Манипуляция «' + label + '»: найдено строк таблицы — ' + matches.length + '; ничего не нажато.');
           return;
