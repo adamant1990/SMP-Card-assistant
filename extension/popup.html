@@ -7,8 +7,11 @@
 <hr><h2>Шаблоны из Windows-программы</h2>
 <label for="templateFile">Импортировать файл smp-templates.json</label>
 <input id="templateFile" type="file" accept="application/json,.json">
+<label for="templateSearch">Поиск шаблона по диагнозу или категории</label>
+<input id="templateSearch" type="search" placeholder="Например, диабет или кардиология" autocomplete="off">
 <label for="templateSelect">Выбрать шаблон</label>
 <select id="templateSelect"><option value="">Сначала импортируй JSON</option></select>
+<small id="templateCount">Загруженные шаблоны: 0</small>
 <button id="applyTemplate" class="secondary" type="button">Перенести весь шаблон в поля расширения</button>
 <button id="fill">Заполнить выбранные поля</button>
 <small>Шаблон переносит жалобы, анамнез и настроенные поля карты: осмотр, показатели, манипуляции и исход. Проверь значения и отметки перед заполнением карты.</small>
