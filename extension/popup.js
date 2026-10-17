@@ -472,33 +472,39 @@ $('scanExamFields')?.addEventListener('click', async () => {
 // Храним только локально в Chrome; данные карты на сервер не отправляются.
 const templateFile = $('templateFile');
 const templateSelect = $('templateSelect');
+const templateSearch = $('templateSearch');
+const templateCount = $('templateCount');
 const applyTemplateButton = $('applyTemplate');
 let importedTemplates = [];
 
 function renderTemplateOptions(selectedId = '') {
+  const previousId = selectedId || importedTemplates[Number(templateSelect.value)]?.id || '';
+  const query = (templateSearch?.value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е');
+  const normalize = value => String(value || '').toLocaleLowerCase('ru-RU').replace(/ё/g, 'е');
+  const matches = importedTemplates.map((template, index) => ({template, index})).filter(({template}) =>
+    normalize(template.category + ' ' + template.diagnosis).includes(query)
+  );
   templateSelect.replaceChildren();
-  if (!importedTemplates.length) {
-    const option = document.createElement('option');
-    option.value = '';
-    option.textContent = 'Сначала импортируй JSON';
-    templateSelect.append(option);
-    return;
-  }
   const first = document.createElement('option');
   first.value = '';
-  first.textContent = 'Выбери диагноз…';
+  first.textContent = importedTemplates.length ? (matches.length ? 'Выбери диагноз…' : 'Ничего не найдено') : 'Сначала импортируй JSON';
   templateSelect.append(first);
-  importedTemplates.forEach((template, index) => {
+  matches.forEach(({template, index}) => {
     const option = document.createElement('option');
     option.value = String(index);
     option.textContent = (template.category ? template.category + ' · ' : '') + template.diagnosis;
     templateSelect.append(option);
   });
-  if (selectedId) {
-    const index = importedTemplates.findIndex(t => t.id === selectedId);
-    if (index >= 0) templateSelect.value = String(index);
+  if (previousId) {
+    const index = matches.find(({template}) => template.id === previousId)?.index;
+    if (index !== undefined) templateSelect.value = String(index);
   }
+  if (templateCount) templateCount.textContent = query
+    ? 'Найдено: ' + matches.length + ' из ' + importedTemplates.length
+    : 'Загруженные шаблоны: ' + importedTemplates.length;
 }
+
+templateSearch?.addEventListener('input', () => renderTemplateOptions());
 
 async function restoreImportedTemplates() {
   try {
