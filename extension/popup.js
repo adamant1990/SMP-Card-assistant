@@ -580,7 +580,16 @@ applyTemplateButton.addEventListener('click', () => {
       if (option) { element.value = option.value; appliedFieldCount++; }
       else fieldReport.push(id + ': вариант «' + value + '» отсутствует в списке расширения.');
     } else if (element.tagName === 'TEXTAREA' || element.tagName === 'INPUT') {
-      if (typeof value === 'string' && value.trim()) { element.value = value; appliedFieldCount++; }
+      if (typeof value === 'string' && value.trim()) {
+        // Числовые поля браузера не принимают десятичную запятую, хотя пользователь
+        // может ввести температуру в привычном формате 36,6 в Windows-программе.
+        const normalizedValue = element instanceof HTMLInputElement && element.type === 'number'
+          ? value.trim().replace(',', '.')
+          : value;
+        element.value = normalizedValue;
+        if (element.value === normalizedValue) appliedFieldCount++;
+        else fieldReport.push(id + ': значение «' + value + '» не подходит для поля; проверь формат.');
+      }
     }
   });
 
