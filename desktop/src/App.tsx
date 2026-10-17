@@ -179,7 +179,7 @@ export default function App() {
   const [categories, setCategories] = useState<string[]>(() => {
     try {
       const saved = JSON.parse(localStorage.getItem('smp-card-assistant.categories.v1') || '[]');
-      if (Array.isArray(saved)) return Array.from(new Set([...saved.filter((x: unknown) => typeof x === 'string'), ...loadTemplates().map(t => t.category)]));
+      if (Array.isArray(saved)) return Array.from(new Set([...saved.filter((x: unknown): x is string => typeof x === 'string'), ...loadTemplates().map(t => t.category)]));
     } catch {}
     return Array.from(new Set(loadTemplates().map(t => t.category)));
   });
@@ -313,7 +313,7 @@ export default function App() {
     const output = draft && dirty
       ? templates.some(t => t.id === draft.id) ? templates.map(t => t.id === draft.id ? draft : t) : [...templates, draft]
       : templates;
-    const blob = new Blob([JSON.stringify({ schemaVersion: 2, templates: output }, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({ schemaVersion: 2, categories: categoryList, templates: output }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = 'smp-templates.json'; a.click();
     URL.revokeObjectURL(url);
@@ -328,7 +328,7 @@ export default function App() {
         const incoming = Array.isArray(data) ? data : data.templates;
         if (!Array.isArray(incoming) || !incoming.every(t => t && typeof t.category === 'string' && typeof t.diagnosis === 'string')) throw new Error('bad format');
         const normalized = incoming.map((t: Partial<Template>, i: number) => normalizeTemplate(t, i));
-        const importedCategories = Array.from(new Set(normalized.map(t => t.category)));
+        const importedCategories = Array.from(new Set([...(Array.isArray(data.categories) ? data.categories.filter((x: unknown): x is string => typeof x === 'string') : []), ...normalized.map(t => t.category)]));
         setTemplates(normalized);
         setCategories(importedCategories);
         setSelectedCategory(normalized[0]?.category || 'Без категории');
