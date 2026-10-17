@@ -56,21 +56,21 @@
 @media(max-width:1150px){.workspace{grid-template-columns:205px 245px minmax(460px,1fr)}.editor{padding:24px 18px}.page-heading{flex-direction:column}.template-actions{justify-content:flex-start}}
 
 
-/* Sequential navigation: categories -> templates -> editor */
-.workspace.view-categories{grid-template-columns:minmax(280px,720px);justify-content:center;max-width:1100px}
-.workspace.view-categories .sidebar{border-right:0;padding:30px 28px}
-.workspace.view-categories .template-pane,.workspace.view-categories .editor{display:none}
-.workspace.view-templates{grid-template-columns:minmax(300px,820px);justify-content:center;max-width:1100px}
-.workspace.view-templates .sidebar,.workspace.view-templates .editor{display:none}
-.workspace.view-templates .template-pane{border-right:0;padding:30px 28px;background:transparent}
-.workspace.view-templates .template-row{padding:5px 8px}
-.workspace.view-templates .template-pick{padding:14px 10px}
-.workspace.view-editor{grid-template-columns:minmax(0,1000px);justify-content:center;max-width:1100px}
-.workspace.view-editor .sidebar,.workspace.view-editor .template-pane{display:none}
-.workspace.view-editor .editor{max-width:none;padding:30px 28px}
+/* Sidebar navigation: categories OR templates, with editor beside it */
+.workspace{grid-template-columns:285px minmax(0,1fr);max-width:1440px;margin:0 auto;align-items:stretch}
+.workspace.view-categories .sidebar{display:flex;grid-column:1;padding:24px 16px;border-right:1px solid #e4e9f0}
+.workspace.view-categories .template-pane{display:none}
+.workspace.view-categories .editor{display:block;grid-column:2;max-width:1000px}
+.workspace.view-templates,.workspace.view-editor{grid-template-columns:285px minmax(0,1fr);max-width:1440px}
+.workspace.view-templates .sidebar,.workspace.view-editor .sidebar{display:none}
+.workspace.view-templates .template-pane,.workspace.view-editor .template-pane{display:block;grid-column:1;grid-row:1;padding:24px 14px;background:#fbfcfe;border-right:1px solid #e4e9f0}
+.workspace.view-templates .template-row,.workspace.view-editor .template-row{padding:5px}
+.workspace.view-templates .template-pick,.workspace.view-editor .template-pick{padding:12px 8px}
+.workspace.view-templates .editor,.workspace.view-editor .editor{display:block;grid-column:2;grid-row:1;max-width:1000px;padding:28px}
+.workspace.view-templates .side-heading,.workspace.view-editor .side-heading{justify-content:flex-start;gap:12px}
+.workspace.view-templates .side-heading h2,.workspace.view-editor .side-heading h2{margin-right:auto}
 .back-button{background:#eef3f6;color:#344256;padding:9px 12px;white-space:nowrap}
 .back-button:hover{background:#e3ebe9}
 .editor-back{display:inline-flex;margin-bottom:14px}
-.workspace.view-templates .side-heading{justify-content:flex-start;gap:16px}
-.workspace.view-templates .side-heading h2{margin-right:auto}
-@media(max-width:700px){body{min-width:0}.topbar{padding:0 14px;gap:8px}.topbar h1{font-size:15px}.topbar p{font-size:10px}.topbar button,.topbar .button{padding:8px;font-size:10px}.workspace.view-categories .sidebar,.workspace.view-templates .template-pane,.workspace.view-editor .editor{padding:20px 14px}.workspace.view-editor .field-grid{grid-template-columns:1fr}.workspace.view-editor .page-heading{flex-direction:column}}
+@media(max-width:1150px){.workspace,.workspace.view-templates,.workspace.view-editor{grid-template-columns:250px minmax(0,1fr)}.editor{padding:24px 18px}.page-heading{flex-direction:column}.template-actions{justify-content:flex-start}}
+@media(max-width:700px){body{min-width:0}.topbar{padding:0 14px;gap:8px}.topbar h1{font-size:15px}.topbar p{font-size:10px}.topbar button,.topbar .button{padding:8px;font-size:10px}.workspace,.workspace.view-templates,.workspace.view-editor{grid-template-columns:1fr}.workspace.view-categories .sidebar,.workspace.view-templates .template-pane,.workspace.view-editor .template-pane{grid-column:1;grid-row:1;padding:20px 14px;border-right:0;border-bottom:1px solid #e4e9f0}.workspace.view-categories .editor,.workspace.view-templates .editor,.workspace.view-editor .editor{grid-column:1;grid-row:2;padding:20px 14px}.workspace.view-editor .field-grid{grid-template-columns:1fr}.workspace.view-editor .page-heading{flex-direction:column}}
