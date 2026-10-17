@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 
 type ExtensionValue = string | boolean | string[];
+type EditableTextKey = 'category' | 'diagnosis' | 'complaints' | 'anamnesis' | 'examination' | 'treatment';
 type Template = {
   id: string; category: string; diagnosis: string;
   complaints: string; anamnesis: string; examination: string; treatment: string;
@@ -186,7 +187,7 @@ export default function App() {
     catch { setStatus('Не удалось сохранить шаблоны автоматически. Используйте экспорт JSON.'); }
   }, [templates]);
 
-  const update = (key: keyof Template, value: string) => {
+  const update = (key: EditableTextKey, value: string) => {
     setTemplates(current => current.map(t => t.id === selectedId ? { ...t, [key]: value } : t));
     setStatus('Изменения сохраняются автоматически.');
   };
@@ -216,9 +217,9 @@ export default function App() {
     };
     reader.readAsText(file);
   };
-  const updateSelected = (key: keyof Template, value: string) => update(key, value);
+  const updateSelected = (key: EditableTextKey, value: string) => update(key, value);
   const getFieldValue = (field: FieldDef): ExtensionValue => {
-    const value = selected.extensionFields[field.id];
+    const value = selected?.extensionFields[field.id];
     if (value !== undefined) return value;
     if (field.kind === 'check') return false;
     if (field.kind === 'multi') return [];
