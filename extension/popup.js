@@ -529,7 +529,13 @@ templateFile.addEventListener('change', async () => {
       complaints: t.complaints || '',
       anamnesis: t.anamnesis || '',
       examination: t.examination || '',
-      treatment: t.treatment || ''
+      treatment: t.treatment || '',
+      extensionFields: t.extensionFields && typeof t.extensionFields === 'object' && !Array.isArray(t.extensionFields)
+        ? Object.fromEntries(Object.entries(t.extensionFields).filter(([, value]) =>
+            typeof value === 'string' || typeof value === 'boolean' ||
+            (Array.isArray(value) && value.every(item => typeof item === 'string'))
+          ))
+        : {}
     }));
     await chrome.storage.local.set({smpImportedTemplates: importedTemplates});
     renderTemplateOptions();
@@ -554,7 +560,31 @@ applyTemplateButton.addEventListener('click', () => {
   $('anamnez').value = template.anamnesis;
   $('fillComplaints').checked = Boolean(template.complaints.trim());
   $('fillAnamnez').checked = Boolean(template.anamnesis.trim());
-  status.textContent = 'Шаблон «' + template.diagnosis + '» перенесён в поля расширения. Проверь текст, затем нажми «Заполнить выбранные поля».';
+
+  const fieldReport = [];
+  const extensionFields = template.extensionFields && typeof template.extensionFields === 'object' ? template.extensionFields : {};
+  Object.entries(extensionFields).forEach(([id, value]) => {
+    const element = $(id);
+    if (!element) { fieldReport.push(id + ': поля нет в текущей версии расширения.'); return; }
+    if (element.tagName === 'SELECT' && element.multiple) {
+      if (!Array.isArray(value)) return;
+      const wanted = new Set(value.map(String));
+      Array.from(element.options).forEach(option => { option.selected = wanted.has(option.value); });
+    } else if (element.type === 'checkbox') {
+      if (typeof value === 'boolean') element.checked = value;
+    } else if (element.tagName === 'SELECT') {
+      if (typeof value !== 'string') return;
+      const option = Array.from(element.options).find(item => item.value === value || item.textContent.trim() === value);
+      if (option) element.value = option.value;
+      else fieldReport.push(id + ': вариант «' + value + '» отсутствует в списке расширения.');
+    } else if (element.tagName === 'TEXTAREA' || element.tagName === 'INPUT') {
+      if (typeof value === 'string' && value.trim()) element.value = value;
+    }
+  });
+
+  if (extensionFields.reason) $('fillReason').checked = extensionFields.reason !== 'unchanged';
+  status.textContent = 'Шаблон «' + template.diagnosis + '» перенесён. Жалобы, анамнез и отдельные поля заполнены в расширении. Проверь значения, затем нажми «Заполнить выбранные поля».' +
+    (fieldReport.length ? '\\n\\nЗамечания:\\n' + fieldReport.join('\\n') : '');
 });
 
 restoreImportedTemplates();
