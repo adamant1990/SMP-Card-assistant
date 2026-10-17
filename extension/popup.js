@@ -166,42 +166,44 @@ function pageBridge(action, payload) {
     };
     const setProcedureTriggers = choices => {
       if (!Array.isArray(choices) || !choices.length) return;
-      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+      const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
       const aliases = {
-        'внутривенное': ['внутривенное', 'внутривенно', 'в/в введение', 'в/в'],
+        'внутривенное': ['внутривенное введение лекарственных препаратов', 'внутривенное', 'внутривенно', 'в/в введение', 'в/в'],
         'осмотр фельдшера': ['осмотр фельдшера', 'осмотр фельдшером'],
         'регистрация экг': ['регистрация экг', 'регистрация электрокардиограммы', 'снятие экг', 'снятие электрокардиограммы'],
         'расшифровка экг': ['расшифровка экг', 'расшифровка электрокардиограммы', 'интерпретация экг', 'интерпретация электрокардиограммы'],
         'пульсоксиметрия': ['пульсоксиметрия', 'измерение сатурации', 'измерение spo2', 'измерение spo₂']
       };
-      const rows = [...document.querySelectorAll('tr.x-grid-row, .x-grid-row')].filter(row => row.getClientRects().length);
+      const rows = [...document.querySelectorAll('tr.x-grid-row, .x-grid-row')]
+        .filter((row, index, all) => row.getClientRects().length && all.indexOf(row) === index);
       choices.forEach(label => {
         const wanted = normalize(label);
         const terms = (aliases[wanted] || [wanted]).map(normalize);
-        const ranked = rows.map(row => {
-          const cells = [...row.querySelectorAll('td')].map(cell => normalize(cell.innerText || cell.textContent));
-          const rowText = normalize(row.innerText || row.textContent);
-          let score = 0;
-          for (const term of terms) {
-            if (cells.some(cell => cell === term)) score = Math.max(score, 100);
-            else if (cells.some(cell => cell.includes(term))) score = Math.max(score, 60);
-            else if (rowText.includes(term)) score = Math.max(score, 20);
-          }
-          return {row, score};
-        }).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
-        if (!ranked.length || (ranked.length > 1 && ranked[0].score === ranked[1].score)) {
-          report.push('Манипуляция «' + label + '»: строка не определена однозначно (' + ranked.length + ' совпадений); ничего не нажато.');
+        // Только точное совпадение текста отдельной ячейки. Совпадение фразы
+        // внутри более длинного названия не считается достаточным основанием для клика.
+        const exactMatches = rows.map(row => ({
+          row,
+          cells: [...row.querySelectorAll('td')].map(cell => normalize(cell.innerText || cell.textContent))
+        })).filter(item => item.cells.some(cell => terms.includes(cell)));
+        if (exactMatches.length !== 1) {
+          const reason = exactMatches.length
+            ? 'найдено ' + exactMatches.length + ' точных совпадений'
+            : 'точного совпадения в отдельной ячейке нет';
+          report.push('Манипуляция «' + label + '»: ' + reason + '; ничего не нажато.');
           return;
         }
-        const row = ranked[0].row;
+        const row = exactMatches[0].row;
         const trigger = row.querySelector('.numTriggersFieldsContainer .positiveTrigger, .positiveTrigger');
         if (!trigger) {
-          report.push('Манипуляция «' + label + '»: в найденной строке нет .positiveTrigger; ничего не нажато.');
+          const numberField = row.querySelector('.numTriggersFieldsContainer .numberField, .numberField');
+          report.push('Манипуляция «' + label + '»: название найдено точно, но ' +
+            (numberField ? 'в строке найдено числовое поле, а кнопки positiveTrigger нет' : 'кнопка positiveTrigger не найдена') +
+            '; значение не изменено.');
           return;
         }
         try {
           trigger.click();
-          report.push('Манипуляция «' + label + '»: нажата кнопка в найденной строке. Проверь, что отметка появилась; повторный запуск может повторить действие.');
+          report.push('Манипуляция «' + label + '»: найдено точное совпадение названия, кнопка нажата. Проверь отметку в ProMed; повторный запуск может повторить действие.');
         } catch (e) {
           report.push('Манипуляция «' + label + '»: ошибка нажатия — ' + String(e?.message || e));
         }
