@@ -21,3 +21,5 @@ main > p.warning { display: block !important; }
 main > .pressure-row:has(#arrivalMileage) { display: grid !important; }
 main > #callNote { min-height: 56px; }
 main > #applyTemplate { margin-bottom: 8px; }
+
+main > p.hint:not(:first-of-type) { display: none !important; }
