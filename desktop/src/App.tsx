@@ -237,6 +237,18 @@ export default function App() {
     setView(next ? 'editor' : 'templates');
     setStatus(next ? 'Открыт шаблон «' + next.diagnosis + '».' : 'Выбрана категория. Создайте или выберите шаблон.');
   };
+  const openCategory = (category: string) => {
+    if (dirty && draft) {
+      const shouldSave = window.confirm('Есть несохранённые изменения. Сохранить их перед переходом к категории? Нажмите «Отмена», чтобы отбросить изменения.');
+      if (shouldSave) saveCurrentDraft(false);
+    }
+    setSelectedCategory(category);
+    setSearch('');
+    setDraft(null);
+    setSelectedId('');
+    setView('templates');
+    setStatus('Выбрана категория «' + category + '».');
+  };
   const goToTemplates = () => {
     if (dirty && draft) {
       const shouldSave = window.confirm('Есть несохранённые изменения. Сохранить их перед возвратом к шаблонам? Нажмите «Отмена», чтобы отбросить изменения.');
@@ -381,7 +393,7 @@ export default function App() {
         <div className="side-heading"><h2>Категории</h2><button title="Добавить категорию" aria-label="Добавить категорию" onClick={addCategory}>＋</button></div>
         <input className="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Поиск категории или диагноза…"/>
         <div className="category-tree">{categoryList.filter(c => c.toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU')) || templates.some(t => t.category === c && t.diagnosis.toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU')))).map(category => <div className={'category-row ' + (selectedCategory === category ? 'active' : '')} key={category}>
-          <button className="category-select" onClick={() => { setSelectedCategory(category); setSearch(''); setView('templates'); setDraft(null); setSelectedId(''); setStatus('Выбрана категория «' + category + '».'); }}>{category}<span>{templates.filter(t => t.category === category).length}</span></button>
+          <button className="category-select" onClick={() => openCategory(category)}>{category}<span>{templates.filter(t => t.category === category).length}</span></button>
           <button className="icon-action" title="Переименовать категорию" aria-label={'Переименовать ' + category} onClick={() => renameCategory(category)}>✎</button>
           <button className="icon-action delete-icon" title="Удалить категорию" aria-label={'Удалить ' + category} onClick={() => deleteCategory(category)}>⌫</button>
         </div>)}</div>
