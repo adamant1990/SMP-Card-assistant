@@ -186,6 +186,7 @@ export default function App() {
   const [selectedCategory, setSelectedCategory] = useState(() => loadTemplates()[0]?.category || 'Кардиология');
   const [selectedId, setSelectedId] = useState('');
   const [draft, setDraft] = useState<Template | null>(null);
+  const [initialized, setInitialized] = useState(false);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('Изменения сохраняются после нажатия «Сохранить».');
   const savedSelected = templates.find(t => t.id === selectedId);
@@ -204,12 +205,15 @@ export default function App() {
     catch { setStatus('Не удалось сохранить список категорий. Экспортируйте шаблоны JSON.'); }
   }, [categories]);
   useEffect(() => {
-    if (!selectedId && templates.length) {
-      setSelectedId(templates[0].id);
-      setSelectedCategory(templates[0].category);
-      setDraft({ ...templates[0], extensionFields: { ...templates[0].extensionFields } });
+    if (!initialized) {
+      if (templates.length) {
+        setSelectedId(templates[0].id);
+        setSelectedCategory(templates[0].category);
+        setDraft({ ...templates[0], extensionFields: { ...templates[0].extensionFields } });
+      }
+      setInitialized(true);
     }
-  }, [selectedId, templates]);
+  }, [initialized, templates]);
 
   const saveCurrentDraft = (showStatus = true) => {
     if (!draft) return;
