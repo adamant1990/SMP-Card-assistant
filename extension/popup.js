@@ -478,7 +478,7 @@ const applyTemplateButton = $('applyTemplate');
 let importedTemplates = [];
 
 function renderTemplateOptions(selectedId = '') {
-  const previousId = selectedId || importedTemplates[Number(templateSelect.value)]?.id || '';
+  const previousId = selectedId || (templateSelect.value !== '' ? importedTemplates[Number(templateSelect.value)]?.id : '') || '';
   const query = (templateSearch?.value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е');
   const normalize = value => String(value || '').toLocaleLowerCase('ru-RU').replace(/ё/g, 'е');
   const matches = importedTemplates.map((template, index) => ({template, index})).filter(({template}) =>
