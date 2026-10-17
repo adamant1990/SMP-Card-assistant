@@ -192,6 +192,7 @@ export default function App() {
   const [status, setStatus] = useState('Изменения сохраняются после нажатия «Сохранить».');
   const [showAddCategory, setShowAddCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [categoryDialog, setCategoryDialog] = useState<{ mode: 'rename' | 'delete'; category: string; value: string } | null>(null);
   const savedSelected = templates.find(t => t.id === selectedId);
   const selected = draft;
   const dirty = Boolean(draft && (!savedSelected || JSON.stringify(draft) !== JSON.stringify(savedSelected)));
@@ -296,34 +297,42 @@ export default function App() {
     setStatus('Категория «' + value + '» создана. Теперь выберите её, чтобы добавить шаблоны.');
   };
   const renameCategory = (oldName: string) => {
-    const value = window.prompt('Новое название категории «' + oldName + '»:', oldName)?.trim();
-    if (!value || value === oldName) return;
-    if (categoryList.some(c => c.toLocaleLowerCase('ru-RU') === value.toLocaleLowerCase('ru-RU'))) {
-      setStatus('Категория с таким названием уже существует.');
-      return;
-    }
-    setCategories(current => current.map(c => c === oldName ? value : c));
-    setTemplates(current => current.map(t => t.category === oldName ? { ...t, category: value } : t));
-    setDraft(current => current && current.category === oldName ? { ...current, category: value } : current);
-    if (selectedCategory === oldName) setSelectedCategory(value);
-    setStatus('Категория «' + oldName + '» переименована.');
+    setCategoryDialog({ mode: 'rename', category: oldName, value: oldName });
   };
   const deleteCategory = (name: string) => {
-    const destinations = categoryList.filter(c => c !== name);
-    const choices = [...destinations, ...(destinations.includes('Без категории') ? [] : ['Без категории'])];
-    const destination = window.prompt('Куда перенести шаблоны из «' + name + '»?\nВведите название категории или «Без категории»:\n\n' + choices.join('\n'));
-    if (destination === null) return;
-    const target = destination.trim();
-    if (!choices.includes(target)) {
-      setStatus('Удаление отменено: выбрана неизвестная категория.');
+    const choices = categoryList.filter(c => c !== name);
+    const targets = [...choices, ...(choices.includes('Без категории') ? [] : ['Без категории'])];
+    setCategoryDialog({ mode: 'delete', category: name, value: targets[0] || 'Без категории' });
+  };
+  const applyCategoryDialog = () => {
+    if (!categoryDialog) return;
+    const { mode, category } = categoryDialog;
+    const value = categoryDialog.value.trim();
+    if (mode === 'rename') {
+      if (!value || value === category) { setCategoryDialog(null); return; }
+      if (categoryList.some(c => c.toLocaleLowerCase('ru-RU') === value.toLocaleLowerCase('ru-RU'))) {
+        setStatus('Категория с таким названием уже существует.');
+        return;
+      }
+      setCategories(current => current.map(c => c === category ? value : c));
+      setTemplates(current => current.map(t => t.category === category ? { ...t, category: value } : t));
+      setDraft(current => current && current.category === category ? { ...current, category: value } : current);
+      if (selectedCategory === category) setSelectedCategory(value);
+      setStatus('Категория «' + category + '» переименована.');
+      setCategoryDialog(null);
       return;
     }
-    if (!window.confirm('Удалить категорию «' + name + '» и перенести её шаблоны в «' + target + '»? Сами шаблоны сохранятся.')) return;
-    setTemplates(current => current.map(t => t.category === name ? { ...t, category: target } : t));
-    setDraft(current => current && current.category === name ? { ...current, category: target } : current);
-    setCategories(current => Array.from(new Set([...current.filter(c => c !== name), target])));
-    if (selectedCategory === name) setSelectedCategory(target);
-    setStatus('Категория удалена. Шаблоны перенесены в «' + target + '».');
+    const targets = [...categoryList.filter(c => c !== category), ...(categoryList.some(c => c !== category && c === 'Без категории') ? [] : ['Без категории'])];
+    if (!targets.includes(value)) {
+      setStatus('Выберите категорию, в которую перенести шаблоны.');
+      return;
+    }
+    setTemplates(current => current.map(t => t.category === category ? { ...t, category: value } : t));
+    setDraft(current => current && current.category === category ? { ...current, category: value } : current);
+    setCategories(current => Array.from(new Set([...current.filter(c => c !== category), value])));
+    if (selectedCategory === category) setSelectedCategory(value);
+    setStatus('Категория «' + category + '» удалена. Шаблоны перенесены в «' + value + '».');
+    setCategoryDialog(null);
   };
   const newTemplate = () => {
     const t = { ...blank(), category: selectedCategory };
@@ -402,6 +411,19 @@ export default function App() {
 
   return <main className="app-shell">
     <header className="topbar"><div className="brand-mark">СМП</div><div><h1>SMP Card Assistant</h1><p>Редактор шаблонов карт вызова</p></div><div className="top-spacer"/><button className="primary" onClick={exportJson}>Экспорт JSON</button><label className="button secondary">Импорт JSON<input type="file" accept="application/json,.json" hidden onChange={e => importJson(e.target.files?.[0])}/></label></header>
+    {categoryDialog && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setCategoryDialog(null); }}>
+      <form className="modal-card" onSubmit={e => { e.preventDefault(); applyCategoryDialog(); }}>
+        <h2>{categoryDialog.mode === 'rename' ? 'Переименовать категорию' : 'Удалить категорию'}</h2>
+        {#if categoryDialog.mode === 'rename'}
+          <p>Новое название для «{categoryDialog.category}».</p>
+          <label className="field"><span>Название категории</span><input autoFocus value={categoryDialog.value} onChange={e => setCategoryDialog(current => current ? { ...current, value: e.target.value } : current)} /></label>
+        {:else}
+          <p>Шаблоны из «{categoryDialog.category}» сохранятся и будут перенесены в выбранную категорию.</p>
+          <label className="field"><span>Перенести шаблоны в</span><select value={categoryDialog.value} onChange={e => setCategoryDialog(current => current ? { ...current, value: e.target.value } : current)}>{[...categoryList.filter(c => c !== categoryDialog.category), ...(categoryList.some(c => c !== categoryDialog.category && c === 'Без категории') ? [] : ['Без категории'])].map(c => <option key={c} value={c}>{c}</option>)}</select></label>
+        {/if}
+        <div className="modal-actions"><button type="button" className="secondary" onClick={() => setCategoryDialog(null)}>Отмена</button><button type="submit" className={categoryDialog.mode === 'delete' ? 'danger-ghost' : 'primary'}>{categoryDialog.mode === 'rename' ? 'Сохранить название' : 'Удалить категорию'}</button></div>
+      </form>
+    </div>}
     {showAddCategory && <div className="modal-backdrop" onMouseDown={e => { if (e.target === e.currentTarget) setShowAddCategory(false); }}>
       <form className="modal-card" onSubmit={e => { e.preventDefault(); createCategory(); }}>
         <h2>Новая категория</h2>
