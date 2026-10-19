@@ -470,7 +470,7 @@ export default function App() {
         <p className="sidebar-note">Нажми на категорию, чтобы раскрыть или свернуть карты вызовов. Выбери карту, чтобы открыть редактор справа.</p>
       </aside>
       <section className="template-pane">
-        <div className="side-heading"><button className="back-button" onClick={() => setView('categories')} aria-label="Назад к категориям">← Назад</button><h2>Шаблоны</h2><button title="Добавить шаблон" aria-label="Добавить шаблон" onClick={newTemplate}>＋</button></div>
+        <div className="side-heading"><button className="back-button" onClick={() => setView('categories')} aria-label="Назад к категориям">← Назад</button><h2>Шаблоны</h2><button title="Добавить шаблон" aria-label="Добавить шаблон" onClick={() => newTemplate(selectedCategory)}>＋</button></div>
         <div className="template-list">{visibleTemplates.map(t => <div key={t.id} className={'template-row ' + (selectedId === t.id ? 'active' : '')}>
           <button className="template-pick" onClick={() => navigateTo(t, t.category)}><strong>{t.diagnosis}</strong></button>
           <button className="icon-action" title="Копировать шаблон" aria-label={'Копировать ' + t.diagnosis} onClick={() => { if (draft?.id !== t.id) navigateTo(t, t.category); else copyTemplate(); if (draft?.id !== t.id) { const copy: Template = { ...t, id: crypto.randomUUID(), diagnosis: t.diagnosis + ' (копия)', extensionFields: { ...t.extensionFields } }; setDraft(copy); setSelectedId(copy.id); setStatus('Создана независимая копия. Измени категорию при необходимости и нажми «Сохранить».'); } }}>⧉</button>
