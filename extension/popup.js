@@ -128,6 +128,31 @@ function pageBridge(action, payload) {
         }
       }
     }
+    if (payload.resultTrip && payload.resultTrip !== 'unchanged') {
+      const combo = (window.Ext?.ComponentQuery?.query('combo[name="resultambulancetrip_id"]') || [])[0];
+      if (!combo) {
+        report.push('Результат выезда: поле не найдено; значение не менялось.');
+      } else {
+        const store = combo.getStore?.();
+        const valueField = combo.valueField || 'resultambulancetrip_id';
+        const record = (store?.getRange?.() || []).find(r =>
+          String(r.get?.(valueField) ?? r.data?.[valueField] ?? '') === String(payload.resultTrip)
+        );
+        if (!record) {
+          report.push('Результат выезда: код ' + payload.resultTrip + ' отсутствует в загруженном справочнике; значение не менялось.');
+        } else {
+          try {
+            combo.select(record);
+            combo.fireEvent?.('select', combo, record);
+            report.push('Результат выезда: выбрано «' +
+              (record.get?.('resultambulancetrip_name') ?? record.data?.resultambulancetrip_name ?? payload.resultTrip) +
+              '». Проверь значение в ProMed.');
+          } catch (e) {
+            report.push('Результат выезда: ошибка выбора — ' + String(e?.message || e));
+          }
+        }
+      }
+    }
     const setText = (el, value, label) => {
       if (!value?.trim()) { report.push(label + ': пропущено — поле шаблона пустое.'); return; }
       if (!el) { report.push(label + ': поле не найдено.'); return; }
@@ -454,7 +479,8 @@ $('fill').addEventListener('click', async () => {
     arrivalMileage:$('arrivalMileage').value, totalMileage:$('totalMileage').value,
     isKupir:$('isKupir').value, medicalIntervention:$('medicalIntervention').value,
     transportConsent:$('transportConsent').value, careResult:$('careResult').value,
-    aftercareRecommendation:$('aftercareRecommendation').value};
+    aftercareRecommendation:$('aftercareRecommendation').value,
+    resultTrip:$('resultTrip').value};
   status.textContent = 'Заполняю выбранные поля…';
   try {
     const result = await runPageAction('fill', payload);
