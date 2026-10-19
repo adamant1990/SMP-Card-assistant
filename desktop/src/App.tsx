@@ -184,6 +184,7 @@ export default function App() {
     return Array.from(new Set(loadTemplates().map(t => t.category)));
   });
   const [selectedCategory, setSelectedCategory] = useState(() => loadTemplates()[0]?.category || 'Кардиология');
+  const [expandedCategories, setExpandedCategories] = useState<string[]>(() => [loadTemplates()[0]?.category || 'Кардиология']);
   const [selectedId, setSelectedId] = useState('');
   const [draft, setDraft] = useState<Template | null>(null);
   const [initialized, setInitialized] = useState(false);
@@ -287,6 +288,7 @@ export default function App() {
       return;
     }
     setCategories(current => [...current, value]);
+    setExpandedCategories(current => [...current, value]);
     setSelectedCategory(value);
     setSearch('');
     setDraft(null);
@@ -315,6 +317,7 @@ export default function App() {
         return;
       }
       setCategories(current => current.map(c => c === category ? value : c));
+      setExpandedCategories(current => current.map(c => c === category ? value : c));
       setTemplates(current => current.map(t => t.category === category ? { ...t, category: value } : t));
       setDraft(current => current && current.category === category ? { ...current, category: value } : current);
       if (selectedCategory === category) setSelectedCategory(value);
@@ -329,14 +332,19 @@ export default function App() {
     }
     setTemplates(current => current.map(t => t.category === category ? { ...t, category: value } : t));
     setDraft(current => current && current.category === category ? { ...current, category: value } : current);
+    setExpandedCategories(current => current.filter(c => c !== category));
     setCategories(current => Array.from(new Set([...current.filter(c => c !== category), value])));
     if (selectedCategory === category) setSelectedCategory(value);
     setStatus('Категория «' + category + '» удалена. Шаблоны перенесены в «' + value + '».');
     setCategoryDialog(null);
   };
-  const newTemplate = () => {
-    const t = { ...blank(), category: selectedCategory };
-    navigateTo(t, selectedCategory);
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(current => current.includes(category) ? current.filter(item => item !== category) : [...current, category]);
+  };
+  const newTemplate = (category = selectedCategory) => {
+    const t = { ...blank(), category };
+    setExpandedCategories(current => current.includes(category) ? current : [...current, category]);
+    navigateTo(t, category);
     setStatus('Создан черновик нового шаблона. Нажмите «Сохранить», чтобы добавить его в библиотеку.');
   };
   const copyTemplate = () => {
@@ -432,16 +440,34 @@ export default function App() {
         <div className="modal-actions"><button type="button" className="secondary" onClick={() => setShowAddCategory(false)}>Отмена</button><button type="submit" className="primary">Создать категорию</button></div>
       </form>
     </div>}
-    <div className={'workspace view-' + view}>
+    <div className="workspace accordion-workspace">
       <aside className="sidebar">
         <div className="side-heading"><h2>Категории</h2><button title="Добавить категорию" aria-label="Добавить категорию" onClick={addCategory}>＋</button></div>
         <input className="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Поиск категории или диагноза…"/>
-        <div className="category-tree">{categoryList.filter(c => c.toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU')) || templates.some(t => t.category === c && t.diagnosis.toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU')))).map(category => <div className={'category-row ' + (selectedCategory === category ? 'active' : '')} key={category}>
-          <button className="category-select" onClick={() => openCategory(category)}>{category}<span>{templates.filter(t => t.category === category).length}</span></button>
-          <button className="icon-action" title="Переименовать категорию" aria-label={'Переименовать ' + category} onClick={() => renameCategory(category)}>✎</button>
-          <button className="icon-action delete-icon" title="Удалить категорию" aria-label={'Удалить ' + category} onClick={() => deleteCategory(category)}>⌫</button>
-        </div>)}</div>
-        <p className="sidebar-note">Выбери категорию, чтобы увидеть её шаблоны. Незавершённые изменения можно сохранить или отменить.</p>
+        <div className="category-tree">{categoryList.filter(c => c.toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU')) || templates.some(t => t.category === c && t.diagnosis.toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU')))).map(category => {
+          const matchingTemplates = templates.filter(t => t.category === category && (t.diagnosis + ' ' + t.category).toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU')));
+          const expanded = expandedCategories.includes(category) || Boolean(search.trim());
+          const shownDraft = draft && draft.category === category && !templates.some(t => t.id === draft.id) && (draft.diagnosis + ' ' + draft.category).toLocaleLowerCase('ru-RU').includes(search.toLocaleLowerCase('ru-RU'));
+          return <div className={'category-group ' + (selectedCategory === category ? 'active' : '')} key={category}>
+            <div className="category-row">
+              <button className="category-select" onClick={() => { setSelectedCategory(category); toggleCategory(category); }} aria-expanded={expanded}>
+                <span className="category-chevron">{expanded ? '▾' : '▸'}</span><strong>{category}</strong><span className="category-count">{templates.filter(t => t.category === category).length}</span>
+              </button>
+              <button className="icon-action" title="Добавить карту вызова в категорию" aria-label={'Добавить карту в ' + category} onClick={() => newTemplate(category)}>＋</button>
+              <button className="icon-action" title="Переименовать категорию" aria-label={'Переименовать ' + category} onClick={() => renameCategory(category)}>✎</button>
+              <button className="icon-action delete-icon" title="Удалить категорию" aria-label={'Удалить ' + category} onClick={() => deleteCategory(category)}>⌫</button>
+            </div>
+            {expanded && <div className="category-templates">
+              {matchingTemplates.map(t => <div key={t.id} className={'category-template ' + (selectedId === t.id ? 'active' : '')}>
+                <button className="category-template-pick" onClick={() => navigateTo(t, t.category)}><span className="template-file-icon">▤</span><strong>{t.diagnosis}</strong></button>
+                <button className="icon-action" title="Копировать шаблон" aria-label={'Копировать ' + t.diagnosis} onClick={() => { navigateTo(t, t.category); const copy: Template = { ...t, id: crypto.randomUUID(), diagnosis: t.diagnosis + ' (копия)', extensionFields: { ...t.extensionFields } }; setDraft(copy); setSelectedId(copy.id); setStatus('Создана независимая копия. Измени категорию при необходимости и нажми «Сохранить».'); }}>⧉</button>
+              </div>)}
+              {shownDraft && <div className="category-template active draft-row"><button className="category-template-pick" onClick={() => setSelectedId(draft!.id)}><span className="template-file-icon">▤</span><strong>{draft.diagnosis}</strong><small>Черновик, не сохранён</small></button><span className="draft-label">Черновик</span></div>}
+              {matchingTemplates.length === 0 && !shownDraft && <p className="empty-list">{search.trim() ? 'Нет совпадений в этой категории.' : 'Пока нет карт вызова. Нажми ＋, чтобы создать первую.'}</p>}
+            </div>}
+          </div>;
+        })}</div>
+        <p className="sidebar-note">Нажми на категорию, чтобы раскрыть или свернуть карты вызовов. Выбери карту, чтобы открыть редактор справа.</p>
       </aside>
       <section className="template-pane">
         <div className="side-heading"><button className="back-button" onClick={() => setView('categories')} aria-label="Назад к категориям">← Назад</button><h2>Шаблоны</h2><button title="Добавить шаблон" aria-label="Добавить шаблон" onClick={newTemplate}>＋</button></div>
