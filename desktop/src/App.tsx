@@ -25,46 +25,27 @@ const blank = (): Template => ({ id: crypto.randomUUID(), category: 'Терап�
 const unchanged = ['Не менять', 'unchanged'];
 const yesNo = [{ value: 'unchanged', label: 'Не менять' }, { value: 'yes', label: 'Да / Есть' }, { value: 'no', label: 'Нет' }];
 const sections: SectionDef[] = [
-  { title: 'Причина вызова и сведения о пациенте', fields: [
-    { id: 'reason', label: 'Причина обращения', kind: 'select', options: ['unchanged','Несчастный случай','Острое внезапное заболевание','Роды (вне МО)','Обострение хронического заболевания','Патология беременности','Медицинская эвакуация экстренная','Дежурство при угрозе ЧС','Дежурство на мероприятии','Другое','Плановая перевозка','Платная мед.услуга'] },
-    { id: 'epidemic', label: 'Эпидемиологический анамнез', kind: 'textarea' },
-    { id: 'allergy', label: 'Аллергия', kind: 'select', options: yesNo.map(x => x.value) , hint: 'Значения: unchanged, no, yes' },
-    { id: 'foreignTrip', label: 'Выезд за пределы территории', kind: 'select', options: yesNo.map(x => x.value), hint: 'Значения: unchanged, no, yes' },
-    { id: 'villageTrip', label: 'Выезд в село', kind: 'select', options: yesNo.map(x => x.value), hint: 'Значения: unchanged, no, yes' },
-    { id: 'infectionContact', label: 'Контакт с инфекционными больными', kind: 'select', options: yesNo.map(x => x.value), hint: 'Значения: unchanged, no, yes' },
-    { id: 'lowQualityProducts', label: 'Употребление некачественных продуктов', kind: 'select', options: ['unchanged','Нет','Да'] },
-    { id: 'callTeamPlace', label: 'Место получения вызова', kind: 'select', options: ['unchanged','Станция (подстанция, отделение)','По телефону','По рации'] },
+  { title: 'Регистрация и сведения о вызове', fields: [
     { id: 'residentType', label: 'Регистрация пациента', kind: 'select', options: ['unchanged','житель города','житель сельской местности','приезжий'] },
     { id: 'socialStatus', label: 'Социальное положение', kind: 'select', options: ['unchanged','Работающий','Дошкольник','Учащийся','Безработный','Временно не работающий','Пенсионер'] },
+    { id: 'reason', label: 'Причина обращения', kind: 'select', options: ['unchanged','Несчастный случай','Острое внезапное заболевание','Роды (вне МО)','Обострение хронического заболевания','Патология беременности','Медицинская эвакуация экстренная','Дежурство при угрозе ЧС','Дежурство на мероприятии','Другое','Плановая перевозка','Платная мед.услуга'] },
     { id: 'execution', label: 'Исполнение', kind: 'select', options: ['unchanged','Вызов исполнен'] },
-    { id: 'traumaType', label: 'Тип травмы', kind: 'select', options: ['unchanged','Бытовая'] },
-    { id: 'alcoholIntoxication', label: 'Наличие опьянения', kind: 'select', options: ['unchanged','Да','Нет'] },
-    { id: 'deliveryPersonType', label: 'Доставка больного в автомобиль', kind: 'select', options: ['unchanged','Перенесен на носилках','Перенесен на других подручных средствах','Передвигался самостоятельно','На руках'] },
-    { id: 'callNote', label: 'Примечание', kind: 'textarea' },
-    { id: 'arrivalMileage', label: 'Километраж доезда', kind: 'text' },
-    { id: 'totalMileage', label: 'Общий километраж', kind: 'text' },
+    { id: 'traumaType', label: 'Травма', kind: 'select', options: ['unchanged','Бытовая'] },
+    { id: 'alcoholIntoxication', label: 'Наличие клиники опьянения', kind: 'select', options: ['unchanged','Да','Нет'] },
+    { id: 'callTeamPlace', label: 'Место получения вызова', kind: 'select', options: ['unchanged','Станция (подстанция, отделение)','По телефону','По рации'] },
   ]},
-  { title: 'Общее состояние и кожные покровы', fields: [
+  { title: 'Анамнез и эпидемиологические сведения', fields: [
+    { id: 'allergy', label: 'Аллергия', kind: 'select', options: yesNo.map(x => x.value), hint: 'Значения: unchanged, no, yes' },
+    { id: 'epidemic', label: 'Эпидемиологический анамнез', kind: 'textarea' },
+    { id: 'foreignTrip', label: 'Выезд за пределы РФ', kind: 'select', options: yesNo.map(x => x.value), hint: 'Значения: unchanged, no, yes' },
+    { id: 'villageTrip', label: 'Выезд в сельскую местность', kind: 'select', options: yesNo.map(x => x.value), hint: 'Значения: unchanged, no, yes' },
+    { id: 'infectionContact', label: 'Контакт с инфекционными больными, животными, грызунами', kind: 'select', options: yesNo.map(x => x.value), hint: 'Значения: unchanged, no, yes' },
+    { id: 'lowQualityProducts', label: 'Употребление некачественных продуктов', kind: 'select', options: ['unchanged','Нет','Да'] },
+  ]},
+  { title: 'Общее состояние и неврологический статус', fields: [
     { id: 'generalCondition', label: 'Общее состояние', kind: 'select', options: ['unchanged','Удовлетворительное','Средней степени тяжести','Тяжёлое','Агональное','Клиническая смерть','Биологическая смерть'] },
     { id: 'behavior', label: 'Поведение', kind: 'select', options: ['unchanged','Спокойное','Возбуждённое','Агрессивное','Депрессивное','Эмоционально лабилен'] },
     { id: 'bodyPosition', label: 'Положение тела', kind: 'select', options: ['unchanged','Активное','Пассивное','Вынужденное'] },
-    { id: 'visibleDamage', label: 'Видимые повреждения', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
-    { id: 'visibleDamageExtra', label: 'Описание видимых повреждений', kind: 'textarea' },
-    { id: 'skinCondition', label: 'Кожные покровы: описание', kind: 'text' },
-    { id: 'skinPale', label: 'Бледные', kind: 'check' },
-    { id: 'skinHyperemic', label: 'Гиперемированные', kind: 'check' },
-    { id: 'skinJaundiced', label: 'Желтушные', kind: 'check' },
-    { id: 'skinNormal', label: 'Нормальные', kind: 'check' },
-    { id: 'skinDry', label: 'Сухие', kind: 'check' },
-    { id: 'skinMoist', label: 'Влажные', kind: 'check' },
-    { id: 'acrocyanosis', label: 'Акроцианоз', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
-    { id: 'marbling', label: 'Мраморность кожи', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
-    { id: 'edema', label: 'Отёки', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
-    { id: 'edemaExtra', label: 'Описание / локализация отёков', kind: 'textarea' },
-    { id: 'rash', label: 'Сыпь', kind: 'select', options: ['unchanged','Есть','Нет'] },
-    { id: 'rashExtra', label: 'Описание сыпи', kind: 'textarea' },
-  ]},
-  { title: 'Неврологический статус', fields: [
     { id: 'consciousness', label: 'Сознание', kind: 'select', options: ['unchanged','Ясное','Спутанное','Заторможенное','Отсутствует (коматозное)'] },
     { id: 'meningeal', label: 'Менингеальные знаки', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
     { id: 'pupils', label: 'Зрачки', kind: 'select', options: ['unchanged','Нормальные','Широкие','Узкие'] },
@@ -75,17 +56,32 @@ const sections: SectionDef[] = [
     { id: 'cornealReflexes', label: 'Корнеальные рефлексы', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
     { id: 'beloglazov', label: 'Симптом Белоглазова', kind: 'select', options: ['unchanged','Положительный','Отрицательный'] },
   ]},
-  { title: 'Дыхание, сердце и живот', fields: [
-    { id: 'urination', label: 'Мочеиспускание', kind: 'text' },
-    { id: 'stool', label: 'Стул', kind: 'text' },
-    { id: 'otherSymptoms', label: 'Другие симптомы', kind: 'textarea' },
-    { id: 'localStatus', label: 'Локальный статус', kind: 'textarea' },
+  { title: 'Кожные покровы и повреждения', fields: [
+    { id: 'visibleDamage', label: 'Видимые повреждения', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
+    { id: 'visibleDamageExtra', label: 'Описание видимых повреждений', kind: 'textarea' },
+    { id: 'skinCondition', label: 'Кожные покровы: описание', kind: 'text' },
+    { id: 'skinPale', label: 'Бледные', kind: 'check' },
+    { id: 'skinHyperemic', label: 'Гиперемированные', kind: 'check' },
+    { id: 'skinJaundiced', label: 'Желтушные', kind: 'check' },
+    { id: 'skinNormal', label: 'Нормальные', kind: 'check' },
+    { id: 'skinDry', label: 'Сухие', kind: 'check' },
+    { id: 'skinMoist', label: 'Влажные', kind: 'check' },
+    { id: 'acrocyanosis', label: 'Акроцианоз', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
+    { id: 'marbling', label: 'Мраморность', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
+    { id: 'edema', label: 'Отеки', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
+    { id: 'edemaExtra', label: 'Описание / локализация отёков', kind: 'textarea' },
+    { id: 'rash', label: 'Сыпь', kind: 'select', options: ['unchanged','Есть','Нет'] },
+    { id: 'rashExtra', label: 'Описание сыпи', kind: 'textarea' },
+  ]},
+  { title: 'Дыхательная система', fields: [
     { id: 'throat', label: 'Зев', kind: 'text' },
     { id: 'breath', label: 'Дыхание', kind: 'select', options: ['unchanged','Везикулярное','Жесткое','Ослабленное','Бронхиальное','Отсутствует'] },
     { id: 'rattle', label: 'Хрипы', kind: 'select', options: ['unchanged','Сухие','Влажные','Нет'] },
     { id: 'rattleExtra', label: 'Описание хрипов', kind: 'text' },
     { id: 'dyspnea', label: 'Одышка', kind: 'select', options: ['unchanged','Инспираторная','Экспираторная','Смешанная'] },
     { id: 'percussion', label: 'Перкуторно', kind: 'text' },
+  ]},
+  { title: 'Сердце, пульс и живот', fields: [
     { id: 'heartRhythm', label: 'Ритмичность тонов сердца', kind: 'select', options: ['unchanged','Ритмичные','Аритмичные'] },
     { id: 'heartSound', label: 'Звучность тонов сердца', kind: 'select', options: ['unchanged','Ясные','Глухие','Приглушённые','Отсутствуют'] },
     { id: 'heartNoise', label: 'Шумы сердца', kind: 'multi', options: ['Систолические','Диастолические','Трение перикарда'] },
@@ -93,35 +89,44 @@ const sections: SectionDef[] = [
     { id: 'tongueMoisture', label: 'Влажность языка', kind: 'select', options: ['unchanged','Влажный','Сухой'] },
     { id: 'tongueCoating', label: 'Состояние языка', kind: 'select', options: ['unchanged','Чистый','Обложен'] },
     { id: 'abdomenTexture', label: 'Характеристика живота', kind: 'select', options: ['unchanged','Мягкий','Напряжённый'] },
-    { id: 'abdomenTenderness', label: 'Болезненность живота', kind: 'select', options: ['unchanged','Безболезненный','Болезненный'] },
-    { id: 'abdominalPainLocation', label: 'Локализация болей в животе', kind: 'text' },
-    { id: 'liverSize', label: 'Печень', kind: 'select', options: ['unchanged','Увеличена','Не увеличена'] },
     { id: 'abdomenBreath', label: 'Участвует в акте дыхания', kind: 'select', options: ['unchanged','Да','Нет'] },
     { id: 'peritoneal', label: 'Симптомы раздражения брюшины', kind: 'select', options: ['unchanged','Да','Нет'] },
+    { id: 'abdominalPainLocation', label: 'Локализация болей в животе', kind: 'text' },
+    { id: 'abdomenTenderness', label: 'Болезненность живота', kind: 'select', options: ['unchanged','Безболезненный','Болезненный'] },
+    { id: 'liverSize', label: 'Печень', kind: 'select', options: ['unchanged','Увеличена','Не увеличена'] },
   ]},
-  { title: 'Жизненные показатели до оказания помощи', fields: [
+  { title: 'Другие данные осмотра', fields: [
+    { id: 'urination', label: 'Мочеиспускание', kind: 'text' },
+    { id: 'stool', label: 'Стул', kind: 'text' },
+    { id: 'otherSymptoms', label: 'Другие симптомы', kind: 'textarea' },
+    { id: 'localStatus', label: 'Локальный статус', kind: 'textarea' },
+  ]},
+  { title: 'Показатели до оказания помощи', fields: [
     { id: 'workingSystolic', label: 'Рабочее АД: систолическое', kind: 'text' },
     { id: 'workingDiastolic', label: 'Рабочее АД: диастолическое', kind: 'text' },
-    { id: 'systolic', label: 'АД: систолическое', kind: 'text' },
-    { id: 'diastolic', label: 'АД: диастолическое', kind: 'text' },
+    { id: 'systolic', label: 'Фактическое АД: систолическое', kind: 'text' },
+    { id: 'diastolic', label: 'Фактическое АД: диастолическое', kind: 'text' },
     { id: 'pulseRate', label: 'Пульс, уд/мин', kind: 'text' },
     { id: 'heartRate', label: 'ЧСС, уд/мин', kind: 'text' },
     { id: 'breathingRate', label: 'ЧДД, в мин', kind: 'text' },
     { id: 'temperature', label: 'Температура, °C', kind: 'text' },
-    { id: 'pulseOximetry', label: 'SpO₂, %', kind: 'text' },
+    { id: 'pulseOximetry', label: 'Пульсоксиметрия, %', kind: 'text' },
     { id: 'glucometry', label: 'Глюкометрия', kind: 'text' },
   ]},
-  { title: 'Оказанная помощь и показатели после неё', fields: [
+  { title: 'Осмотр и оказанная помощь', fields: [
     { id: 'helpOnCallPlace', label: 'Оказанная помощь на месте вызова', kind: 'textarea' },
     { id: 'helpInEmergencyCar', label: 'Оказанная помощь в автомобиле СМП', kind: 'textarea' },
+  ]},
+  { title: 'Показатели после оказания помощи', fields: [
     { id: 'afterSystolic', label: 'АД после помощи: систолическое', kind: 'text' },
     { id: 'afterDiastolic', label: 'АД после помощи: диастолическое', kind: 'text' },
     { id: 'afterPulse', label: 'Пульс после помощи', kind: 'text' },
     { id: 'afterHeartRate', label: 'ЧСС после помощи', kind: 'text' },
     { id: 'afterBreathingRate', label: 'ЧДД после помощи', kind: 'text' },
     { id: 'afterTemperature', label: 'Температура после помощи', kind: 'text' },
-    { id: 'afterPulseOximetry', label: 'SpO₂ после помощи', kind: 'text' },
+    { id: 'afterPulseOximetry', label: 'Пульсоксиметрия после помощи, %', kind: 'text' },
     { id: 'afterGlucometry', label: 'Глюкометрия после помощи', kind: 'text' },
+    { id: 'isKupir', label: 'Купированы боли / приступы', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
   ]},
   { title: 'Манипуляции', fields: [
     { id: 'procIV', label: 'Внутривенное введение лекарственных препаратов', kind: 'check' },
@@ -135,12 +140,15 @@ const sections: SectionDef[] = [
     { id: 'procECG', label: 'Регистрация электрокардиограммы', kind: 'check' },
     { id: 'procECGInterpretation', label: 'Расшифровка ЭКГ', kind: 'check' },
   ]},
-  { title: 'Исход и рекомендации', fields: [
-    { id: 'isKupir', label: 'Купированы боли / приступы', kind: 'select', options: ['unchanged','yes','no'], hint: 'Значения: unchanged, yes, no' },
-    { id: 'medicalIntervention', label: 'Медицинское вмешательство', kind: 'select', options: ['unchanged','Согласие','Отказ'] },
+  { title: 'Завершение вызова', fields: [
+    { id: 'medicalIntervention', label: 'Медицинское вмешательство: согласие', kind: 'select', options: ['unchanged','Согласие','Отказ'] },
     { id: 'transportConsent', label: 'Транспортировка в стационар', kind: 'select', options: ['unchanged','Согласие','Отказ'] },
-    { id: 'careResult', label: 'Результат оказания СМП', kind: 'select', options: ['unchanged','Улучшение','Без эффекта','Ухудшение'] },
-    { id: 'aftercareRecommendation', label: 'Рекомендация пациенту', kind: 'select', options: ['unchanged','Рекомендуется обратиться в поликлинику'] },
+    { id: 'careResult', label: 'Результат оказания помощи', kind: 'select', options: ['unchanged','Улучшение','Без эффекта','Ухудшение'] },
+    { id: 'aftercareRecommendation', label: 'Рекомендуется обратиться в поликлинику', kind: 'select', options: ['unchanged','Рекомендуется обратиться в поликлинику'] },
+    { id: 'deliveryPersonType', label: 'Доставка больного в автомобиль', kind: 'select', options: ['unchanged','Перенесен на носилках','Перенесен на других подручных средствах','Передвигался самостоятельно','На руках'] },
+    { id: 'totalMileage', label: 'Общий километраж', kind: 'text' },
+    { id: 'arrivalMileage', label: 'Километраж доезда', kind: 'text' },
+    { id: 'callNote', label: 'Примечание', kind: 'textarea' },
   ]},
 ];
 
@@ -482,13 +490,12 @@ export default function App() {
         <div className="page-heading"><div><span className="eyebrow">РЕДАКТОР ШАБЛОНА</span><h2>{selected.diagnosis}</h2><p className={dirty ? 'dirty-note' : 'saved-note'}>{dirty ? 'Есть несохранённые изменения' : 'Все изменения сохранены'}</p></div><div className="template-actions"><button className="secondary" onClick={copyTemplate}>⧉ Копировать</button><button className="danger-ghost" onClick={deleteTemplate}>Удалить</button></div></div>
         <div className="field-grid"><label className="field"><span>Категория</span><select value={selected.category} onChange={e => update('category', e.target.value)}>{categoryList.map(c => <option key={c} value={c}>{c}</option>)}{!categoryList.includes(selected.category) && <option value={selected.category}>{selected.category}</option>}</select></label><label className="field"><span>Название диагноза</span><input value={selected.diagnosis} onChange={e => update('diagnosis', e.target.value)}/></label></div>
         <div className="editor-actions"><button className="primary" onClick={() => saveCurrentDraft()}>Сохранить</button><button className="secondary" onClick={() => { if (!draft) return; const saved = templates.find(t => t.id === draft.id); if (saved) setDraft({ ...saved, extensionFields: { ...saved.extensionFields } }); else { setDraft(null); setSelectedId(''); } setStatus('Несохранённые изменения отменены.'); }}>Отмена</button><span className="editor-action-note">{dirty ? 'Не забудь сохранить изменения' : 'Нет несохранённых изменений'}</span></div>
-        <div className="section-title"><h3>Текстовые заготовки</h3><p>Фактические показатели и назначения подтверждаются для каждого вызова отдельно.</p></div>
-        <label className="field"><span>Жалобы</span><textarea value={selected.complaints} onChange={e => update('complaints', e.target.value)} placeholder="Заготовка текста жалоб…" rows={3}/></label>
-        <label className="field"><span>Анамнез заболевания</span><textarea value={selected.anamnesis} onChange={e => update('anamnesis', e.target.value)} placeholder="Заготовка анамнеза…" rows={3}/></label>
-        <label className="field"><span>Объективный осмотр (общая заготовка)</span><textarea value={selected.examination} onChange={e => update('examination', e.target.value)} placeholder="Общая заготовка осмотра; ниже доступны отдельные поля ProMed…" rows={3}/></label>
-        <label className="field"><span>Лечение и рекомендации (текстовая заготовка)</span><textarea value={selected.treatment} onChange={e => update('treatment', e.target.value)} placeholder="Текстовая заготовка лечения и рекомендаций…" rows={3}/></label>
-        <div className="section-title"><h3>Поля карты ProMed</h3><p>«Не менять» оставляет текущее значение в карте. Числовые поля оставляй пустыми, если значение должно вводиться по факту вызова.</p></div>
-        {sections.map((section, index) => <details className="section-card" key={section.title} open={index === 0}><summary>{section.title}<span>{section.fields.length} полей</span></summary><div className="section-fields">{section.fields.map(renderField)}</div></details>)}
+         <div className="section-title"><h3>Регистрация, жалобы и анамнез</h3><p>Заполняй только нужные поля. Пустые значения не меняют данные карты.</p></div>
+         {sections.slice(0, 1).map((section) => <details className="section-card" key={section.title} open><summary>{section.title}<span>{section.fields.length} полей</span></summary><div className="section-fields">{section.fields.map(renderField)}</div></details>)}
+         <label className="field"><span>Жалобы</span><textarea value={selected.complaints} onChange={e => update('complaints', e.target.value)} placeholder="Заготовка текста жалоб…" rows={3}/></label>
+         <label className="field"><span>Анамнез заболевания</span><textarea value={selected.anamnesis} onChange={e => update('anamnesis', e.target.value)} placeholder="Заготовка анамнеза…" rows={3}/></label>
+         <div className="section-title"><h3>Поля карты ProMed</h3><p>«Не менять» оставляет текущее значение в карте. Числовые поля оставляй пустыми, если значение должно вводиться по факту вызова.</p></div>
+         {sections.slice(1).map((section, index) => <details className="section-card" key={section.title} open={index === 0}><summary>{section.title}<span>{section.fields.length} полей</span></summary><div className="section-fields">{section.fields.map(renderField)}</div></details>)}
         <div className="notice"><span className="notice-icon">i</span><p>Шаблоны хранятся локально на этом компьютере. Экспортируй JSON и импортируй его в расширение Chrome. Проверь каждое заполненное поле в ProMed и сохраняй карту вручную. Автосохранение самой карты отключено.</p></div>
         <footer className="statusbar"><span className="status-dot"/>{status}<span className="status-spacer"/><span>{templates.length} шабл.</span></footer>
       </section> : <section className="editor empty-state">Выбери шаблон или создай новый в выбранной категории.</section>}
