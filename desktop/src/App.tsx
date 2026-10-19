@@ -16,11 +16,11 @@ type SectionDef = { title: string; fields: FieldDef[] };
 const STORAGE_KEY = 'smp-card-assistant.templates.v1';
 const starter: Template[] = [
   { id: 'hypertension', category: 'Кардиология', diagnosis: 'Гипертонический криз', complaints: '', anamnesis: '', extensionFields: {} },
-  { id: 'stroke', category: 'Неврология', diagnosis: 'Острое нарушение мозгового кровообращения', complaints: '', anamnesis: '', examination: '', treatment: '', extensionFields: {} },
-  { id: 'diabetes1', category: 'Эндокринология', diagnosis: 'Сахарный диабет 1-го типа', complaints: '', anamnesis: '', examination: '', treatment: '', extensionFields: {} },
-  { id: 'diabetes2', category: 'Эндокринология', diagnosis: 'Сахарный диабет 2-го типа', complaints: '', anamnesis: '', examination: '', treatment: '', extensionFields: {} },
+  { id: 'stroke', category: 'Неврология', diagnosis: 'Острое нарушение мозгового кровообращения', complaints: '', anamnesis: '', extensionFields: {} },
+  { id: 'diabetes1', category: 'Эндокринология', diagnosis: 'Сахарный диабет 1-го типа', complaints: '', anamnesis: '', extensionFields: {} },
+  { id: 'diabetes2', category: 'Эндокринология', diagnosis: 'Сахарный диабет 2-го типа', complaints: '', anamnesis: '', extensionFields: {} },
 ];
-const blank = (): Template => ({ id: crypto.randomUUID(), category: 'Терапия', diagnosis: 'Новый шаблон', complaints: '', anamnesis: '', examination: '', treatment: '', extensionFields: {} });
+const blank = (): Template => ({ id: crypto.randomUUID(), category: 'Терапия', diagnosis: 'Новый шаблон', complaints: '', anamnesis: '', extensionFields: {} });
 
 const unchanged = ['Не менять', 'unchanged'];
 const yesNo = [{ value: 'unchanged', label: 'Не менять' }, { value: 'yes', label: 'Да / Есть' }, { value: 'no', label: 'Нет' }];
