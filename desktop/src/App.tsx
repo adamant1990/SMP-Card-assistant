@@ -1,10 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 
 type ExtensionValue = string | boolean | string[];
-type EditableTextKey = 'category' | 'diagnosis' | 'complaints' | 'anamnesis' | 'examination' | 'treatment';
+type EditableTextKey = 'category' | 'diagnosis' | 'complaints' | 'anamnesis';
 type Template = {
   id: string; category: string; diagnosis: string;
-  complaints: string; anamnesis: string; examination: string; treatment: string;
+  complaints: string; anamnesis: string;
   extensionFields: Record<string, ExtensionValue>;
 };
 type FieldDef = {
@@ -15,7 +15,7 @@ type SectionDef = { title: string; fields: FieldDef[] };
 
 const STORAGE_KEY = 'smp-card-assistant.templates.v1';
 const starter: Template[] = [
-  { id: 'hypertension', category: 'Кардиология', diagnosis: 'Гипертонический криз', complaints: '', anamnesis: '', examination: '', treatment: '', extensionFields: {} },
+  { id: 'hypertension', category: 'Кардиология', diagnosis: 'Гипертонический криз', complaints: '', anamnesis: '', extensionFields: {} },
   { id: 'stroke', category: 'Неврология', diagnosis: 'Острое нарушение мозгового кровообращения', complaints: '', anamnesis: '', examination: '', treatment: '', extensionFields: {} },
   { id: 'diabetes1', category: 'Эндокринология', diagnosis: 'Сахарный диабет 1-го типа', complaints: '', anamnesis: '', examination: '', treatment: '', extensionFields: {} },
   { id: 'diabetes2', category: 'Эндокринология', diagnosis: 'Сахарный диабет 2-го типа', complaints: '', anamnesis: '', examination: '', treatment: '', extensionFields: {} },
@@ -166,8 +166,6 @@ function normalizeTemplate(t: Partial<Template>, index: number): Template {
     diagnosis: typeof t.diagnosis === 'string' ? t.diagnosis : 'Новый шаблон',
     complaints: typeof t.complaints === 'string' ? t.complaints : '',
     anamnesis: typeof t.anamnesis === 'string' ? t.anamnesis : '',
-    examination: typeof t.examination === 'string' ? t.examination : '',
-    treatment: typeof t.treatment === 'string' ? t.treatment : '',
     extensionFields,
   };
 }
