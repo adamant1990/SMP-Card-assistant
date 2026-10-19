@@ -15,151 +15,7 @@
 <button id="applyTemplate" class="secondary" type="button">Перенести весь шаблон в поля расширения</button>
 <button id="fill">Заполнить выбранные поля</button>
 <small>Шаблон переносит жалобы, анамнез и настроенные поля карты: осмотр, показатели, манипуляции и исход. Проверь значения и отметки перед заполнением карты.</small>
-<label for="reason">Причина обращения</label>
-<select id="reason">
-<option value="unchanged">Не менять</option><option>Несчастный случай</option><option selected>Острое внезапное заболевание</option><option>Роды (вне МО)</option><option>Обострение хронического заболевания</option><option>Патология беременности</option><option>Медицинская эвакуация экстренная</option><option>Дежурство при угрозе ЧС</option><option>Дежурство на мероприятии</option><option>Другое</option><option>Плановая перевозка</option><option>Платная мед.услуга</option>
-</select>
-<label for="complaints">Жалобы</label><textarea id="complaints" rows="3" placeholder="Оставь пустым, если менять не нужно"></textarea>
-<label for="anamnez">Анамнез</label><textarea id="anamnez" rows="3" placeholder="Оставь пустым, если менять не нужно"></textarea>
-<div class="checkrow"><input id="fillReason" type="checkbox" checked><label for="fillReason">Заполнить причину обращения</label></div>
-<div class="checkrow"><input id="fillComplaints" type="checkbox"><label for="fillComplaints">Заполнить жалобы (если введены)</label></div>
-<div class="checkrow"><input id="fillAnamnez" type="checkbox"><label for="fillAnamnez">Заполнить анамнез (если введён)</label></div>
-<label for="epidemic">Эпидемиологический анамнез</label><textarea id="epidemic" rows="2" placeholder="Оставь пустым, если менять не нужно"></textarea>
-<div class="checkrow"><input id="fillEpidemic" type="checkbox"><label for="fillEpidemic">Заполнить эпидемиологический анамнез</label></div>
-<label for="allergy">Аллергия</label><select id="allergy"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
-<label for="foreignTrip">Выезд за пределы территории</label><select id="foreignTrip"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
-<label for="villageTrip">Выезд в село</label><select id="villageTrip"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
-<label for="infectionContact">Контакт с инфекционными больными</label><select id="infectionContact"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
-<label for="lowQualityProducts">Употребление некачественных продуктов</label>
-<select id="lowQualityProducts"><option value="unchanged" selected>Не менять</option><option value="Нет">Нет</option><option value="Да">Да</option></select>
-<label for="generalCondition">Общее состояние</label>
-<select id="generalCondition"><option value="unchanged" selected>Не менять</option><option>Удовлетворительное</option><option>Средней степени тяжести</option><option>Тяжёлое</option><option>Агональное</option><option>Клиническая смерть</option><option>Биологическая смерть</option></select>
-<label for="behavior">Поведение</label>
-<select id="behavior"><option value="unchanged" selected>Не менять</option><option>Спокойное</option><option>Возбуждённое</option><option>Агрессивное</option><option>Депрессивное</option><option>Эмоционально лабилен</option></select>
-<label for="bodyPosition">Положение тела</label>
-<select id="bodyPosition"><option value="unchanged" selected>Не менять</option><option>Активное</option><option>Пассивное</option><option>Вынужденное</option></select>
-<hr><h2>Неврологический статус</h2>
-<label for="consciousness">Сознание</label><select id="consciousness"><option value="unchanged" selected>Не менять</option><option>Ясное</option><option>Спутанное</option><option>Заторможенное</option><option>Отсутствует (коматозное)</option></select>
-<label for="meningeal">Менингеальные знаки</label><select id="meningeal"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
-<label for="pupils">Зрачки</label><select id="pupils"><option value="unchanged" selected>Не менять</option><option>Нормальные</option><option>Широкие</option><option>Узкие</option></select>
-<label for="nystagmus">Нистагм</label><select id="nystagmus"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
-<label for="anisocoria">Анизокория</label><select id="anisocoria"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
-<label for="lightReaction">Реакция зрачков на свет</label><select id="lightReaction"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
-<label for="fontanelle">Большой родничок напряжён</label><select id="fontanelle"><option value="unchanged" selected>Не менять</option><option value="yes">Да</option><option value="no">Нет</option></select>
-<label for="cornealReflexes">Корнеальные рефлексы</label><select id="cornealReflexes"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
-<label for="beloglazov">Симптом Белоглазова</label><select id="beloglazov"><option value="unchanged" selected>Не менять</option><option>Положительный</option><option>Отрицательный</option></select>
-<h2>Кожные покровы и повреждения</h2>
-<label for="visibleDamage">Видимые повреждения</label><select id="visibleDamage"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
-<label for="visibleDamageExtra">Описание видимых повреждений</label><input id="visibleDamageExtra" type="text" placeholder="Не менять, если пусто">
-<label for="skinCondition">Кожные покровы: описание</label><input id="skinCondition" type="text" placeholder="Не менять, если пусто">
-<fieldset class="skin-flags"><legend>Кожные покровы: отметь нужные варианты</legend>
-<div class="checkrow"><input id="skinPale" type="checkbox"><label for="skinPale">Бледные</label></div>
-<div class="checkrow"><input id="skinHyperemic" type="checkbox"><label for="skinHyperemic">Гиперемированные</label></div>
-<div class="checkrow"><input id="skinJaundiced" type="checkbox"><label for="skinJaundiced">Желтушные</label></div>
-<div class="checkrow"><input id="skinNormal" type="checkbox"><label for="skinNormal">Нормальные</label></div>
-<div class="checkrow"><input id="skinDry" type="checkbox"><label for="skinDry">Сухие</label></div>
-<div class="checkrow"><input id="skinMoist" type="checkbox"><label for="skinMoist">Влажные</label></div>
-</fieldset>
-<small>Можно отметить несколько вариантов. Пустой выбор не меняет флажки в ProMed.</small>
-<label for="acrocyanosis">Акроцианоз</label><select id="acrocyanosis"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
-<label for="marbling">Мраморность кожи</label><select id="marbling"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
-<label for="edema">Отёки</label><select id="edema"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
-<label for="edemaExtra">Описание / локализация отёков</label><input id="edemaExtra" type="text" placeholder="Не менять, если пусто">
-<hr><h2>До осмотра: симптомы и показатели</h2>
-<label for="urination">Мочеиспускание</label><input id="urination" type="text" placeholder="Не менять, если пусто">
-<label for="stool">Стул</label><input id="stool" type="text" placeholder="Не менять, если пусто">
-<label for="otherSymptoms">Другие симптомы</label><input id="otherSymptoms" type="text" placeholder="Не менять, если пусто">
-<label for="localStatus">Локальный статус</label><textarea id="localStatus" rows="2" placeholder="Не менять, если пусто"></textarea>
-<h3>Рабочее артериальное давление</h3>
-<div class="pressure-row">
-  <div><label for="workingSystolic">Систолическое</label><input id="workingSystolic" type="number" min="0" max="350" step="1" placeholder="Например, 120"></div>
-  <div><label for="workingDiastolic">Диастолическое</label><input id="workingDiastolic" type="number" min="0" max="250" step="1" placeholder="Например, 80"></div>
-</div>
-<h3>Артериальное давление при осмотре</h3>
-<div class="pressure-row">
-  <div><label for="systolic">Систолическое</label><input id="systolic" type="number" min="0" max="350" step="1" placeholder="Например, 120"></div>
-  <div><label for="diastolic">Диастолическое</label><input id="diastolic" type="number" min="0" max="250" step="1" placeholder="Например, 80"></div>
-</div>
-<div class="pressure-row">
-  <div><label for="pulseRate">Пульс</label><input id="pulseRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
-  <div><label for="heartRate">ЧСС</label><input id="heartRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
-</div>
-<div class="pressure-row">
-  <div><label for="breathingRate">ЧДД</label><input id="breathingRate" type="number" min="0" max="100" step="1" placeholder="вдохов/мин"></div>
-  <div><label for="temperature">Температура, °C</label><input id="temperature" type="number" min="25" max="45" step="0.1" placeholder="например, 36.6"></div>
-</div>
-<div class="pressure-row">
-  <div><label for="pulseOximetry">Пульсоксиметрия, %</label><input id="pulseOximetry" type="number" min="0" max="100" step="1" placeholder="SpO₂"></div>
-  <div><label for="glucometry">Глюкометрия</label><input id="glucometry" type="number" min="0" max="60" step="0.1" placeholder="ммоль/л"></div>
-</div>
-<small>Каждый показатель заполняется независимо. Оставь поле пустым, если не нужно менять значение в ProMed.</small>
-<hr><h2>Помощь и показатели после манипуляций</h2>
-<label for="helpOnCallPlace">Оказанная помощь на месте вызова</label><textarea id="helpOnCallPlace" rows="3" placeholder="Не менять, если пусто"></textarea>
-<label for="helpInEmergencyCar">Оказанная помощь в автомобиле СМП</label><input id="helpInEmergencyCar" type="text" placeholder="Не менять, если пусто">
-<h3>Артериальное давление после манипуляций</h3>
-<div class="pressure-row">
-  <div><label for="afterSystolic">Систолическое</label><input id="afterSystolic" type="number" min="0" max="350" step="1" placeholder="мм рт. ст."></div>
-  <div><label for="afterDiastolic">Диастолическое</label><input id="afterDiastolic" type="number" min="0" max="250" step="1" placeholder="мм рт. ст."></div>
-</div>
-<div class="pressure-row">
-  <div><label for="afterPulse">Пульс</label><input id="afterPulse" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
-  <div><label for="afterHeartRate">ЧСС</label><input id="afterHeartRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
-</div>
-<div class="pressure-row">
-  <div><label for="afterBreathingRate">ЧДД</label><input id="afterBreathingRate" type="number" min="0" max="100" step="1" placeholder="вдохов/мин"></div>
-  <div><label for="afterTemperature">Температура, °C</label><input id="afterTemperature" type="number" min="25" max="45" step="0.1" placeholder="например, 36.6"></div>
-</div>
-<div class="pressure-row">
-  <div><label for="afterPulseOximetry">Пульсоксиметрия, %</label><input id="afterPulseOximetry" type="number" min="0" max="100" step="1" placeholder="SpO₂"></div>
-  <div><label for="afterGlucometry">Глюкометрия</label><input id="afterGlucometry" type="number" min="0" max="60" step="0.1" placeholder="ммоль/л"></div>
-</div>
-<small>Показатели после манипуляций заполняются независимо от показателей при осмотре. Пустые поля не меняют карточку.</small>
-<hr><h2>Осмотр: дыхательная система</h2>
-<label for="rash">Сыпь</label><select id="rash"><option value="unchanged" selected>Не менять</option><option>Есть</option><option>Нет</option></select>
-<label for="rashExtra">Описание сыпи</label><input id="rashExtra" type="text" placeholder="Не менять, если пусто">
-<label for="throat">Зев</label><textarea id="throat" rows="2" placeholder="Не менять, если пусто"></textarea>
-<label for="breath">Дыхание</label><select id="breath"><option value="unchanged" selected>Не менять</option><option>Везикулярное</option><option>Жесткое</option><option>Ослабленное</option><option>Бронхиальное</option><option>Отсутствует</option></select>
-<label for="rattle">Хрипы</label><select id="rattle"><option value="unchanged" selected>Не менять</option><option>Сухие</option><option>Влажные</option><option>Нет</option></select>
-<label for="rattleExtra">Описание хрипов</label><input id="rattleExtra" type="text" placeholder="Не менять, если пусто">
-<label for="dyspnea">Одышка</label><select id="dyspnea"><option value="unchanged" selected>Не менять</option><option>Инспираторная</option><option>Экспираторная</option><option>Смешанная</option></select>
-<label for="percussion">Перкуторно</label><textarea id="percussion" rows="2" placeholder="Не менять, если пусто"></textarea>
-<h2>Сердце и пульс</h2>
-<label for="heartRhythm">Ритмичность тонов сердца</label>
-<select id="heartRhythm"><option value="unchanged" selected>Не менять</option><option>Ритмичные</option><option>Аритмичные</option></select>
-<label for="heartSound">Звучность тонов сердца</label>
-<select id="heartSound"><option value="unchanged" selected>Не менять</option><option>Ясные</option><option>Глухие</option><option>Приглушённые</option><option>Отсутствуют</option></select>
-<small>Выбирай по одному варианту в каждой группе. После заполнения проверь оба значения в ProMed.</small>
-<label for="heartNoise">Шумы сердца</label><select id="heartNoise" multiple size="4"><option>Систолические</option><option>Диастолические</option><option>Трение перикарда</option></select><small>Выбери нужные пункты; пустой список не меняет поле.</small>
-<label for="pulse">Пульс</label><select id="pulse" multiple size="6"><option>Нормальный</option><option>Ритмичный</option><option>Аритмичный</option><option>Напряженный</option><option>Слабого наполнения</option><option>Нитевидный</option><option>Отсутствует</option></select><small>Можно выбрать несколько пунктов.</small>
-<h2>Живот</h2>
-<label for="abdomenTexture">Характеристика живота</label><select id="abdomenTexture"><option value="unchanged" selected>Не менять</option><option>Мягкий</option><option>Напряжённый</option></select>
-<label for="abdomenTenderness">Болезненность живота</label><select id="abdomenTenderness"><option value="unchanged" selected>Не менять</option><option>Безболезненный</option><option>Болезненный</option></select>
-<label for="abdominalPainLocation">Локализация болей в животе</label><input id="abdominalPainLocation" type="text" placeholder="Не менять, если пусто">
-<label for="liverSize">Печень</label><select id="liverSize"><option value="unchanged" selected>Не менять</option><option>Увеличена</option><option>Не увеличена</option></select>
-<label for="abdomenBreath">Участвует в акте дыхания</label><select id="abdomenBreath"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
-<label for="peritoneal">Симптомы раздражения брюшины</label><select id="peritoneal"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
-<hr><h2>Манипуляции</h2>
-<fieldset class="skin-flags"><legend>Отметь манипуляции, которые нужно добавить</legend>
-<div class="checkrow"><input id="procIV" type="checkbox"><label for="procIV">Внутривенное</label></div>
-<div class="checkrow"><input id="procIM" type="checkbox"><label for="procIM">Внутримышечное</label></div>
-<div class="checkrow"><input id="procNasalPacking" type="checkbox"><label for="procNasalPacking">Задняя тампонада носа</label></div>
-<div class="checkrow"><input id="procGlucose" type="checkbox"><label for="procGlucose">Измерение глюкозы</label></div>
-<div class="checkrow"><input id="procVeinCatheter" type="checkbox"><label for="procVeinCatheter">Катетеризация вены</label></div>
-<div class="checkrow"><input id="procSplint" type="checkbox"><label for="procSplint">Наложение шины</label></div>
-<div class="checkrow"><input id="procParamedicExam" type="checkbox"><label for="procParamedicExam">Осмотр фельдшера</label></div>
-<div class="checkrow"><input id="procPulseOx" type="checkbox"><label for="procPulseOx">Пульсоксиметрия</label></div>
-<div class="checkrow"><input id="procECG" type="checkbox"><label for="procECG">Регистрация ЭКГ</label></div>
-<div class="checkrow"><input id="procECGInterpretation" type="checkbox"><label for="procECGInterpretation">Расшифровка ЭКГ</label></div>
-</fieldset>
-<small>Выбирай только фактически выполненные манипуляции. Для этих пунктов ProMed использует триггеры внутри таблицы, поэтому сначала проверь на учебной карте. Не запускай повторно с теми же пунктами, пока не убедишься, как сайт обрабатывает повторное нажатие.</small>
 <hr><h2>Регистрация вызова</h2>
-<label for="callTeamPlace">Место получения вызова</label>
-<select id="callTeamPlace">
-<option value="unchanged" selected>Не менять</option>
-<option>Станция (подстанция, отделение)</option>
-<option>По телефону</option>
-<option>По рации</option>
-</select>
 <label for="residentType">Регистрация пациента</label>
 <select id="residentType">
 <option value="unchanged" selected>Не менять</option>
@@ -194,6 +50,170 @@
 <option>Да</option>
 <option>Нет</option>
 </select>
+<label for="callTeamPlace">Место получения вызова</label>
+<select id="callTeamPlace">
+<option value="unchanged" selected>Не менять</option>
+<option>Станция (подстанция, отделение)</option>
+<option>По телефону</option>
+<option>По рации</option>
+</select>
+
+<label for="reason">Причина обращения</label>
+<select id="reason">
+<option value="unchanged">Не менять</option><option>Несчастный случай</option><option selected>Острое внезапное заболевание</option><option>Роды (вне МО)</option><option>Обострение хронического заболевания</option><option>Патология беременности</option><option>Медицинская эвакуация экстренная</option><option>Дежурство при угрозе ЧС</option><option>Дежурство на мероприятии</option><option>Другое</option><option>Плановая перевозка</option><option>Платная мед.услуга</option>
+</select>
+<label for="complaints">Жалобы</label><textarea id="complaints" rows="3" placeholder="Оставь пустым, если менять не нужно"></textarea>
+<label for="anamnez">Анамнез</label><textarea id="anamnez" rows="3" placeholder="Оставь пустым, если менять не нужно"></textarea>
+<div class="checkrow"><input id="fillReason" type="checkbox" checked><label for="fillReason">Заполнить причину обращения</label></div>
+<div class="checkrow"><input id="fillComplaints" type="checkbox"><label for="fillComplaints">Заполнить жалобы (если введены)</label></div>
+<div class="checkrow"><input id="fillAnamnez" type="checkbox"><label for="fillAnamnez">Заполнить анамнез (если введён)</label></div>
+
+<label for="allergy">Аллергия</label><select id="allergy"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
+<label for="epidemic">Эпидемиологический анамнез</label><textarea id="epidemic" rows="2" placeholder="Оставь пустым, если менять не нужно"></textarea>
+<div class="checkrow"><input id="fillEpidemic" type="checkbox"><label for="fillEpidemic">Заполнить эпидемиологический анамнез</label></div>
+<label for="foreignTrip">Выезд за пределы территории</label><select id="foreignTrip"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
+<label for="villageTrip">Выезд в село</label><select id="villageTrip"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
+<label for="infectionContact">Контакт с инфекционными больными</label><select id="infectionContact"><option value="unchanged" selected>Не менять</option><option value="no">Нет</option><option value="yes">Да</option></select>
+<label for="lowQualityProducts">Употребление некачественных продуктов</label>
+<select id="lowQualityProducts"><option value="unchanged" selected>Не менять</option><option value="Нет">Нет</option><option value="Да">Да</option></select>
+
+<label for="generalCondition">Общее состояние</label>
+<select id="generalCondition"><option value="unchanged" selected>Не менять</option><option>Удовлетворительное</option><option>Средней степени тяжести</option><option>Тяжёлое</option><option>Агональное</option><option>Клиническая смерть</option><option>Биологическая смерть</option></select>
+<label for="behavior">Поведение</label>
+<select id="behavior"><option value="unchanged" selected>Не менять</option><option>Спокойное</option><option>Возбуждённое</option><option>Агрессивное</option><option>Депрессивное</option><option>Эмоционально лабилен</option></select>
+<label for="bodyPosition">Положение тела</label>
+<select id="bodyPosition"><option value="unchanged" selected>Не менять</option><option>Активное</option><option>Пассивное</option><option>Вынужденное</option></select>
+
+<hr><h2>Неврологический статус</h2>
+<label for="consciousness">Сознание</label><select id="consciousness"><option value="unchanged" selected>Не менять</option><option>Ясное</option><option>Спутанное</option><option>Заторможенное</option><option>Отсутствует (коматозное)</option></select>
+<label for="meningeal">Менингеальные знаки</label><select id="meningeal"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
+<label for="pupils">Зрачки</label><select id="pupils"><option value="unchanged" selected>Не менять</option><option>Нормальные</option><option>Широкие</option><option>Узкие</option></select>
+<label for="nystagmus">Нистагм</label><select id="nystagmus"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
+<label for="anisocoria">Анизокория</label><select id="anisocoria"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
+<label for="lightReaction">Реакция зрачков на свет</label><select id="lightReaction"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
+<label for="fontanelle">Большой родничок напряжён</label><select id="fontanelle"><option value="unchanged" selected>Не менять</option><option value="yes">Да</option><option value="no">Нет</option></select>
+<label for="cornealReflexes">Корнеальные рефлексы</label><select id="cornealReflexes"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
+<label for="beloglazov">Симптом Белоглазова</label><select id="beloglazov"><option value="unchanged" selected>Не менять</option><option>Положительный</option><option>Отрицательный</option></select>
+
+<h2>Кожные покровы и повреждения</h2>
+<label for="visibleDamage">Видимые повреждения</label><select id="visibleDamage"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
+<label for="visibleDamageExtra">Описание видимых повреждений</label><input id="visibleDamageExtra" type="text" placeholder="Не менять, если пусто">
+<label for="skinCondition">Кожные покровы: описание</label><input id="skinCondition" type="text" placeholder="Не менять, если пусто">
+<fieldset class="skin-flags"><legend>Кожные покровы: отметь нужные варианты</legend>
+<div class="checkrow"><input id="skinPale" type="checkbox"><label for="skinPale">Бледные</label></div>
+<div class="checkrow"><input id="skinHyperemic" type="checkbox"><label for="skinHyperemic">Гиперемированные</label></div>
+<div class="checkrow"><input id="skinJaundiced" type="checkbox"><label for="skinJaundiced">Желтушные</label></div>
+<div class="checkrow"><input id="skinNormal" type="checkbox"><label for="skinNormal">Нормальные</label></div>
+<div class="checkrow"><input id="skinDry" type="checkbox"><label for="skinDry">Сухие</label></div>
+<div class="checkrow"><input id="skinMoist" type="checkbox"><label for="skinMoist">Влажные</label></div>
+</fieldset>
+<small>Можно отметить несколько вариантов. Пустой выбор не меняет флажки в ProMed.</small>
+<label for="acrocyanosis">Акроцианоз</label><select id="acrocyanosis"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
+<label for="marbling">Мраморность кожи</label><select id="marbling"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
+<label for="edema">Отёки</label><select id="edema"><option value="unchanged" selected>Не менять</option><option value="yes">Есть</option><option value="no">Нет</option></select>
+<label for="edemaExtra">Описание / локализация отёков</label><input id="edemaExtra" type="text" placeholder="Не менять, если пусто">
+<label for="rash">Сыпь</label><select id="rash"><option value="unchanged" selected>Не менять</option><option>Есть</option><option>Нет</option></select>
+<label for="rashExtra">Описание сыпи</label><input id="rashExtra" type="text" placeholder="Не менять, если пусто">
+
+<hr><h2>Осмотр: дыхательная система</h2>
+<label for="throat">Зев</label><textarea id="throat" rows="2" placeholder="Не менять, если пусто"></textarea>
+<label for="breath">Дыхание</label><select id="breath"><option value="unchanged" selected>Не менять</option><option>Везикулярное</option><option>Жесткое</option><option>Ослабленное</option><option>Бронхиальное</option><option>Отсутствует</option></select>
+<label for="rattle">Хрипы</label><select id="rattle"><option value="unchanged" selected>Не менять</option><option>Сухие</option><option>Влажные</option><option>Нет</option></select>
+<label for="rattleExtra">Описание хрипов</label><input id="rattleExtra" type="text" placeholder="Не менять, если пусто">
+<label for="dyspnea">Одышка</label><select id="dyspnea"><option value="unchanged" selected>Не менять</option><option>Инспираторная</option><option>Экспираторная</option><option>Смешанная</option></select>
+<label for="percussion">Перкуторно</label><textarea id="percussion" rows="2" placeholder="Не менять, если пусто"></textarea>
+
+<h2>Сердце и пульс</h2>
+<label for="heartRhythm">Ритмичность тонов сердца</label>
+<select id="heartRhythm"><option value="unchanged" selected>Не менять</option><option>Ритмичные</option><option>Аритмичные</option></select>
+<label for="heartSound">Звучность тонов сердца</label>
+<select id="heartSound"><option value="unchanged" selected>Не менять</option><option>Ясные</option><option>Глухие</option><option>Приглушённые</option><option>Отсутствуют</option></select>
+<small>Выбирай по одному варианту в каждой группе. После заполнения проверь оба значения в ProMed.</small>
+<label for="heartNoise">Шумы сердца</label><select id="heartNoise" multiple size="4"><option>Систолические</option><option>Диастолические</option><option>Трение перикарда</option></select><small>Выбери нужные пункты; пустой список не меняет поле.</small>
+<label for="pulse">Пульс</label><select id="pulse" multiple size="6"><option>Нормальный</option><option>Ритмичный</option><option>Аритмичный</option><option>Напряженный</option><option>Слабого наполнения</option><option>Нитевидный</option><option>Отсутствует</option></select><small>Можно выбрать несколько пунктов.</small>
+
+<hr><h2>Язык</h2>
+<label for="tongueMoisture">Влажность языка</label><select id="tongueMoisture"><option value="unchanged" selected>Не менять</option><option>Влажный</option><option>Сухой</option></select>
+<label for="tongueCoating">Состояние языка</label><select id="tongueCoating"><option value="unchanged" selected>Не менять</option><option>Чистый</option><option>Обложен</option></select>
+<small>Выбирай по одному варианту в каждой группе. Если кнопка не будет найдена по точной подписи, расширение оставит поле без изменений.</small>
+<p class="hint">Характеристика живота, болезненность и печень выбираются по подписи кнопок внутри своей группы. Если точная группа не найдена, значение не изменяется.</p>
+
+<h2>Живот</h2>
+<label for="abdomenTexture">Характеристика живота</label><select id="abdomenTexture"><option value="unchanged" selected>Не менять</option><option>Мягкий</option><option>Напряжённый</option></select>
+<label for="abdomenTenderness">Болезненность живота</label><select id="abdomenTenderness"><option value="unchanged" selected>Не менять</option><option>Безболезненный</option><option>Болезненный</option></select>
+<label for="abdominalPainLocation">Локализация болей в животе</label><input id="abdominalPainLocation" type="text" placeholder="Не менять, если пусто">
+<label for="liverSize">Печень</label><select id="liverSize"><option value="unchanged" selected>Не менять</option><option>Увеличена</option><option>Не увеличена</option></select>
+<label for="abdomenBreath">Участвует в акте дыхания</label><select id="abdomenBreath"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
+<label for="peritoneal">Симптомы раздражения брюшины</label><select id="peritoneal"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
+
+<hr><h2>До осмотра: симптомы и показатели</h2>
+<label for="urination">Мочеиспускание</label><input id="urination" type="text" placeholder="Не менять, если пусто">
+<label for="stool">Стул</label><input id="stool" type="text" placeholder="Не менять, если пусто">
+<label for="otherSymptoms">Другие симптомы</label><input id="otherSymptoms" type="text" placeholder="Не менять, если пусто">
+<label for="localStatus">Локальный статус</label><textarea id="localStatus" rows="2" placeholder="Не менять, если пусто"></textarea>
+
+<h3>Рабочее артериальное давление</h3>
+<div class="pressure-row">
+  <div><label for="workingSystolic">Систолическое</label><input id="workingSystolic" type="number" min="0" max="350" step="1" placeholder="Например, 120"></div>
+  <div><label for="workingDiastolic">Диастолическое</label><input id="workingDiastolic" type="number" min="0" max="250" step="1" placeholder="Например, 80"></div>
+</div>
+<h3>Артериальное давление при осмотре</h3>
+<div class="pressure-row">
+  <div><label for="systolic">Систолическое</label><input id="systolic" type="number" min="0" max="350" step="1" placeholder="Например, 120"></div>
+  <div><label for="diastolic">Диастолическое</label><input id="diastolic" type="number" min="0" max="250" step="1" placeholder="Например, 80"></div>
+</div>
+<div class="pressure-row">
+  <div><label for="pulseRate">Пульс</label><input id="pulseRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
+  <div><label for="heartRate">ЧСС</label><input id="heartRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
+</div>
+<div class="pressure-row">
+  <div><label for="breathingRate">ЧДД</label><input id="breathingRate" type="number" min="0" max="100" step="1" placeholder="вдохов/мин"></div>
+  <div><label for="temperature">Температура, °C</label><input id="temperature" type="number" min="25" max="45" step="0.1" placeholder="например, 36.6"></div>
+</div>
+<div class="pressure-row">
+  <div><label for="pulseOximetry">Пульсоксиметрия, %</label><input id="pulseOximetry" type="number" min="0" max="100" step="1" placeholder="SpO₂"></div>
+  <div><label for="glucometry">Глюкометрия</label><input id="glucometry" type="number" min="0" max="60" step="0.1" placeholder="ммоль/л"></div>
+</div>
+<small>Каждый показатель заполняется независимо. Оставь поле пустым, если не нужно менять значение в ProMed.</small>
+
+<hr><h2>Помощь и показатели после манипуляций</h2>
+<label for="helpOnCallPlace">Оказанная помощь на месте вызова</label><textarea id="helpOnCallPlace" rows="3" placeholder="Не менять, если пусто"></textarea>
+<label for="helpInEmergencyCar">Оказанная помощь в автомобиле СМП</label><input id="helpInEmergencyCar" type="text" placeholder="Не менять, если пусто">
+
+<h3>Артериальное давление после манипуляций</h3>
+<div class="pressure-row">
+  <div><label for="afterSystolic">Систолическое</label><input id="afterSystolic" type="number" min="0" max="350" step="1" placeholder="мм рт. ст."></div>
+  <div><label for="afterDiastolic">Диастолическое</label><input id="afterDiastolic" type="number" min="0" max="250" step="1" placeholder="мм рт. ст."></div>
+</div>
+<div class="pressure-row">
+  <div><label for="afterPulse">Пульс</label><input id="afterPulse" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
+  <div><label for="afterHeartRate">ЧСС</label><input id="afterHeartRate" type="number" min="0" max="350" step="1" placeholder="уд/мин"></div>
+</div>
+<div class="pressure-row">
+  <div><label for="afterBreathingRate">ЧДД</label><input id="afterBreathingRate" type="number" min="0" max="100" step="1" placeholder="вдохов/мин"></div>
+  <div><label for="afterTemperature">Температура, °C</label><input id="afterTemperature" type="number" min="25" max="45" step="0.1" placeholder="например, 36.6"></div>
+</div>
+<div class="pressure-row">
+  <div><label for="afterPulseOximetry">Пульсоксиметрия, %</label><input id="afterPulseOximetry" type="number" min="0" max="100" step="1" placeholder="SpO₂"></div>
+  <div><label for="afterGlucometry">Глюкометрия</label><input id="afterGlucometry" type="number" min="0" max="60" step="0.1" placeholder="ммоль/л"></div>
+</div>
+<small>Показатели после манипуляций заполняются независимо от показателей при осмотре. Пустые поля не меняют карточку.</small>
+
+<hr><h2>Манипуляции</h2>
+<fieldset class="skin-flags"><legend>Отметь манипуляции, которые нужно добавить</legend>
+<div class="checkrow"><input id="procIV" type="checkbox"><label for="procIV">Внутривенное</label></div>
+<div class="checkrow"><input id="procIM" type="checkbox"><label for="procIM">Внутримышечное</label></div>
+<div class="checkrow"><input id="procNasalPacking" type="checkbox"><label for="procNasalPacking">Задняя тампонада носа</label></div>
+<div class="checkrow"><input id="procGlucose" type="checkbox"><label for="procGlucose">Измерение глюкозы</label></div>
+<div class="checkrow"><input id="procVeinCatheter" type="checkbox"><label for="procVeinCatheter">Катетеризация вены</label></div>
+<div class="checkrow"><input id="procSplint" type="checkbox"><label for="procSplint">Наложение шины</label></div>
+<div class="checkrow"><input id="procParamedicExam" type="checkbox"><label for="procParamedicExam">Осмотр фельдшера</label></div>
+<div class="checkrow"><input id="procPulseOx" type="checkbox"><label for="procPulseOx">Пульсоксиметрия</label></div>
+<div class="checkrow"><input id="procECG" type="checkbox"><label for="procECG">Регистрация ЭКГ</label></div>
+<div class="checkrow"><input id="procECGInterpretation" type="checkbox"><label for="procECGInterpretation">Расшифровка ЭКГ</label></div>
+</fieldset>
+<small>Выбирай только фактически выполненные манипуляции. Для этих пунктов ProMed использует триггеры внутри таблицы, поэтому сначала проверь на учебной карте. Не запускай повторно с теми же пунктами, пока не убедишься, как сайт обрабатывает повторное нажатие.</small>
+
 <hr><h2>Доставка и завершение вызова</h2>
 <label for="deliveryPersonType">Доставка больного в автомобиль</label>
 <select id="deliveryPersonType">
@@ -220,11 +240,7 @@
 <label for="aftercareRecommendation">Рекомендация пациенту</label>
 <select id="aftercareRecommendation"><option value="unchanged" selected>Не менять</option><option>Рекомендуется обратиться в поликлинику</option></select>
 <small>Выбирай только подтверждённые по фактическому состоянию пациента значения. Пустой выбор «Не менять» оставляет поле без изменений.</small>
-<hr><h2>Язык</h2>
-<label for="tongueMoisture">Влажность языка</label><select id="tongueMoisture"><option value="unchanged" selected>Не менять</option><option>Влажный</option><option>Сухой</option></select>
-<label for="tongueCoating">Состояние языка</label><select id="tongueCoating"><option value="unchanged" selected>Не менять</option><option>Чистый</option><option>Обложен</option></select>
-<small>Выбирай по одному варианту в каждой группе. Если кнопка не будет найдена по точной подписи, расширение оставит поле без изменений.</small>
-<p class="hint">Характеристика живота, болезненность и печень выбираются по подписи кнопок внутри своей группы. Если точная группа не найдена, значение не изменяется.</p>
+
 <button id="inspect" class="secondary">Проверить основные поля</button>
 <pre id="status" role="status">Открой карту вызова ProMed и нажми «Проверить поля ProMed».</pre>
 <p class="warning">Тестируй на учебной карте. Проверь каждое поле вручную. Кнопку сохранения карты нажимай сам.</p>
