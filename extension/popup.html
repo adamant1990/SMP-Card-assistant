@@ -138,15 +138,15 @@
 <small>Выбирай по одному варианту в каждой группе. Если кнопка не будет найдена по точной подписи, расширение оставит поле без изменений.</small>
 <p class="hint">Характеристика живота, болезненность и печень выбираются по подписи кнопок внутри своей группы. Если точная группа не найдена, значение не изменяется.</p>
 
-<h2>Живот</h2>
-<label for="abdomenTexture">Характеристика живота</label><select id="abdomenTexture"><option value="unchanged" selected>Не менять</option><option>Мягкий</option><option>Напряжённый</option></select>
+<h2>Живот</h2><label for="abdomenTexture">Характеристика живота</label><select id="abdomenTexture"><option value="unchanged" selected>Не менять</option><option>Мягкий</option><option>Напряжённый</option></select>
 <label for="abdomenTenderness">Болезненность живота</label><select id="abdomenTenderness"><option value="unchanged" selected>Не менять</option><option>Безболезненный</option><option>Болезненный</option></select>
-<label for="abdominalPainLocation">Локализация болей в животе</label><input id="abdominalPainLocation" type="text" placeholder="Не менять, если пусто">
-<label for="liverSize">Печень</label><select id="liverSize"><option value="unchanged" selected>Не менять</option><option>Увеличена</option><option>Не увеличена</option></select>
 <label for="abdomenBreath">Участвует в акте дыхания</label><select id="abdomenBreath"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
+
 <label for="peritoneal">Симптомы раздражения брюшины</label><select id="peritoneal"><option value="unchanged" selected>Не менять</option><option>Да</option><option>Нет</option></select>
 
 <hr><h2>До осмотра: симптомы и показатели</h2>
+<label for="abdominalPainLocation">Локализация болей в животе</label><input id="abdominalPainLocation" type="text" placeholder="Не менять, если пусто">
+<label for="liverSize">Печень</label><select id="liverSize"><option value="unchanged" selected>Не менять</option><option>Увеличена</option><option>Не увеличена</option></select>
 <label for="urination">Мочеиспускание</label><input id="urination" type="text" placeholder="Не менять, если пусто">
 <label for="stool">Стул</label><input id="stool" type="text" placeholder="Не менять, если пусто">
 <label for="otherSymptoms">Другие симптомы</label><input id="otherSymptoms" type="text" placeholder="Не менять, если пусто">
@@ -214,22 +214,7 @@
 </fieldset>
 <small>Выбирай только фактически выполненные манипуляции. Для этих пунктов ProMed использует триггеры внутри таблицы, поэтому сначала проверь на учебной карте. Не запускай повторно с теми же пунктами, пока не убедишься, как сайт обрабатывает повторное нажатие.</small>
 
-<hr><h2>Доставка и завершение вызова</h2>
-<label for="deliveryPersonType">Доставка больного в автомобиль</label>
-<select id="deliveryPersonType">
-<option value="unchanged" selected>Не менять</option>
-<option>Перенесен на носилках</option>
-<option>Перенесен на других подручных средствах</option>
-<option>Передвигался самостоятельно</option>
-<option>На руках</option>
-</select>
-<label for="callNote">Примечание</label>
-<textarea id="callNote" rows="2" placeholder="Не менять, если пусто"></textarea>
-<div class="pressure-row">
-  <div><label for="arrivalMileage">Километраж доезда</label><input id="arrivalMileage" type="number" min="0" step="0.1" placeholder="км"></div>
-  <div><label for="totalMileage">Общий километраж</label><input id="totalMileage" type="number" min="0" step="0.1" placeholder="км"></div>
-</div>
-<label for="isKupir">Купированы боли / приступы</label>
+<hr><h2>Доставка и завершение вызова</h2><label for="isKupir">Купированы боли / приступы</label>
 <select id="isKupir"><option value="unchanged" selected>Не менять</option><option value="yes">Да</option><option value="no">Нет</option></select>
 <label for="medicalIntervention">Медицинское вмешательство</label>
 <select id="medicalIntervention"><option value="unchanged" selected>Не менять</option><option>Согласие</option><option>Отказ</option></select>
@@ -239,6 +224,21 @@
 <select id="careResult"><option value="unchanged" selected>Не менять</option><option>Улучшение</option><option>Без эффекта</option><option>Ухудшение</option></select>
 <label for="aftercareRecommendation">Рекомендация пациенту</label>
 <select id="aftercareRecommendation"><option value="unchanged" selected>Не менять</option><option>Рекомендуется обратиться в поликлинику</option></select>
+<label for="deliveryPersonType">Доставка больного в автомобиль</label>
+<select id="deliveryPersonType">
+<option value="unchanged" selected>Не менять</option>
+<option>Перенесен на носилках</option>
+<option>Перенесен на других подручных средствах</option>
+<option>Передвигался самостоятельно</option>
+<option>На руках</option>
+</select>
+<div class="pressure-row">
+  <div><label for="arrivalMileage">Километраж доезда</label><input id="arrivalMileage" type="number" min="0" step="0.1" placeholder="км"></div>
+  <div><label for="totalMileage">Общий километраж</label><input id="totalMileage" type="number" min="0" step="0.1" placeholder="км"></div>
+</div>
+<label for="callNote">Примечание</label>
+<textarea id="callNote" rows="2" placeholder="Не менять, если пусто"></textarea>
+
 <small>Выбирай только подтверждённые по фактическому состоянию пациента значения. Пустой выбор «Не менять» оставляет поле без изменений.</small>
 
 <button id="inspect" class="secondary">Проверить основные поля</button>
