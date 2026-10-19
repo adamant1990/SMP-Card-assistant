@@ -12,7 +12,7 @@ async function runPageAction(action, payload = {}) {
   return results?.[0]?.result;
 }
 
-function pageBridge(action, payload) {
+async function pageBridge(action, payload) {
   const causeInput = document.querySelector('input[name="cmpreasonnew_id"]');
   const causeCmp = causeInput && window.Ext?.getCmp(causeInput.dataset.componentid);
   const diagnosisInput = document.querySelector('input[name="diag_id"]');
@@ -189,8 +189,9 @@ function pageBridge(action, payload) {
         report.push(label + ': ошибка переключения — ' + String(e?.message || e));
       }
     };
-    const setProcedureTriggers = choices => {
+    const setProcedureTriggers = async choices => {
       if (!Array.isArray(choices) || !choices.length) return;
+      const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
       const normalize = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\s+/g, ' ');
       const aliases = {
         'внутривенное': ['внутривенное введение лекарственных препаратов', 'внутривенное', 'внутривенно', 'в/в введение', 'в/в'],
@@ -202,23 +203,31 @@ function pageBridge(action, payload) {
         'катетеризация вены': ['катетеризация кубитальной и других периферических вен', 'катетеризация вены', 'катетеризация периферических вен'],
         'пульсоксиметрия': ['пульсоксиметрия', 'измерение сатурации', 'измерение spo2', 'измерение spo₂']
       };
-      const rows = [...document.querySelectorAll('tr.x-grid-row, .x-grid-row')]
-        .filter((row, index, all) => row.getClientRects().length && all.indexOf(row) === index);
-      choices.forEach(label => {
-        const wanted = normalize(label);
-        const terms = (aliases[wanted] || [wanted]).map(normalize);
-        // Только точное совпадение текста отдельной ячейки. Совпадение фразы
-        // внутри более длинного названия не считается достаточным основанием для клика.
-        const exactMatches = rows.map(row => ({
-          row,
-          cells: [...row.querySelectorAll('td')].map(cell => normalize(cell.innerText || cell.textContent))
-        })).filter(item => item.cells.some(cell => terms.includes(cell)));
+      const getRows = () => [...document.querySelectorAll('tr.x-grid-row, .x-grid-row')].filter((row, index, all) => row.getClientRects().length && all.indexOf(row) === index);
+      const findMatches = (label, rows) => {
+        const wanted = normalize(label), terms = (aliases[wanted] || [wanted]).map(normalize);
+        return rows.map(row => ({row, cells:[...row.querySelectorAll('td')].map(cell => normalize(cell.innerText || cell.textContent))})).filter(item => item.cells.some(cell => terms.includes(cell)));
+      };
+      const deadline = Date.now() + 10000;
+      let readyRows = getRows(), lastSignature = '', stablePasses = 0;
+      while (Date.now() < deadline) {
+        const signature = readyRows.map(row => normalize(row.innerText || row.textContent)).join('|');
+        if (signature && signature === lastSignature) stablePasses++; else stablePasses = 0;
+        lastSignature = signature;
+        const allFound = choices.every(label => { const matches = findMatches(label, readyRows); return matches.length === 1 && !!matches[0].row.querySelector('.numTriggersFieldsContainer .positiveTrigger, .positiveTrigger'); });
+        if (allFound || (readyRows.length > 0 && stablePasses >= 4)) break;
+        await wait(200); readyRows = getRows();
+      }
+      const availableCount = choices.filter(label => { const matches = findMatches(label, readyRows); return matches.length === 1 && !!matches[0].row.querySelector('.numTriggersFieldsContainer .positiveTrigger, .positiveTrigger'); }).length;
+      if (!readyRows.length || availableCount === 0) { report.push('Манипуляции: не удалось подтвердить загрузку таблицы с выбранными пунктами. Открой раздел «Манипуляции» в ProMed, дождись появления строк и повтори заполнение.'); return; }
+      for (const label of choices) {
+        const exactMatches = findMatches(label, getRows());
         if (exactMatches.length !== 1) {
           const reason = exactMatches.length
             ? 'найдено ' + exactMatches.length + ' точных совпадений'
             : 'точного совпадения в отдельной ячейке нет';
           report.push('Манипуляция «' + label + '»: ' + reason + '; ничего не нажато.');
-          return;
+          continue;
         }
         const row = exactMatches[0].row;
         const trigger = row.querySelector('.numTriggersFieldsContainer .positiveTrigger, .positiveTrigger');
@@ -227,17 +236,25 @@ function pageBridge(action, payload) {
           report.push('Манипуляция «' + label + '»: название найдено точно, но ' +
             (numberField ? 'в строке найдено числовое поле, а кнопки positiveTrigger нет' : 'кнопка positiveTrigger не найдена') +
             '; значение не изменено.');
-          return;
+          continue;
         }
         try {
+          const numberField = row.querySelector('.numTriggersFieldsContainer .numberField, .numberField');
+          const readCount = () => { if (!numberField) return null; const raw = 'value' in numberField ? numberField.value : numberField.textContent; const parsed = Number(String(raw ?? '').replace(',', '.').trim()); return Number.isFinite(parsed) ? parsed : null; };
+          const beforeCount = readCount();
+          if (beforeCount !== null && beforeCount > 0) { report.push('Манипуляция «' + label + '»: уже указано количество ' + beforeCount + '; повторно не нажимал.'); continue; }
           trigger.click();
-          report.push('Манипуляция «' + label + '»: найдено точное совпадение названия, кнопка нажата. Проверь отметку в ProMed; повторный запуск может повторить действие.');
+          await wait(150);
+          const afterCount = readCount();
+          if (beforeCount !== null && afterCount !== null && afterCount > beforeCount) report.push('Манипуляция «' + label + '»: подтверждено, количество изменилось с ' + beforeCount + ' на ' + afterCount + '.');
+          else if (beforeCount !== null && afterCount === beforeCount) report.push('Манипуляция «' + label + '»: кнопка нажата, но количество не изменилось. Проверь раздел вручную.');
+          else report.push('Манипуляция «' + label + '»: кнопка нажата; состояние нельзя подтвердить по числовому полю. Проверь отметку в ProMed.');
+          await wait(100);
         } catch (e) {
           report.push('Манипуляция «' + label + '»: ошибка нажатия — ' + String(e?.message || e));
         }
-      });
+      }
     };
-    setProcedureTriggers(payload.procedures);
     setRadio('callteamplace_id', payload.callTeamPlace, 'Место получения вызова');
     setRadio('resident_id', payload.residentType, 'Регистрация пациента');
     setRadio('cmpclosecardsocstatus_id', payload.socialStatus, 'Социальное положение');
@@ -383,6 +400,7 @@ function pageBridge(action, payload) {
     setNamedText('after_temperature', payload.afterTemperature, 'Температура после манипуляций');
     setNamedText('after_pulseoximetry', payload.afterPulseOximetry, 'Пульсоксиметрия после манипуляций');
     setNamedText('after_glucometry', payload.afterGlucometry, 'Глюкометрия после манипуляций');
+    await setProcedureTriggers(payload.procedures);
     setNamedText('visibledamage_extra', payload.visibleDamageExtra, 'Описание видимых повреждений');
     setNamedText('skincondition', payload.skinCondition, 'Описание кожных покровов');
     setNamedText('edema_extra', payload.edemaExtra, 'Описание отёков');
