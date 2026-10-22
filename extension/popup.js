@@ -516,39 +516,83 @@ $('scanExamFields')?.addEventListener('click', async () => {
 // Храним только локально в Chrome; данные карты на сервер не отправляются.
 const templateFile = $('templateFile');
 const templateSelect = $('templateSelect');
-const templateSearch = $('templateSearch');
+const templateOptions = $('templateOptions');
 const templateCount = $('templateCount');
-const applyTemplateButton = $('applyTemplate');
 let importedTemplates = [];
 
-function renderTemplateOptions(selectedId = '') {
-  const previousId = selectedId || (templateSelect.value !== '' ? importedTemplates[Number(templateSelect.value)]?.id : '') || '';
-  const query = (templateSearch?.value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е');
-  const normalize = value => String(value || '').toLocaleLowerCase('ru-RU').replace(/ё/g, 'е');
-  const matches = importedTemplates.map((template, index) => ({template, index})).filter(({template}) =>
-    normalize(template.category + ' ' + template.diagnosis).includes(query)
+const normalizeTemplateText = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е');
+const templateLabel = template => (template.category ? template.category + ' · ' : '') + template.diagnosis;
+
+function renderTemplateOptions() {
+  const query = normalizeTemplateText(templateSelect?.value);
+  const matches = importedTemplates.filter(template =>
+    normalizeTemplateText(template.category + ' ' + template.diagnosis).includes(query) ||
+    normalizeTemplateText(templateLabel(template)).includes(query)
   );
-  templateSelect.replaceChildren();
-  const first = document.createElement('option');
-  first.value = '';
-  first.textContent = importedTemplates.length ? (matches.length ? 'Выбери диагноз…' : 'Ничего не найдено') : 'Сначала импортируй JSON';
-  templateSelect.append(first);
-  matches.forEach(({template, index}) => {
+  templateOptions.replaceChildren();
+  matches.forEach(template => {
     const option = document.createElement('option');
-    option.value = String(index);
-    option.textContent = (template.category ? template.category + ' · ' : '') + template.diagnosis;
-    templateSelect.append(option);
+    option.value = templateLabel(template);
+    templateOptions.append(option);
   });
-  if (previousId) {
-    const index = matches.find(({template}) => template.id === previousId)?.index;
-    if (index !== undefined) templateSelect.value = String(index);
-  }
   if (templateCount) templateCount.textContent = query
     ? 'Найдено: ' + matches.length + ' из ' + importedTemplates.length
     : 'Загруженные шаблоны: ' + importedTemplates.length;
 }
 
-templateSearch?.addEventListener('input', () => renderTemplateOptions());
+function applySelectedTemplate(template) {
+  $('complaints').value = template.complaints;
+  $('anamnez').value = template.anamnesis;
+  $('fillComplaints').checked = Boolean(template.complaints.trim());
+  $('fillAnamnez').checked = Boolean(template.anamnesis.trim());
+
+  const fieldReport = [];
+  let appliedFieldCount = 0;
+  const extensionFields = template.extensionFields && typeof template.extensionFields === 'object' ? template.extensionFields : {};
+  Object.entries(extensionFields).forEach(([id, value]) => {
+    const element = $(id);
+    if (!element) { fieldReport.push(id + ': поля нет в текущей версии расширения.'); return; }
+    if (element.tagName === 'SELECT' && element.multiple) {
+      if (!Array.isArray(value)) return;
+      const wanted = new Set(value.map(String));
+      Array.from(element.options).forEach(option => { option.selected = wanted.has(option.value); });
+      appliedFieldCount++;
+    } else if (element.type === 'checkbox') {
+      if (typeof value === 'boolean') { element.checked = value; appliedFieldCount++; }
+    } else if (element.tagName === 'SELECT') {
+      if (typeof value !== 'string') return;
+      const option = Array.from(element.options).find(item => item.value === value || item.textContent.trim() === value);
+      if (option) { element.value = option.value; appliedFieldCount++; }
+      else fieldReport.push(id + ': вариант «' + value + '» отсутствует в списке расширения.');
+    } else if (element.tagName === 'TEXTAREA' || element.tagName === 'INPUT') {
+      if (typeof value === 'string' && value.trim()) {
+        // Нормализуем десятичную запятую для числовых полей браузера.
+        const normalizedValue = element instanceof HTMLInputElement && element.type === 'number'
+          ? value.trim().replace(',', '.')
+          : value;
+        element.value = normalizedValue;
+        if (element.value === normalizedValue) appliedFieldCount++;
+        else fieldReport.push(id + ': значение «' + value + '» не подходит для поля; проверь формат.');
+      }
+    }
+  });
+
+  if (extensionFields.reason) $('fillReason').checked = extensionFields.reason !== 'unchanged';
+  $('fillEpidemic').checked = Boolean($('epidemic').value.trim());
+  status.textContent = 'Шаблон «' + template.diagnosis + '» выбран и автоматически подставлен в поля расширения. Обработано полей: ' + appliedFieldCount + '. Проверь значения, затем нажми «Заполнить выбранные поля».' +
+    (fieldReport.length ? '\\n\\nЗамечания:\\n' + fieldReport.join('\\n') : '');
+}
+
+templateSelect?.addEventListener('input', () => {
+  renderTemplateOptions();
+  const typed = normalizeTemplateText(templateSelect.value);
+  if (!typed) return;
+  const exactMatches = importedTemplates.filter(template =>
+    normalizeTemplateText(templateLabel(template)) === typed ||
+    normalizeTemplateText(template.diagnosis) === typed
+  );
+  if (exactMatches.length === 1) applySelectedTemplate(exactMatches[0]);
+});
 
 async function restoreImportedTemplates() {
   try {
@@ -588,6 +632,7 @@ templateFile.addEventListener('change', async () => {
         : {}
     }));
     await chrome.storage.local.set({smpImportedTemplates: importedTemplates});
+    templateSelect.value = '';
     renderTemplateOptions();
     status.textContent = 'Загружено шаблонов: ' + importedTemplates.length + '. Список сохранён локально в Chrome.';
   } catch (error) {
@@ -595,58 +640,6 @@ templateFile.addEventListener('change', async () => {
   } finally {
     templateFile.value = '';
   }
-});
-
-applyTemplateButton.addEventListener('click', () => {
-  const index = Number(templateSelect.value);
-  if (!templateSelect.value || !Number.isInteger(index) || !importedTemplates[index]) {
-    status.textContent = 'Сначала выбери диагноз из импортированных шаблонов.';
-    return;
-  }
-  const template = importedTemplates[index];
-  const hasCurrentText = $('complaints').value.trim() || $('anamnez').value.trim();
-  if (hasCurrentText && !window.confirm('Тексты жалоб и/или анамнеза уже заполнены. Заменить их выбранным шаблоном?')) return;
-  $('complaints').value = template.complaints;
-  $('anamnez').value = template.anamnesis;
-  $('fillComplaints').checked = Boolean(template.complaints.trim());
-  $('fillAnamnez').checked = Boolean(template.anamnesis.trim());
-
-  const fieldReport = [];
-  let appliedFieldCount = 0;
-  const extensionFields = template.extensionFields && typeof template.extensionFields === 'object' ? template.extensionFields : {};
-  Object.entries(extensionFields).forEach(([id, value]) => {
-    const element = $(id);
-    if (!element) { fieldReport.push(id + ': поля нет в текущей версии расширения.'); return; }
-    if (element.tagName === 'SELECT' && element.multiple) {
-      if (!Array.isArray(value)) return;
-      const wanted = new Set(value.map(String));
-      Array.from(element.options).forEach(option => { option.selected = wanted.has(option.value); });
-      appliedFieldCount++;
-    } else if (element.type === 'checkbox') {
-      if (typeof value === 'boolean') { element.checked = value; appliedFieldCount++; }
-    } else if (element.tagName === 'SELECT') {
-      if (typeof value !== 'string') return;
-      const option = Array.from(element.options).find(item => item.value === value || item.textContent.trim() === value);
-      if (option) { element.value = option.value; appliedFieldCount++; }
-      else fieldReport.push(id + ': вариант «' + value + '» отсутствует в списке расширения.');
-    } else if (element.tagName === 'TEXTAREA' || element.tagName === 'INPUT') {
-      if (typeof value === 'string' && value.trim()) {
-        // Числовые поля браузера не принимают десятичную запятую, хотя пользователь
-        // может ввести температуру в привычном формате 36,6 в Windows-программе.
-        const normalizedValue = element instanceof HTMLInputElement && element.type === 'number'
-          ? value.trim().replace(',', '.')
-          : value;
-        element.value = normalizedValue;
-        if (element.value === normalizedValue) appliedFieldCount++;
-        else fieldReport.push(id + ': значение «' + value + '» не подходит для поля; проверь формат.');
-      }
-    }
-  });
-
-  if (extensionFields.reason) $('fillReason').checked = extensionFields.reason !== 'unchanged';
-  $('fillEpidemic').checked = Boolean($('epidemic').value.trim());
-  status.textContent = 'Шаблон «' + template.diagnosis + '» перенесён в расширение. Отдельных полей обработано: ' + appliedFieldCount + '. Проверь значения, затем нажми «Заполнить выбранные поля».' +
-    (fieldReport.length ? '\n\nЗамечания:\n' + fieldReport.join('\n') : '');
 });
 
 restoreImportedTemplates();
