@@ -10,6 +10,9 @@
 <label for="templateSelect">Найти и выбрать диагноз</label>
 <input id="templateSelect" type="search" list="templateOptions" placeholder="Начни вводить диагноз…" autocomplete="off">
 <datalist id="templateOptions"></datalist>
+<label for="diagnosisCode">Код диагноза МКБ-10</label>
+<input id="diagnosisCode" type="text" inputmode="text" placeholder="Например, I67.2" autocomplete="off" spellcheck="false">
+<small>Для проверки можно ввести код вручную. Если поле заполнено, при заполнении расширение попробует выбрать точное совпадение в ProMed.</small>
 <small id="templateCount">Загруженные шаблоны: 0</small>
 <button id="fill">Заполнить выбранные поля</button>
 <small>Шаблон переносит жалобы, анамнез и настроенные поля карты: осмотр, показатели, манипуляции и исход. Проверь значения и отметки перед заполнением карты.</small>

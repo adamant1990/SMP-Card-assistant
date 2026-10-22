@@ -111,6 +111,70 @@ async function pageBridge(action, payload) {
 
   if (action === 'fill') {
     const report = [];
+    if (payload.fillDiagnosis && payload.diagnosisCode) {
+      const diagnosisCmp = diagnosisInput && (
+        window.Ext?.getCmp(diagnosisInput.id.replace(/-inputEl$/, '')) ||
+        (window.Ext?.ComponentQuery?.query('combo[name="diag_id"]') || [])[0]
+      );
+      const diagnosisStore = diagnosisCmp?.getStore?.();
+      if (!diagnosisCmp || !diagnosisStore) {
+        report.push('Диагноз: поле или справочник не найден; значение не менялось.');
+      } else {
+        const code = String(payload.diagnosisCode).trim().toUpperCase();
+        const loadedRecords = diagnosisStore.getRange?.() || [];
+        const existing = loadedRecords.find(record =>
+          String(record.get?.('diag_code') ?? record.data?.diag_code ?? '').trim().toUpperCase() === code
+        );
+        if (existing) {
+          try {
+            diagnosisCmp.select(existing);
+            diagnosisCmp.fireEvent?.('select', diagnosisCmp, existing);
+            report.push('Диагноз: выбран код ' + code + ' — ' +
+              (existing.get?.('diag_name') ?? existing.data?.diag_name ?? '') + '. Проверь значение в ProMed.');
+          } catch (e) {
+            report.push('Диагноз: не удалось выбрать код ' + code + ' — ' + String(e?.message || e));
+          }
+        } else {
+          await new Promise(resolve => {
+            let settled = false;
+            const finish = message => {
+              if (settled) return;
+              settled = true;
+              if (message) report.push(message);
+              resolve();
+            };
+            try {
+              diagnosisStore.load({
+                params: {query: code},
+                callback: (records, operation, success) => {
+                  if (settled) return;
+                  const match = success && (records || []).find(record =>
+                    String(record.get?.('diag_code') ?? record.data?.diag_code ?? '').trim().toUpperCase() === code
+                  );
+                  if (!success) {
+                    finish('Диагноз: не удалось загрузить справочник для кода ' + code + '; значение не менялось.');
+                  } else if (!match) {
+                    finish('Диагноз: код ' + code + ' не найден в ответе справочника; значение не менялось.');
+                  } else {
+                    try {
+                      diagnosisCmp.select(match);
+                      diagnosisCmp.fireEvent?.('select', diagnosisCmp, match);
+                      finish('Диагноз: выбран код ' + code + ' — ' +
+                        (match.get?.('diag_name') ?? match.data?.diag_name ?? '') + '. Проверь значение в ProMed.');
+                    } catch (e) {
+                      finish('Диагноз: ошибка выбора кода ' + code + ' — ' + String(e?.message || e));
+                    }
+                  }
+                }
+              });
+              setTimeout(() => finish('Диагноз: ожидание справочника превысило 10 секунд; значение не менялось.'), 10000);
+            } catch (e) {
+              finish('Диагноз: ошибка запроса справочника — ' + String(e?.message || e));
+            }
+          });
+        }
+      }
+    }
     if (payload.fillReason) {
       if (!causeCmp) report.push('Причина обращения: поле/компонент не найден.');
       else {
@@ -498,7 +562,9 @@ $('fill').addEventListener('click', async () => {
     isKupir:$('isKupir').value, medicalIntervention:$('medicalIntervention').value,
     transportConsent:$('transportConsent').value, careResult:$('careResult').value,
     aftercareRecommendation:$('aftercareRecommendation').value,
-    resultTrip:$('resultTrip').value};
+    resultTrip:$('resultTrip').value,
+    diagnosisCode:$('diagnosisCode').value.trim().toUpperCase(),
+    fillDiagnosis:Boolean($('diagnosisCode').value.trim())};
   status.textContent = 'Заполняю выбранные поля…';
   try {
     const result = await runPageAction('fill', payload);
@@ -519,6 +585,7 @@ const templateSelect = $('templateSelect');
 const templateOptions = $('templateOptions');
 const templateCount = $('templateCount');
 let importedTemplates = [];
+let selectedTemplate = null;
 
 const normalizeTemplateText = value => String(value || '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е');
 const templateLabel = template => (template.category ? template.category + ' · ' : '') + template.diagnosis;
@@ -541,6 +608,8 @@ function renderTemplateOptions() {
 }
 
 function applySelectedTemplate(template) {
+  selectedTemplate = template;
+  $('diagnosisCode').value = template.diagnosisCode || '';
   $('complaints').value = template.complaints;
   $('anamnez').value = template.anamnesis;
   $('fillComplaints').checked = Boolean(template.complaints.trim());
@@ -584,6 +653,7 @@ function applySelectedTemplate(template) {
 }
 
 templateSelect?.addEventListener('input', () => {
+  selectedTemplate = null;
   renderTemplateOptions();
   const typed = normalizeTemplateText(templateSelect.value);
   if (!typed) return;
@@ -612,6 +682,7 @@ templateFile.addEventListener('change', async () => {
     const incoming = Array.isArray(data) ? data : data.templates;
     if (!Array.isArray(incoming) || !incoming.every(t =>
       t && typeof t.category === 'string' && typeof t.diagnosis === 'string'
+      && (t.diagnosisCode === undefined || typeof t.diagnosisCode === 'string')
       && ['complaints', 'anamnesis', 'examination', 'treatment'].every(k => t[k] === undefined || typeof t[k] === 'string')
     )) {
       throw new Error('Файл не похож на JSON-шаблоны SMP Card Assistant.');
@@ -620,6 +691,7 @@ templateFile.addEventListener('change', async () => {
       id: typeof t.id === 'string' ? t.id : 'imported-' + i,
       category: t.category,
       diagnosis: t.diagnosis,
+      diagnosisCode: typeof t.diagnosisCode === 'string' ? t.diagnosisCode.trim().toUpperCase() : '',
       complaints: t.complaints || '',
       anamnesis: t.anamnesis || '',
       examination: t.examination || '',
