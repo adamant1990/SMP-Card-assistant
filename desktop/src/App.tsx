@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 
 type ExtensionValue = string | boolean | string[];
-type EditableTextKey = 'category' | 'diagnosis' | 'complaints' | 'anamnesis';
+type EditableTextKey = 'category' | 'diagnosis' | 'diagnosisCode' | 'complaints' | 'anamnesis';
 type Template = {
-  id: string; category: string; diagnosis: string;
+  id: string; category: string; diagnosis: string; diagnosisCode?: string;
   complaints: string; anamnesis: string;
   extensionFields: Record<string, ExtensionValue>;
 };
@@ -112,6 +112,7 @@ const sections: SectionDef[] = [
     { id: 'temperature', label: 'Температура, °C', kind: 'text' },
     { id: 'pulseOximetry', label: 'Пульсоксиметрия, %', kind: 'text' },
     { id: 'glucometry', label: 'Глюкометрия', kind: 'text' },
+    { id: 'diagnosisCode', label: 'Код диагноза МКБ-10', kind: 'text', hint: 'Например, I67.2. Код будет передан в расширение и выбран в ProMed.' },
   ]},
   { title: 'Осмотр и оказанная помощь', fields: [
     { id: 'helpOnCallPlace', label: 'Оказанная помощь на месте вызова', kind: 'textarea' },
@@ -165,6 +166,7 @@ function normalizeTemplate(t: Partial<Template>, index: number): Template {
     id: typeof t.id === 'string' ? t.id : 'imported-' + index + '-' + crypto.randomUUID(),
     category: typeof t.category === 'string' ? t.category : 'Терапия',
     diagnosis: typeof t.diagnosis === 'string' ? t.diagnosis : 'Новый шаблон',
+    diagnosisCode: typeof t.diagnosisCode === 'string' ? t.diagnosisCode.trim().toUpperCase() : '',
     complaints: typeof t.complaints === 'string' ? t.complaints : '',
     anamnesis: typeof t.anamnesis === 'string' ? t.anamnesis : '',
     extensionFields,
@@ -416,6 +418,7 @@ export default function App() {
     return field.kind === 'select' ? 'unchanged' : '';
   };
   const renderField = (field: FieldDef) => {
+    if (field.id === 'diagnosisCode') return <label className="field" key={field.id}><span>{field.label}</span><input value={selected?.diagnosisCode || ''} onChange={e => update('diagnosisCode', e.target.value.toUpperCase())} placeholder="Например, I67.2" autoCapitalize="characters" spellCheck={false} />{field.hint ? <small>{field.hint}</small> : null}</label>;
     const value = getFieldValue(field);
     if (field.kind === 'check') return <label className="check-field" key={field.id}><input type="checkbox" checked={Boolean(value)} onChange={e => updateExtensionField(field.id, e.target.checked)} /><span>{field.label}</span></label>;
     if (field.kind === 'multi') return <div className="field multi-field" key={field.id}><span>{field.label}</span><div className="multi-options">{(field.options || []).map(option => <label key={option}><input type="checkbox" checked={Array.isArray(value) && value.includes(option)} onChange={e => { const old = Array.isArray(value) ? value : []; updateExtensionField(field.id, e.target.checked ? [...old, option] : old.filter(x => x !== option)); }} />{option}</label>)}</div></div>;
