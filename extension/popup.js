@@ -1,5 +1,6 @@
 const $ = (id) => document.getElementById(id);
 const status = $('status');
+let selectedTemplateDiagnosis = '';
 
 async function runPageAction(action, payload = {}) {
   const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
@@ -150,6 +151,68 @@ async function pageBridge(action, payload) {
           } catch (e) {
             report.push('Результат выезда: ошибка выбора — ' + String(e?.message || e));
           }
+        }
+      }
+    }
+    if (payload.fillDiagnosis && payload.diagnosis?.trim()) {
+      const diagnosisText = payload.diagnosis.trim();
+      const normalizeDiagnosis = value => String(value ?? '').trim().toLocaleLowerCase('ru-RU').replace(/ё/g, 'е').replace(/\\s+/g, ' ');
+      const combos = window.Ext?.ComponentQuery?.query('combo') || [];
+      const combo = combos.find(cmp => {
+        const name = cmp.name || cmp.getName?.() || '';
+        const inputName = (cmp.inputEl?.dom || cmp.inputEl)?.name || '';
+        const id = String(cmp.id || '');
+        return name === 'diag_id' || inputName === 'diag_name' || inputName === 'diag_id' ||
+          cmp.hiddenName === 'diag_id' || /^diagCombo/i.test(id) ||
+          (cmp.displayField === 'diag_name' && cmp.valueField === 'diag_id');
+      });
+      if (!combo) {
+        report.push('Диагноз: компонент справочника не найден; диагноз не изменён.');
+      } else {
+        const store = combo.getStore?.();
+        const displayField = combo.displayField || 'diag_name';
+        const valueField = combo.valueField || 'diag_id';
+        const recordName = record => record?.get?.(displayField) ?? record?.data?.[displayField] ??
+          record?.get?.('diag_name') ?? record?.data?.diag_name ?? '';
+        const findExactRecord = () => (store?.getRange?.() || []).find(record =>
+          normalizeDiagnosis(recordName(record)) === normalizeDiagnosis(diagnosisText));
+        try {
+          // Повторяем пользовательский сценарий: ввод названия и Enter.
+          combo.setRawValue?.(diagnosisText);
+          const input = combo.inputEl?.dom || combo.inputEl;
+          if (input) {
+            input.value = diagnosisText;
+            input.dispatchEvent(new Event('input', {bubbles:true}));
+            input.dispatchEvent(new Event('change', {bubbles:true}));
+          }
+          combo.doQuery?.(diagnosisText, false, true);
+          if (input) {
+            input.dispatchEvent(new KeyboardEvent('keydown', {key:'Enter', code:'Enter', keyCode:13, which:13, bubbles:true, cancelable:true}));
+            input.dispatchEvent(new KeyboardEvent('keyup', {key:'Enter', code:'Enter', keyCode:13, which:13, bubbles:true, cancelable:true}));
+          }
+          let record = findExactRecord();
+          const deadline = Date.now() + 5000;
+          while (!record && Date.now() < deadline) {
+            await new Promise(resolve => setTimeout(resolve, 200));
+            record = findExactRecord();
+          }
+          if (record) {
+            combo.select?.(record);
+            combo.fireEvent?.('select', combo, record);
+            const selectedValue = combo.getValue?.();
+            const selectedName = normalizeDiagnosis(combo.getRawValue?.() || recordName(record));
+            const recordValue = record.get?.(valueField) ?? record.data?.[valueField];
+            if (selectedName === normalizeDiagnosis(diagnosisText) &&
+                (selectedValue == null || String(selectedValue) === String(recordValue))) {
+              report.push('Диагноз: выбран из справочника «' + recordName(record) + '» (код ' + String(recordValue ?? 'не определён') + '). Проверь сохранённое значение в ProMed.');
+            } else {
+              report.push('Диагноз: запись найдена, но подтверждение выбора неоднозначно. Проверь диагноз и его код в ProMed.');
+            }
+          } else {
+            report.push('Диагноз: «' + diagnosisText + '» не найден точным совпадением в загруженном справочнике. Поле не подтверждено, выбери диагноз вручную.');
+          }
+        } catch (e) {
+          report.push('Диагноз: не удалось подтвердить выбор — ' + String(e?.message || e) + '. Проверь поле вручную.');
         }
       }
     }
@@ -451,7 +514,7 @@ $('inspect').addEventListener('click', async () => {
   catch (e) { status.textContent = 'Ошибка: ' + (e?.message || e); }
 });
 $('fill').addEventListener('click', async () => {
-  const payload = {reason:$('reason').value, fillReason:$('fillReason').checked,
+  const payload = {diagnosis:selectedTemplateDiagnosis, fillDiagnosis:Boolean(selectedTemplateDiagnosis), reason:$('reason').value, fillReason:$('fillReason').checked,
     complaints:$('complaints').value, fillComplaints:$('fillComplaints').checked,
     anamnez:$('anamnez').value, fillAnamnez:$('fillAnamnez').checked,
     epidemic:$('epidemic').value, fillEpidemic:$('fillEpidemic').checked,
@@ -549,6 +612,10 @@ function renderTemplateOptions(selectedId = '') {
 }
 
 templateSearch?.addEventListener('input', () => renderTemplateOptions());
+templateSelect?.addEventListener('change', () => {
+  const index = Number(templateSelect.value);
+  selectedTemplateDiagnosis = templateSelect.value && importedTemplates[index] ? importedTemplates[index].diagnosis : '';
+});
 
 async function restoreImportedTemplates() {
   try {
@@ -604,6 +671,7 @@ applyTemplateButton.addEventListener('click', () => {
     return;
   }
   const template = importedTemplates[index];
+  selectedTemplateDiagnosis = template.diagnosis;
   const hasCurrentText = $('complaints').value.trim() || $('anamnez').value.trim();
   if (hasCurrentText && !window.confirm('Тексты жалоб и/или анамнеза уже заполнены. Заменить их выбранным шаблоном?')) return;
   $('complaints').value = template.complaints;
