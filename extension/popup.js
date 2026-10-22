@@ -563,8 +563,8 @@ $('fill').addEventListener('click', async () => {
     transportConsent:$('transportConsent').value, careResult:$('careResult').value,
     aftercareRecommendation:$('aftercareRecommendation').value,
     resultTrip:$('resultTrip').value,
-    diagnosisCode:selectedTemplate?.diagnosisCode || '',
-    fillDiagnosis:Boolean(selectedTemplate?.diagnosisCode)};
+    diagnosisCode:$('diagnosisCode').value.trim().toUpperCase(),
+    fillDiagnosis:Boolean($('diagnosisCode').value.trim())};
   status.textContent = 'Заполняю выбранные поля…';
   try {
     const result = await runPageAction('fill', payload);
@@ -609,6 +609,7 @@ function renderTemplateOptions() {
 
 function applySelectedTemplate(template) {
   selectedTemplate = template;
+  $('diagnosisCode').value = template.diagnosisCode || '';
   $('complaints').value = template.complaints;
   $('anamnez').value = template.anamnesis;
   $('fillComplaints').checked = Boolean(template.complaints.trim());
