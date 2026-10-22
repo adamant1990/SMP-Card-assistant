@@ -526,13 +526,13 @@ const templateLabel = template => (template.category ? template.category + ' · 
 function renderTemplateOptions() {
   const query = normalizeTemplateText(templateSelect?.value);
   const matches = importedTemplates.filter(template =>
-    normalizeTemplateText(template.category + ' ' + template.diagnosis).includes(query) ||
-    normalizeTemplateText(templateLabel(template)).includes(query)
+    normalizeTemplateText(template.diagnosis).includes(query)
   );
   templateOptions.replaceChildren();
   matches.forEach(template => {
     const option = document.createElement('option');
-    option.value = templateLabel(template);
+    option.value = template.diagnosis;
+    option.label = template.category ? template.category + ' · ' + template.diagnosis : template.diagnosis;
     templateOptions.append(option);
   });
   if (templateCount) templateCount.textContent = query
